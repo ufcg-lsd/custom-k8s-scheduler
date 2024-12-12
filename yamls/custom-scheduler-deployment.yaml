@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: custom-scheduler
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: custom-scheduler
+  template:
+    metadata:
+      labels:
+        component: custom-scheduler
+    spec:
+      containers:
+      - name: custom-scheduler
+        image: brunogb123/scheduler-custom:v0
+        command:
+        - /custom-scheduler                
+        args:
+        - --config=/etc/kubernetes/scheduler-config.yaml
+        volumeMounts:
+        - mountPath: /etc/kubernetes       
+          name: config-volume
+      volumes:
+      - name: config-volume
+        configMap:
+          name: custom-scheduler-config
