@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: custom-scheduler
-        image: brunogb123/scheduler-custom:v0
+        image: brunogb123/scheduler-custom:v1
         command:
         - /custom-scheduler                
         args:

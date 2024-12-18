@@ -100,7 +100,7 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/apiextensions-apiserver v0.0.0 // indirect
 	k8s.io/apiserver v0.31.1 // indirect
-	k8s.io/client-go v1.5.2 // indirect
+	k8s.io/client-go v1.5.2
 	k8s.io/cloud-provider v0.0.0 // indirect
 	k8s.io/component-base v0.31.1 // indirect
 	k8s.io/component-helpers v0.31.1 // indirect

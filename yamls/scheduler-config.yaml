@@ -5,16 +5,16 @@ profiles:
   plugins:
     queueSort:
       disabled:
-      - name: QosDrivenScheduler
+      - name: QosAware
     reserve:
       enabled:
-      - name: QosDrivenScheduler
+      - name: QosAware
     preBind:
       enabled:
-      - name: QosDrivenScheduler
+      - name: QosAware
     postBind:
       enabled:
-      - name: QosDrivenScheduler
+      - name: QosAware
     postFilter:
       enabled:
-      - name: QosDrivenScheduler
+      - name: QosAware

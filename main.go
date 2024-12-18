@@ -9,7 +9,7 @@ import (
 
 func main() {
 	command := app.NewSchedulerCommand(
-		app.WithPlugin(scheduler.PluginName, scheduler.New()),
+		app.WithPlugin(scheduler.Name, scheduler.New()),
 	)
 
 	if err := command.Execute(); err != nil {
