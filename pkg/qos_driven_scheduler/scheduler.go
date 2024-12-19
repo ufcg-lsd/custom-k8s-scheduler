@@ -191,7 +191,10 @@ func (scheduler *QosDrivenScheduler) UpdatePodMetricInfo(pod *corev1.Pod, f func
 		scheduler.Controllers = map[string]ControllerMetricInfo{}
 	}
 
+	klog.Infof("[UpdatePodMetricInfo] controllerName = %s, podName = %s", controllerName, podName)
 	cMetricInfo, found := scheduler.Controllers[controllerName]
+	klog.Infof("[UpdatePodMetricInfo] Controller encontrado? %t", found)
+
 	if !found {
 		cMetricInfo.SafetyMargin = scheduler.Args.SafetyMargin.Duration
 		cMetricInfo.MinimumRunningTime = scheduler.Args.MinimumRunningTime.Duration
