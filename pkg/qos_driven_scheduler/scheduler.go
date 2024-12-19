@@ -3,7 +3,10 @@ package qos_driven_scheduler
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"os"
+	"sort"
+	"strconv"
 	"sync"
 	"time"
 
@@ -13,6 +16,7 @@ import (
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/klog/v2"
 	framework "k8s.io/kubernetes/pkg/scheduler/framework"
+	frameworkruntime "k8s.io/kubernetes/pkg/scheduler/framework/runtime"
 )
 
 const (
@@ -23,17 +27,17 @@ const (
 
 // QosDrivenScheduler implementa as interfaces de plugins solicitadas
 type QosDrivenScheduler struct {
+	fh          framework.Handle
 	Args        QosDrivenSchedulerArgs
 	PodInformer cache.SharedIndexInformer
-	lock        sync.RWMutex
 	Controllers map[string]ControllerMetricInfo
-	fh          framework.Handle
+	lock        sync.RWMutex
 }
 
 // Garantindo que QosDrivenScheduler implementa as interfaces necessárias
 var _ framework.QueueSortPlugin = &QosDrivenScheduler{}
 var _ framework.ReservePlugin = &QosDrivenScheduler{}
-var _ framework.PreBindPlugin = &QosDrivenScheduler{}
+var _ framework.PreBindPlugin = &QosDrivenScheduler{} // Feito
 var _ framework.PostBindPlugin = &QosDrivenScheduler{}
 var _ framework.PostFilterPlugin = &QosDrivenScheduler{}
 
@@ -60,15 +64,43 @@ func (scheduler *QosDrivenScheduler) Unreserve(ctx context.Context, state *frame
 }
 
 // PreBindPlugin: Chamado antes de o pod ser vinculado ao node
-func (scheduler *QosDrivenScheduler) PreBind(_ context.Context, state *framework.CycleState, p *corev1.Pod, _ string) *framework.Status {
+func (scheduler *QosDrivenScheduler) PreBind(_ context.Context, state *framework.CycleState, p *corev1.Pod, nodeName string) *framework.Status {
+	klog.Infof("[PreBind] Validando o pod %s antes de vincular ao node %s", p.Name, nodeName)
 	now := time.Now()
 	state.Write(BindingStart, CloneableTime{now})
 	return nil
 }
 
 // PostBindPlugin: Chamado após o pod ser vinculado ao node
-func (scheduler *QosDrivenScheduler) PostBind(ctx context.Context, state *framework.CycleState, pod *corev1.Pod, nodeName string) {
-	klog.Infof("[PostBind] Pod %s vinculado ao node %s com sucesso", pod.Name, nodeName)
+func (scheduler *QosDrivenScheduler) PostBind(ctx context.Context, state *framework.CycleState, pod *corev1.Pod, _ string) {
+	klog.Infof("[PostBind] Chamado para pod %s", pod.Name)
+
+	// Tenta ler o estado `BindingStart`
+	start, err := state.Read(BindingStart)
+	if err != nil {
+		klog.Errorf("[PostBind] Erro ao ler BindingStart para pod %s: %v", pod.Name, err)
+		return
+	}
+
+	// Verifica o tipo do valor retornado
+	startBinding, ok := start.(CloneableTime)
+	if !ok {
+		klog.Errorf("[PostBind] Tipo inesperado para BindingStart no pod %s", pod.Name)
+		return
+	}
+
+	// Calcula o tempo de binding
+	endBinding := time.Now()
+	klog.Infof("[PostBind] Pod %s - Início do binding: %s, Fim do binding: %s", pod.Name, startBinding.Time, endBinding)
+
+	// Atualiza as métricas do pod
+	scheduler.UpdatePodMetricInfo(pod, func(old PodMetricInfo) PodMetricInfo {
+		old.StartBindingTime = startBinding.Time
+		old.StartRunningTime = endBinding
+		old.AllocationStatus = AllocatedState
+		klog.Infof("[PostBind] Métricas atualizadas para o pod %s", pod.Name)
+		return old
+	})
 }
 
 // PostFilterPlugin: Chamado quando nenhum node satisfaz os requisitos do pod
@@ -334,6 +366,15 @@ func dumpMetrics(cMetricInfo ControllerMetricInfo, pMetricInfo PodMetricInfo, ac
 	}
 }
 
+func NewQosScheduler(fh framework.Handle) *QosDrivenScheduler {
+
+	return (&QosDrivenScheduler{
+		PodInformer: fh.SharedInformerFactory().Core().V1().Pods().Informer(),
+		fh:          fh,
+		Controllers: map[string]ControllerMetricInfo{},
+	}).addEventHandler()
+}
+
 type QosDrivenSchedulerArgs struct {
 	// Controllers with a time-to-violate below this configured SafetyMargin
 	// is treated as close to violate it's SLO by our scheduler.
@@ -345,10 +386,107 @@ type QosDrivenSchedulerArgs struct {
 	MinimumRunningTime metav1.Duration `json:"minimumRunningTime"`
 }
 
+func format(d time.Duration) string {
+	if d > time.Second {
+		return d.Truncate(time.Second).String()
+	}
+
+	return d.Truncate(time.Millisecond).String()
+}
+
+func sortedKeys(m map[string]ControllerMetricInfo) []string {
+	keys := make([]string, len(m))
+	idx := 0
+	for key := range m {
+		keys[idx] = key
+		idx++
+	}
+	sort.Strings(keys)
+	return keys
+}
+
+func (scheduler *QosDrivenScheduler) list(w http.ResponseWriter, _ *http.Request) {
+	fmt.Fprintf(w, "%20s  %9s  %19s  %15s  %15s  %15s  %20s  %20s  %20s  %20s\n",
+		"CONTROLLER",
+		"QOS/SLO",
+		"PREEMPTION OVERHEAD",
+		"QOS APPROACH",
+		"POD PHASE",
+		"QOS METRIC",
+		"EFF RUNNING",
+		"DIS RUNNING",
+		"WAITING",
+		"BINDING")
+
+	scheduler.lock.RLock()
+	defer scheduler.lock.RUnlock()
+
+	now := time.Now()
+	cNames := sortedKeys(scheduler.Controllers)
+
+	for _, cName := range cNames {
+		controller := scheduler.Controllers[cName]
+
+		for replicaId, replica := range controller.replicas {
+			pod := replica.Incarnations[replica.CurrentIncarnation].LastStatus
+
+			// listing only pods that are active in the system
+			if pod != nil {
+				// FIXME: scheduler.GetControllerMetricInfo also locks and this lock may cause deadlock when recursive locking
+				cMetricInfo := scheduler.GetControllerMetricInfo(pod)
+				metrics := cMetricInfo.Metrics(now, noopLocker)
+				fmt.Fprintf(w, "%20s  %4.2f/%4.2f  %9.2f/%-9.2f  %15s  %15s  %15.4f  %20s  %20s  %20s  %20s\n",
+					cName+"-"+strconv.Itoa(replicaId),
+					metrics.QoS(),
+					ControllerSlo(pod),
+					metrics.PreemptionOverhead(),
+					scheduler.AcceptablePreemptionOverhead(pod),
+					cMetricInfo.QoSMeasuringApproach,
+					pod.Status.Phase,
+					metrics.QoSMetric(pod),
+					format(metrics.EffectiveRunningTime),
+					format(metrics.DiscardedRunningTime),
+					format(metrics.WaitingTime),
+					format(metrics.BindingTime))
+			}
+		}
+	}
+}
+
+func (scheduler *QosDrivenScheduler) debugApi() {
+	http.HandleFunc("/", scheduler.list)
+	klog.Fatal(http.ListenAndServe(":10000", nil))
+}
+
+func (scheduler *QosDrivenScheduler) GetControllerMetricInfo(pod *corev1.Pod) ControllerMetricInfo {
+	scheduler.lock.RLock()
+	defer scheduler.lock.RUnlock()
+	cMetricInfo := scheduler.Controllers[ControllerName(pod)]
+	cMetricInfo.ReferencePod = pod
+	return cMetricInfo
+}
+
 // Função de inicialização do plugin
-func New() func(ctx context.Context, args runtime.Object, handle framework.Handle) (framework.Plugin, error) {
-	return func(ctx context.Context, args runtime.Object, handle framework.Handle) (framework.Plugin, error) {
-		klog.Infof("Plugin %s inicializado com sucesso", Name)
-		return &QosDrivenScheduler{}, nil
+func New() func(ctx context.Context, args runtime.Object, f framework.Handle) (framework.Plugin, error) {
+	return func(ctx context.Context, args runtime.Object, f framework.Handle) (framework.Plugin, error) {
+		// Inicializa o scheduler com o handle fornecido
+		scheduler := NewQosScheduler(f)
+
+		// Define valores padrão para os argumentos
+		scheduler.Args.AcceptablePreemptionOverhead = DefaultAcceptablePreemptionOverhead
+
+		// Decodifica os argumentos fornecidos pelo usuário (se existirem)
+		if err := frameworkruntime.DecodeInto(args, &scheduler.Args); err != nil {
+			return nil, err
+		}
+
+		// Loga os argumentos recebidos para depuração
+		klog.V(1).Infof("Plugin iniciado com argumentos: %+v", scheduler.Args)
+
+		// Inicia a API de depuração, se necessário
+		go scheduler.debugApi()
+
+		// Retorna o plugin inicializado
+		return scheduler, nil
 	}
 }

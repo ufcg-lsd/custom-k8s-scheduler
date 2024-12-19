@@ -794,7 +794,9 @@ func (cMetricInfo ControllerMetricInfo) GetPodReplicaId(p *core.Pod) (int, error
 }
 
 func (cMetricInfo *ControllerMetricInfo) AllocateReplicaId(pod *core.Pod) int {
+	klog.Infof("[ReplicaID] Recebido pod %s", pod.Name)
 	for replicaId, replica := range cMetricInfo.replicas {
+		klog.Infof("[ReplicaID] Testando replicaIncarnation %s", replica.CurrentIncarnation)
 		if replica.CurrentIncarnation == "" {
 			replica.CurrentIncarnation = PodName(pod)
 			return replicaId
