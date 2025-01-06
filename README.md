@@ -74,7 +74,7 @@ Atualmente o ConfigMap já está aplicado para definir os plugins utilizados. Ca
 
 ```bash
 kubectl delete configmap custom-scheduler-config -n kube-system
-kubectl apply -f yamls/scheduler-config.yaml
+kubectl create configmap custom-scheduler-config --from-file=yamls/scheduler-config.yaml -n kube-system
 ```
 
 ### Criar o Deployment do Scheduler
