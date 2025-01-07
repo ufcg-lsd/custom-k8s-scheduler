@@ -55,19 +55,30 @@ func (scheduler *QosDrivenScheduler) Less(p1, p2 *framework.QueuedPodInfo) bool 
 // ReservePlugin: Chamado quando os recursos são reservados
 func (scheduler *QosDrivenScheduler) Reserve(_ context.Context, _ *framework.CycleState, pod *corev1.Pod, nodeName string) *framework.Status {
 	now := time.Now()
-	klog.V(1).Infof("resources reserved at node %s for pod %s at %s", nodeName, PodName(pod), now)
+	klog.Infof("[Reserve] resources reserved at node %s for pod %s at %s", nodeName, PodName(pod), now)
 	scheduler.UpdatePodMetricInfo(pod, func(old PodMetricInfo) PodMetricInfo {
-		klog.V(1).Infof("[Reserve] Status de alocação atual para o pod %s: %v", PodName(pod), old.AllocationStatus)
+		klog.Infof("[Reserve] Status de alocação atual para o pod %s: %v", PodName(pod), old.AllocationStatus)
 		old.AllocationStatus = AllocatingState
-		klog.V(1).Infof("[Reserve] Status de alocação atualizado para o pod %s: %v", PodName(pod), AllocatingState)
+		klog.Infof("[Reserve] Status de alocação atualizado para o pod %s: %v", PodName(pod), AllocatingState)
 		return old
 	})
 	return nil
 }
 
 // ReservePlugin: Chamado quando a reserva é desfeita
-func (scheduler *QosDrivenScheduler) Unreserve(ctx context.Context, state *framework.CycleState, pod *corev1.Pod, nodeName string) {
-	klog.Infof("[Unreserve] Desfazendo reserva para o pod %s no node %s", pod.Name, nodeName)
+func (scheduler *QosDrivenScheduler) Unreserve(_ context.Context, _ *framework.CycleState, pod *corev1.Pod, nodeName string) {
+	now := time.Now()
+	klog.Infof("[Unreserve] Recursos estão sendo liberados no node %s para o pod %s às %s", nodeName, PodName(pod), now)
+
+	klog.Infof("[Unreserve] Atualizando métricas do pod %s para liberar recursos", PodName(pod))
+	scheduler.UpdatePodMetricInfo(pod, func(old PodMetricInfo) PodMetricInfo {
+		klog.Infof("[Unreserve] Estado anterior do AllocationStatus para pod %s: %v", PodName(pod), old.AllocationStatus)
+		old.AllocationStatus = ""
+		klog.Infof("[Unreserve] Novo estado do AllocationStatus para pod %s: %v", PodName(pod), old.AllocationStatus)
+		return old
+	})
+
+	klog.Infof("[Unreserve] Recursos liberados com sucesso para o pod %s no node %s", PodName(pod), nodeName)
 }
 
 // PreBindPlugin: Chamado antes de o pod ser vinculado ao node
