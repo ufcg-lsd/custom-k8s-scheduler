@@ -36,9 +36,9 @@ type QosDrivenScheduler struct {
 
 // Garantindo que QosDrivenScheduler implementa as interfaces necessárias
 var _ framework.QueueSortPlugin = &QosDrivenScheduler{}
-var _ framework.ReservePlugin = &QosDrivenScheduler{}
-var _ framework.PreBindPlugin = &QosDrivenScheduler{} // Feito
-var _ framework.PostBindPlugin = &QosDrivenScheduler{}
+var _ framework.ReservePlugin = &QosDrivenScheduler{}  // Feito
+var _ framework.PreBindPlugin = &QosDrivenScheduler{}  // Feito
+var _ framework.PostBindPlugin = &QosDrivenScheduler{} // Feito
 var _ framework.PostFilterPlugin = &QosDrivenScheduler{}
 
 // Name retorna o nome do plugin
@@ -54,8 +54,15 @@ func (scheduler *QosDrivenScheduler) Less(p1, p2 *framework.QueuedPodInfo) bool 
 
 // ReservePlugin: Chamado quando os recursos são reservados
 func (scheduler *QosDrivenScheduler) Reserve(_ context.Context, _ *framework.CycleState, pod *corev1.Pod, nodeName string) *framework.Status {
-	klog.Infof("[Reserve] Reservando recursos para o pod %s no node %s", pod.Name, nodeName)
-	return framework.NewStatus(framework.Success)
+	now := time.Now()
+	klog.V(1).Infof("resources reserved at node %s for pod %s at %s", nodeName, PodName(pod), now)
+	scheduler.UpdatePodMetricInfo(pod, func(old PodMetricInfo) PodMetricInfo {
+		klog.V(1).Infof("[Reserve] Status de alocação atual para o pod %s: %v", PodName(pod), old.AllocationStatus)
+		old.AllocationStatus = AllocatingState
+		klog.V(1).Infof("[Reserve] Status de alocação atualizado para o pod %s: %v", PodName(pod), AllocatingState)
+		return old
+	})
+	return nil
 }
 
 // ReservePlugin: Chamado quando a reserva é desfeita
@@ -191,9 +198,9 @@ func (scheduler *QosDrivenScheduler) UpdatePodMetricInfo(pod *corev1.Pod, f func
 		scheduler.Controllers = map[string]ControllerMetricInfo{}
 	}
 
-	klog.Infof("[UpdatePodMetricInfo] controllerName = %s, podName = %s", controllerName, podName)
+	//	klog.Infof("[UpdatePodMetricInfo] controllerName = %s, podName = %s", controllerName, podName)
 	cMetricInfo, found := scheduler.Controllers[controllerName]
-	klog.Infof("[UpdatePodMetricInfo] Controller encontrado? %t", found)
+	//	klog.Infof("[UpdatePodMetricInfo] Controller encontrado? %t", found)
 
 	if !found {
 		cMetricInfo.SafetyMargin = scheduler.Args.SafetyMargin.Duration
