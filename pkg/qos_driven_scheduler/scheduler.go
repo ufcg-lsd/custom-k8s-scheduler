@@ -47,9 +47,66 @@ func (scheduler *QosDrivenScheduler) Name() string {
 }
 
 // QueueSortPlugin: Determina a ordem de prioridade dos pods na fila
-func (scheduler *QosDrivenScheduler) Less(p1, p2 *framework.QueuedPodInfo) bool {
-	klog.Infof("[QueueSort] Comparando prioridade de %s com %s", p1.Pod.Name, p2.Pod.Name)
-	return p1.Pod.CreationTimestamp.Before(&p2.Pod.CreationTimestamp)
+func (scheduler *QosDrivenScheduler) Less(pInfo1, pInfo2 *framework.QueuedPodInfo) bool {
+	klog.Infof("[QueueSort] Comparando prioridade de %s com %s", pInfo1.Pod.Name, pInfo2.Pod.Name)
+	precedence := scheduler.HigherPrecedence(pInfo1.Pod, pInfo2.Pod)
+	klog.Infof("[QueueSort] Precedência determinada: %s tem precedência sobre %s? %v", pInfo1.Pod.Name, pInfo2.Pod.Name, precedence)
+	return precedence
+}
+
+// We calculate precedence between pods checking if the time to violate p1's controller SLO is lower than p2's controller.
+// If the pods' controllers has different importances and their time to violate are below the safety margin the precedence is for the highest importance controller's pod.
+func (scheduler *QosDrivenScheduler) HigherPrecedence(p1, p2 *corev1.Pod) bool {
+	now := time.Now()
+	klog.Infof("[HigherPrecedence] Calculando precedência entre %s e %s", p1.Name, p2.Name)
+
+	scheduler.WaitForPodsOnCache(p1, p2)
+	cMetricInfo1 := scheduler.GetControllerMetricInfo(p1)
+	cMetrics1 := cMetricInfo1.Metrics(now, scheduler.lock.RLocker())
+	cMetricInfo2 := scheduler.GetControllerMetricInfo(p2)
+	cMetrics2 := cMetricInfo2.Metrics(now, scheduler.lock.RLocker())
+
+	importance1 := ControllerImportance(p1)
+	importance2 := ControllerImportance(p2)
+
+	qosMetric1 := cMetrics1.QoSMetric(p1)
+	qosMetric2 := cMetrics2.QoSMetric(p2)
+
+	klog.Infof("[HigherPrecedence] Métricas para %s: QoS = %f, Importância = %.2f", p1.Name, qosMetric1, importance1)
+	klog.Infof("[HigherPrecedence] Métricas para %s: QoS = %f, Importância = %.2f", p2.Name, qosMetric2, importance2)
+
+	safetyMargin := scheduler.Args.SafetyMargin.Duration.Seconds()
+
+	// Is in resource contention
+	if (qosMetric1 < safetyMargin) && (qosMetric2 < safetyMargin) && importance1 != importance2 {
+		klog.Infof("[HigherPrecedence] Ambos estão em contenção de recursos e têm diferentes importâncias.")
+		return importance1 > importance2
+	}
+
+	result := qosMetric1 < qosMetric2
+	klog.Infof("[HigherPrecedence] Decisão final: %s tem precedência sobre %s? %v", p1.Name, p2.Name, result)
+	return result
+}
+
+// TODO maybe we should sort only by controller's SLO and importance if we can't find its metrics
+func (scheduler *QosDrivenScheduler) WaitForPodsOnCache(pods ...*corev1.Pod) {
+	for _, pod := range pods {
+		klog.Infof("[WaitForPodsOnCache] Verificando se o pod %s está no cache...", pod.Name)
+		cacheMiss := func() bool {
+			cMetricInfo := scheduler.GetControllerMetricInfo(pod)
+			scheduler.lock.RLock()
+			_, notFound := cMetricInfo.GetPodMetricInfo(pod)
+			scheduler.lock.RUnlock()
+			return notFound
+		}
+
+		for cacheMiss() {
+			klog.Warningf("[WaitForPodsOnCache] Pod %s não encontrado no cache. Tentando novamente...", pod.Name)
+			time.Sleep(time.Millisecond * 100)
+		}
+
+		klog.Infof("[WaitForPodsOnCache] Pod %s encontrado no cache.", pod.Name)
+	}
 }
 
 // ReservePlugin: Chamado quando os recursos são reservados

@@ -2,17 +2,17 @@
 
 ## Descrição do Projeto
 
-Este repositório contém o código atualizado para o sistema QoS-Driven Scheduler, desenvolvido para a versão 1.31 do Kubernetes. Ele busca otimizar a alocação de recursos e garantir a qualidade de serviço (QoS) através de estratégias avançadas de agendamento e preempção.
+Este repositório contém o código atualizado para o sistema QoS-Driven Scheduler, desenvolvido para a versão 1.31 do Kubernetes. Ele busca otimizar a alocação de recursos e garantir a qualidade de serviço (QoS) através de estratégias de agendamento e preempção.
 
 ## Funcionalidades Atuais
 
 ### Status Atual
 
-Atualmente o scheduler possui os plugins de PreBind e PostBind.
+Atualmente o scheduler possui os plugins de PreBind, PostBind e Reserve. 
 
 ### Próximos Passos
 
-Serão adicionados os plugins de QueueSort, Reserve e PostFilter.
+Serão adicionados os plugins de QueueSort e PostFilter.
 
 ## Comandos Úteis
 

@@ -4,8 +4,10 @@ profiles:
 - schedulerName: custom-scheduler
   plugins:
     queueSort:
-      disabled:
+      enabled:
       - name: QosAware
+      disabled:
+      - name: "*"
     reserve:
       enabled:
       - name: QosAware
@@ -18,3 +20,9 @@ profiles:
     postFilter:
       enabled:
       - name: QosAware
+  pluginConfig:
+    - name: QosAware
+      args:
+        safetyMargin: 30s
+        minimumRunningTime: 30s
+
