@@ -1,0 +1,24 @@
+I0114 18:38:42.243319       1 serving.go:386] Generated self-signed cert in-memory
+W0114 18:38:42.244586       1 client_config.go:659] Neither --kubeconfig nor --master was specified.  Using the inClusterConfig.  This might not work.
+I0114 18:38:42.583049       1 server.go:167] "Starting Kubernetes Scheduler" version="v0.0.0-master+$Format:%H$"
+I0114 18:38:42.583105       1 server.go:169] "Golang settings" GOGC="" GOMAXPROCS="" GOTRACEBACK=""
+I0114 18:38:42.872714       1 requestheader_controller.go:172] Starting RequestHeaderAuthRequestController
+I0114 18:38:42.873414       1 secure_serving.go:213] Serving securely on [::]:10259
+I0114 18:38:42.873903       1 tlsconfig.go:243] "Starting DynamicServingCertificateController"
+I0114 18:38:42.873417       1 shared_informer.go:313] Waiting for caches to sync for RequestHeaderAuthRequestController
+I0114 18:38:42.875590       1 configmap_cafile_content.go:205] "Starting controller" name="client-ca::kube-system::extension-apiserver-authentication::client-ca-file"
+I0114 18:38:42.880560       1 shared_informer.go:313] Waiting for caches to sync for client-ca::kube-system::extension-apiserver-authentication::client-ca-file
+I0114 18:38:42.881290       1 configmap_cafile_content.go:205] "Starting controller" name="client-ca::kube-system::extension-apiserver-authentication::requestheader-client-ca-file"
+I0114 18:38:42.882088       1 shared_informer.go:313] Waiting for caches to sync for client-ca::kube-system::extension-apiserver-authentication::requestheader-client-ca-file
+I0114 18:38:42.975148       1 leaderelection.go:254] attempting to acquire leader lease kube-system/kube-scheduler...
+I0114 18:38:42.975930       1 shared_informer.go:320] Caches are synced for RequestHeaderAuthRequestController
+I0114 18:38:42.981711       1 shared_informer.go:320] Caches are synced for client-ca::kube-system::extension-apiserver-authentication::client-ca-file
+I0114 18:38:42.983439       1 shared_informer.go:320] Caches are synced for client-ca::kube-system::extension-apiserver-authentication::requestheader-client-ca-file
+I0114 18:38:43.006906       1 leaderelection.go:268] successfully acquired lease kube-system/kube-scheduler
+I0114 18:39:44.049279       1 scheduler.go:115] [Reserve] resources reserved at node minikube for pod test-deployment-598477d496-8djmk_default at 2025-01-14 18:39:44.049197544 +0000 UTC m=+62.202131373
+I0114 18:39:44.127559       1 scheduler.go:117] [Reserve] Status de alocação atual para o pod test-deployment-598477d496-8djmk_default: 
+I0114 18:39:44.127698       1 scheduler.go:119] [Reserve] Status de alocação atualizado para o pod test-deployment-598477d496-8djmk_default: allocating
+I0114 18:39:44.127924       1 scheduler.go:143] [PreBind] Validando o pod test-deployment-598477d496-8djmk antes de vincular ao node minikube
+I0114 18:39:44.186306       1 scheduler.go:151] [PostBind] Chamado para pod test-deployment-598477d496-8djmk
+I0114 18:39:44.196517       1 scheduler.go:169] [PostBind] Pod test-deployment-598477d496-8djmk - Início do binding: 2025-01-14 18:39:44.127955425 +0000 UTC m=+62.280889326, Fim do binding: 2025-01-14 18:39:44.196399121 +0000 UTC m=+62.349333142
+I0114 18:39:44.197105       1 scheduler.go:176] [PostBind] Métricas atualizadas para o pod test-deployment-598477d496-8djmk

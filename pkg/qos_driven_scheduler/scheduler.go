@@ -178,14 +178,6 @@ func (scheduler *QosDrivenScheduler) PostBind(ctx context.Context, state *framew
 	})
 }
 
-// PostFilterPlugin: Chamado quando nenhum node satisfaz os requisitos do pod
-func (scheduler *QosDrivenScheduler) PostFilter(ctx context.Context, state *framework.CycleState, pod *corev1.Pod, nodeToStatusMap framework.NodeToStatusMap) (*framework.PostFilterResult, *framework.Status) {
-	klog.Infof("[PostFilter] Avaliando pod %s após falha no filtro", pod.Name)
-
-	// Implementação básica: nenhuma preempção ou recuperação
-	return &framework.PostFilterResult{}, framework.NewStatus(framework.Unschedulable)
-}
-
 func (scheduler *QosDrivenScheduler) OnAddPod(obj interface{}) {
 	p := obj.(*corev1.Pod).DeepCopy()
 	if p.Namespace == "kube-system" {
@@ -542,6 +534,17 @@ func (scheduler *QosDrivenScheduler) GetControllerMetricInfo(pod *corev1.Pod) Co
 	cMetricInfo := scheduler.Controllers[ControllerName(pod)]
 	cMetricInfo.ReferencePod = pod
 	return cMetricInfo
+}
+
+// getUpdatedVersion returns the latest pod object in cache
+func (scheduler *QosDrivenScheduler) getUpdatedVersion(pod *corev1.Pod) PodMetricInfo {
+	scheduler.lock.RLock()
+	defer scheduler.lock.RUnlock()
+
+	cMetricInfo := scheduler.Controllers[ControllerName(pod)]
+	pMetricInfo, _ := cMetricInfo.GetPodMetricInfo(pod)
+
+	return pMetricInfo
 }
 
 // Função de inicialização do plugin

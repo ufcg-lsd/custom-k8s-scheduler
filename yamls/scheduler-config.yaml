@@ -18,7 +18,7 @@ profiles:
       enabled:
       - name: QosAware
     postFilter:
-      enabled:
+      disabled:
       - name: QosAware
   pluginConfig:
     - name: QosAware

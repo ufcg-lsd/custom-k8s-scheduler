@@ -11,7 +11,7 @@ import (
 	core "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog/v2"
-	framework "k8s.io/kubernetes/pkg/scheduler/framework"
+	"k8s.io/kubernetes/pkg/scheduler/framework"
 	"k8s.io/kubernetes/pkg/scheduler/util"
 )
 
@@ -794,9 +794,7 @@ func (cMetricInfo ControllerMetricInfo) GetPodReplicaId(p *core.Pod) (int, error
 }
 
 func (cMetricInfo *ControllerMetricInfo) AllocateReplicaId(pod *core.Pod) int {
-	klog.Infof("[ReplicaID] Recebido pod %s", pod.Name)
 	for replicaId, replica := range cMetricInfo.replicas {
-		klog.Infof("[ReplicaID] Testando replicaIncarnation %s", replica.CurrentIncarnation)
 		if replica.CurrentIncarnation == "" {
 			replica.CurrentIncarnation = PodName(pod)
 			return replicaId

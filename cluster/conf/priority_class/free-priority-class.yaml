@@ -1,0 +1,7 @@
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: free-priority
+value: 1
+globalDefault: false
+description: "This priority class should be used for free service pods only."

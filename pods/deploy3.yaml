@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-deployment3
+  labels:
+    app: test-app3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-app3
+  template:
+    metadata:
+      labels:
+        app: test-app3
+      annotations:
+        controller: "test-controller3"  # Annotation necessária para controllerName
+    spec:
+      priorityClassName: batch-priority
+      containers:
+      - name: nginx
+        image: nginx:latest
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: "1000m"
+          limits:
+            cpu: "1000m"
+      schedulerName: custom-scheduler
