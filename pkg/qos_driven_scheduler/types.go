@@ -735,7 +735,31 @@ func ControllerImportance(p *core.Pod) float64 {
 }
 
 func ControllerName(p *core.Pod) string {
-	return p.Annotations[ControllerAnnotation]
+	if p == nil {
+		klog.Warningf("[ControllerName] Pod é nil.")
+		return ""
+	}
+
+	klog.Infof("[ControllerName] Verificando as anotações do pod %s/%s", p.Namespace, p.Name)
+
+	if p.Annotations == nil {
+		klog.Warningf("[ControllerName] Pod %s/%s não possui anotações.", p.Namespace, p.Name)
+		return ""
+	}
+
+	controllerName, exists := p.Annotations[ControllerAnnotation]
+	if !exists {
+		klog.Warningf("[ControllerName] Anotação '%s' não encontrada no pod %s/%s.", ControllerAnnotation, p.Namespace, p.Name)
+		return ""
+	}
+
+	if controllerName == "" {
+		klog.Warningf("[ControllerName] Anotação '%s' está presente, mas está vazia no pod %s/%s.", ControllerAnnotation, p.Namespace, p.Name)
+		return ""
+	}
+
+	klog.Infof("[ControllerName] Anotação '%s' encontrada para o pod %s/%s: %s", ControllerAnnotation, p.Namespace, p.Name, controllerName)
+	return controllerName
 }
 
 func ControllerQoSMeasuring(pod *core.Pod) string {

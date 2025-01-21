@@ -26,6 +26,12 @@ var _ framework.PostFilterPlugin = &QosDrivenScheduler{}
 // It is called to a pod after it failed at filtering phase.
 // It will try to make room for the pod by preempting lower precedence pods.
 func (scheduler *QosDrivenScheduler) PostFilter(ctx context.Context, state *framework.CycleState, pod *core.Pod, m framework.NodeToStatusMap) (*framework.PostFilterResult, *framework.Status) {
+
+	if !scheduler.PodInformer.HasSynced() {
+		klog.Warning("PodInformer não está sincronizado")
+		return nil, framework.NewStatus(framework.Error, "PodInformer não sincronizado")
+	}
+
 	//	preemptionStartTime := time.Now()
 	defer func() {
 		metrics.PreemptionAttempts.Inc()
@@ -60,12 +66,19 @@ func (scheduler *QosDrivenScheduler) preempt(ctx context.Context, state *framewo
 	var err error
 
 	// Tenta obter a versão atualizada do pod diretamente do API Server
-	updatedPod, err := cs.CoreV1().Pods(pod.Namespace).Get(ctx, pod.Name, metav1.GetOptions{})
-	if err != nil {
-		klog.Errorf("Failed to get updated pod %s/%s: %v", pod.Namespace, pod.Name, err)
-		return "", fmt.Errorf("failed to get updated pod: %w", err)
+	if scheduler.PodLister == nil {
+		return "", fmt.Errorf("PodLister não foi inicializado")
 	}
-	klog.V(4).Infof("Successfully retrieved updated pod %s/%s", updatedPod.Namespace, updatedPod.Name)
+	updatedPod, err := scheduler.PodLister.Pods(pod.Namespace).Get(pod.Name)
+
+	klog.Infof("Comparando pod original com o atualizado...")
+	comparePods(pod, updatedPod)
+
+	if err != nil {
+		klog.Errorf("Failed to get updated pod %s/%s from lister: %v", pod.Namespace, pod.Name, err)
+		return "", fmt.Errorf("erro ao buscar o pod %s/%s: %v", pod.Namespace, pod.Name, err)
+	}
+	klog.Infof("Successfully retrieved updated pod %s/%s from lister", updatedPod.Namespace, updatedPod.Name)
 	pod = updatedPod
 
 	if !scheduler.podEligibleToPreemptOthers(pod, fh.SnapshotSharedLister().NodeInfos(), m[pod.Status.NominatedNodeName]) {
@@ -80,6 +93,11 @@ func (scheduler *QosDrivenScheduler) preempt(ctx context.Context, state *framewo
 		return "", fmt.Errorf("no nodes available for scheduling")
 
 	}
+
+	for _, nodeInfo := range allNodes {
+		scheduler.compareNodeResources(nodeInfo.Node().Name)
+	}
+
 	potentialNodes := nodesWherePreemptionMightHelp(allNodes, m)
 	if len(potentialNodes) == 0 {
 		klog.V(3).Infof("Preemption will not help schedule pod %v/%v on any node.", pod.Namespace, pod.Name)
@@ -139,6 +157,7 @@ func (scheduler *QosDrivenScheduler) preempt(ctx context.Context, state *framewo
 		klog.V(5).Infof("%s preempted by %s on node %v", PodName(victim), PodName(pod), candidateNode)
 		fh.EventRecorder().Eventf(victim, pod, core.EventTypeNormal, "Preempted", "Preempting", "Preempted by %v/%v on node %v", pod.Namespace, pod.Name, candidateNode)
 	}
+
 	metrics.PreemptionVictims.Observe(float64(len(victims)))
 
 	// Lower precedence pods nominated to run on this node, may no longer fit on
@@ -152,6 +171,105 @@ func (scheduler *QosDrivenScheduler) preempt(ctx context.Context, state *framewo
 	}
 
 	return candidateNode, nil
+}
+
+func (scheduler *QosDrivenScheduler) compareNodeResources(nodeName string) {
+	// Obter informações do nó diretamente do API Server
+	node, err := scheduler.fh.ClientSet().CoreV1().Nodes().Get(context.TODO(), nodeName, metav1.GetOptions{})
+	if err != nil {
+		klog.Errorf("Erro ao obter informações do nó %s do API Server: %v", nodeName, err)
+		return
+	}
+
+	// Obter informações do nó do snapshot do scheduler
+	nodeInfo, err := scheduler.fh.SnapshotSharedLister().NodeInfos().Get(nodeName)
+	if err != nil {
+		klog.Errorf("Erro ao obter informações do nó %s do snapshot do scheduler: %v", nodeName, err)
+		return
+	}
+
+	// Extrair recursos alocáveis do NodeInfo (do snapshot do scheduler)
+	snapshotCPU := nodeInfo.Allocatable.MilliCPU
+	snapshotMemory := nodeInfo.Allocatable.Memory
+
+	// Extrair recursos alocáveis do objeto Node (diretamente do API Server)
+	allocatableFromNode := node.Status.Allocatable
+	apiServerCPU := allocatableFromNode[core.ResourceCPU]
+	apiServerMemory := allocatableFromNode[core.ResourceMemory]
+
+	// Comparar CPU
+	if snapshotCPU != apiServerCPU.MilliValue() {
+		klog.Warningf("Desincronização detectada no recurso CPU do nó %s: Snapshot = %d mCPU, API Server = %d mCPU", nodeName, snapshotCPU, apiServerCPU.MilliValue())
+	} else {
+		klog.Infof("Recursos CPU do nó %s estão sincronizados: %d mCPU", nodeName, snapshotCPU)
+	}
+
+	// Comparar Memória
+	if snapshotMemory != apiServerMemory.Value() {
+		klog.Warningf("Desincronização detectada no recurso Memória do nó %s: Snapshot = %d bytes, API Server = %d bytes", nodeName, snapshotMemory, apiServerMemory.Value())
+	} else {
+		klog.Infof("Recursos Memória do nó %s estão sincronizados: %d bytes", nodeName, snapshotMemory)
+	}
+}
+
+func comparePods(originalPod, updatedPod *core.Pod) {
+	if originalPod == nil || updatedPod == nil {
+		klog.Warning("Um dos pods fornecidos é nulo.")
+		return
+	}
+
+	// Comparação do ResourceVersion
+	if originalPod.ResourceVersion != updatedPod.ResourceVersion {
+		klog.Infof("[Pod Comparison] ResourceVersion mudou de %s para %s", originalPod.ResourceVersion, updatedPod.ResourceVersion)
+	}
+
+	// Comparação do Status
+	if originalPod.Status.Phase != updatedPod.Status.Phase {
+		klog.Infof("[Pod Comparison] Status do pod mudou de %s para %s", originalPod.Status.Phase, updatedPod.Status.Phase)
+	}
+
+	// Comparação das anotações
+	if len(originalPod.Annotations) != len(updatedPod.Annotations) {
+		klog.Infof("[Pod Comparison] Número de anotações mudou de %d para %d", len(originalPod.Annotations), len(updatedPod.Annotations))
+	} else {
+		for key, originalValue := range originalPod.Annotations {
+			if updatedValue, exists := updatedPod.Annotations[key]; !exists {
+				klog.Infof("[Pod Comparison] Anotação '%s' foi removida no pod atualizado", key)
+			} else if originalValue != updatedValue {
+				klog.Infof("[Pod Comparison] Anotação '%s' mudou de '%s' para '%s'", key, originalValue, updatedValue)
+			}
+		}
+	}
+
+	// Comparação das labels
+	if len(originalPod.Labels) != len(updatedPod.Labels) {
+		klog.Infof("[Pod Comparison] Número de labels mudou de %d para %d", len(originalPod.Labels), len(updatedPod.Labels))
+	} else {
+		for key, originalValue := range originalPod.Labels {
+			if updatedValue, exists := updatedPod.Labels[key]; !exists {
+				klog.Infof("[Pod Comparison] Label '%s' foi removida no pod atualizado", key)
+			} else if originalValue != updatedValue {
+				klog.Infof("[Pod Comparison] Label '%s' mudou de '%s' para '%s'", key, originalValue, updatedValue)
+			}
+		}
+	}
+
+	// Comparação das condições do status
+	if len(originalPod.Status.Conditions) != len(updatedPod.Status.Conditions) {
+		klog.Infof("[Pod Comparison] Número de condições mudou de %d para %d", len(originalPod.Status.Conditions), len(updatedPod.Status.Conditions))
+	} else {
+		for i, originalCondition := range originalPod.Status.Conditions {
+			if i >= len(updatedPod.Status.Conditions) {
+				klog.Infof("[Pod Comparison] Condição #%d foi removida no pod atualizado", i)
+				continue
+			}
+			updatedCondition := updatedPod.Status.Conditions[i]
+			if originalCondition.Type != updatedCondition.Type || originalCondition.Status != updatedCondition.Status {
+				klog.Infof("[Pod Comparison] Condição #%d mudou: Tipo '%s'->'%s', Status '%s'->'%s'",
+					i, originalCondition.Type, updatedCondition.Type, originalCondition.Status, updatedCondition.Status)
+			}
+		}
+	}
 }
 
 // podEligibleToPreemptOthers determines whether this pod should be considered

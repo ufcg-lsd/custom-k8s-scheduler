@@ -13,6 +13,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	corelisters "k8s.io/client-go/listers/core/v1"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/klog/v2"
 	framework "k8s.io/kubernetes/pkg/scheduler/framework"
@@ -32,6 +33,7 @@ type QosDrivenScheduler struct {
 	PodInformer cache.SharedIndexInformer
 	Controllers map[string]ControllerMetricInfo
 	lock        sync.RWMutex
+	PodLister   corelisters.PodLister
 }
 
 // Garantindo que QosDrivenScheduler implementa as interfaces necessárias
@@ -49,14 +51,34 @@ func (scheduler *QosDrivenScheduler) Name() string {
 // QueueSortPlugin: Determina a ordem de prioridade dos pods na fila
 func (scheduler *QosDrivenScheduler) Less(pInfo1, pInfo2 *framework.QueuedPodInfo) bool {
 	klog.Infof("[QueueSort] Comparando prioridade de %s com %s", pInfo1.Pod.Name, pInfo2.Pod.Name)
+	if pInfo1.Pod.Name == pInfo2.Pod.Name && pInfo1.Pod.Namespace == pInfo2.Pod.Namespace {
+		klog.Warningf("[QueueSort] Tentativa de comparar o pod %s consigo mesmo. Ignorando comparação.", pInfo1.Pod.Name)
+		return false
+	}
 	precedence := scheduler.HigherPrecedence(pInfo1.Pod, pInfo2.Pod)
 	klog.Infof("[QueueSort] Precedência determinada: %s tem precedência sobre %s? %v", pInfo1.Pod.Name, pInfo2.Pod.Name, precedence)
 	return precedence
 }
 
+func (scheduler *QosDrivenScheduler) CompareInformerAndRealState(pod *corev1.Pod) {
+	realPod, err := scheduler.fh.ClientSet().CoreV1().Pods(pod.Namespace).Get(context.TODO(), pod.Name, metav1.GetOptions{})
+	if err != nil {
+		klog.Errorf("Erro ao buscar estado real do pod %s: %v", pod.Name, err)
+		return
+	}
+	klog.Infof("Estado no Informer: %+v", pod.Annotations)
+	klog.Infof("Estado real no cluster: %+v", realPod.Annotations)
+}
+
 // We calculate precedence between pods checking if the time to violate p1's controller SLO is lower than p2's controller.
 // If the pods' controllers has different importances and their time to violate are below the safety margin the precedence is for the highest importance controller's pod.
 func (scheduler *QosDrivenScheduler) HigherPrecedence(p1, p2 *corev1.Pod) bool {
+	// Verificação para evitar comparar o pod consigo mesmo
+	if p1.Name == p2.Name && p1.Namespace == p2.Namespace {
+		klog.Warningf("[HigherPrecedence] Tentativa de comparar o pod %s consigo mesmo. Retornando false.", p1.Name)
+		return false
+	}
+
 	now := time.Now()
 	klog.Infof("[HigherPrecedence] Calculando precedência entre %s e %s", p1.Name, p2.Name)
 
@@ -95,8 +117,16 @@ func (scheduler *QosDrivenScheduler) WaitForPodsOnCache(pods ...*corev1.Pod) {
 		cacheMiss := func() bool {
 			cMetricInfo := scheduler.GetControllerMetricInfo(pod)
 			scheduler.lock.RLock()
+			defer scheduler.lock.RUnlock()
+
 			_, notFound := cMetricInfo.GetPodMetricInfo(pod)
-			scheduler.lock.RUnlock()
+			if notFound {
+				klog.Warningf("[cacheMiss] Métricas não encontradas para o pod: %s/%s", pod.Namespace, pod.Name)
+			}
+
+			// Comparar o estado real com o estado no cache
+			scheduler.CompareInformerAndRealState(pod)
+
 			return notFound
 		}
 
@@ -180,6 +210,11 @@ func (scheduler *QosDrivenScheduler) PostBind(ctx context.Context, state *framew
 
 func (scheduler *QosDrivenScheduler) OnAddPod(obj interface{}) {
 	p := obj.(*corev1.Pod).DeepCopy()
+	klog.Infof("[OnAddPod] Pod adicionado: %s/%s, Anotações: %+v", p.Namespace, p.Name, p.Annotations)
+
+	// Comparar o estado no Informer com o estado real no cluster
+	scheduler.CompareInformerAndRealState(p)
+
 	if p.Namespace == "kube-system" {
 		return
 	}
@@ -209,9 +244,15 @@ func (scheduler *QosDrivenScheduler) OnAddPod(obj interface{}) {
 
 func (scheduler *QosDrivenScheduler) OnUpdatePod(_, newObj interface{}) {
 	p := newObj.(*corev1.Pod).DeepCopy()
+	klog.Infof("[OnUpdatePod] Pod atualizado: %s/%s, Anotações: %+v", p.Namespace, p.Name, p.Annotations)
+
+	// Comparar o estado no Informer com o estado real no cluster
+	scheduler.CompareInformerAndRealState(p)
+
 	if p.Namespace == "kube-system" {
 		return
 	}
+
 	scheduler.UpdatePodMetricInfo(p, func(pMetricInfo PodMetricInfo) PodMetricInfo {
 		pMetricInfo.LastStatus = p
 		return pMetricInfo
@@ -436,15 +477,6 @@ func dumpMetrics(cMetricInfo ControllerMetricInfo, pMetricInfo PodMetricInfo, ac
 	}
 }
 
-func NewQosScheduler(fh framework.Handle) *QosDrivenScheduler {
-
-	return (&QosDrivenScheduler{
-		PodInformer: fh.SharedInformerFactory().Core().V1().Pods().Informer(),
-		fh:          fh,
-		Controllers: map[string]ControllerMetricInfo{},
-	}).addEventHandler()
-}
-
 type QosDrivenSchedulerArgs struct {
 	// Controllers with a time-to-violate below this configured SafetyMargin
 	// is treated as close to violate it's SLO by our scheduler.
@@ -529,10 +561,16 @@ func (scheduler *QosDrivenScheduler) debugApi() {
 }
 
 func (scheduler *QosDrivenScheduler) GetControllerMetricInfo(pod *corev1.Pod) ControllerMetricInfo {
+	klog.Infof("[GetControllerMetricInfo] Iniciando para o pod: %s/%s", pod.Namespace, pod.Name)
+
 	scheduler.lock.RLock()
 	defer scheduler.lock.RUnlock()
+
+	klog.Infof("[GetControllerMetricInfo] Obtendo o nome do controlador para o pod: %s/%s", pod.Namespace, pod.Name)
 	cMetricInfo := scheduler.Controllers[ControllerName(pod)]
 	cMetricInfo.ReferencePod = pod
+	klog.Infof("[GetControllerMetricInfo] Métricas do controlador definidas para o pod: %s/%s", pod.Namespace, pod.Name)
+
 	return cMetricInfo
 }
 
@@ -547,6 +585,17 @@ func (scheduler *QosDrivenScheduler) getUpdatedVersion(pod *corev1.Pod) PodMetri
 	return pMetricInfo
 }
 
+func NewQosScheduler(fh framework.Handle) *QosDrivenScheduler {
+	podInformer := fh.SharedInformerFactory().Core().V1().Pods()
+
+	return (&QosDrivenScheduler{
+		PodInformer: podInformer.Informer(),
+		PodLister:   podInformer.Lister(),
+		fh:          fh,
+		Controllers: map[string]ControllerMetricInfo{},
+	}).addEventHandler()
+}
+
 // Função de inicialização do plugin
 func New() func(ctx context.Context, args runtime.Object, f framework.Handle) (framework.Plugin, error) {
 	return func(ctx context.Context, args runtime.Object, f framework.Handle) (framework.Plugin, error) {
@@ -559,6 +608,16 @@ func New() func(ctx context.Context, args runtime.Object, f framework.Handle) (f
 		// Decodifica os argumentos fornecidos pelo usuário (se existirem)
 		if err := frameworkruntime.DecodeInto(args, &scheduler.Args); err != nil {
 			return nil, err
+		}
+
+		// Inicia o SharedInformerFactory
+		f.SharedInformerFactory().Start(ctx.Done())
+		f.SharedInformerFactory().WaitForCacheSync(ctx.Done())
+
+		if !cache.WaitForCacheSync(ctx.Done(), scheduler.PodInformer.HasSynced) {
+			klog.Fatalf("Falha ao sincronizar o cache do PodInformer")
+		} else {
+			klog.Infof("PodInformer sincronizado com sucesso")
 		}
 
 		// Loga os argumentos recebidos para depuração
