@@ -27,11 +27,6 @@ var _ framework.PostFilterPlugin = &QosDrivenScheduler{}
 // It will try to make room for the pod by preempting lower precedence pods.
 func (scheduler *QosDrivenScheduler) PostFilter(ctx context.Context, state *framework.CycleState, pod *core.Pod, m framework.NodeToStatusMap) (*framework.PostFilterResult, *framework.Status) {
 
-	if !scheduler.PodInformer.HasSynced() {
-		klog.Warning("PodInformer não está sincronizado")
-		return nil, framework.NewStatus(framework.Error, "PodInformer não sincronizado")
-	}
-
 	//	preemptionStartTime := time.Now()
 	defer func() {
 		metrics.PreemptionAttempts.Inc()
@@ -145,31 +140,46 @@ func (scheduler *QosDrivenScheduler) preempt(ctx context.Context, state *framewo
 	klog.Infof("[PREEMPT CALL] The node %v  was chosen to allocate pod %s", candidateNode, pod.Name)
 
 	victims := nodeNameToVictims[candidateNode].Pods
+
+	klog.Infof("[Preempt] Iniciando a remoção dos pods preemptados no nó %v para alocar o pod %s/%s. Total de vítimas: %d",
+		candidateNode, pod.Namespace, pod.Name, len(victims))
+
 	for _, victim := range victims {
+		klog.Infof("[Preempt] Tentando remover o pod %s/%s no nó %v", victim.Namespace, victim.Name, candidateNode)
 		if err := util.DeletePod(ctx, cs, victim); err != nil {
-			klog.Errorf("Error preempting pod %v/%v: %v", victim.Namespace, victim.Name, err)
+			klog.Errorf("[Preempt] Erro ao remover o pod %s/%s: %v", victim.Namespace, victim.Name, err)
 			return "", err
 		}
+
+		klog.Infof("[Preempt] Pod %s/%s removido com sucesso no nó %v", victim.Namespace, victim.Name, candidateNode)
 		// If the victim is a WaitingPod, send a reject message to the PermitPlugin
 		if waitingPod := fh.GetWaitingPod(victim.UID); waitingPod != nil {
+			klog.Infof("[Preempt] Rejeitando o WaitingPod %s/%s devido à preempção", victim.Namespace, victim.Name)
 			waitingPod.Reject("preempted", "Preemption: Pod foi pré-empregado para liberar recursos.")
 		}
-		klog.V(5).Infof("%s preempted by %s on node %v", PodName(victim), PodName(pod), candidateNode)
+		klog.Infof("%s preempted by %s on node %v", PodName(victim), PodName(pod), candidateNode)
 		fh.EventRecorder().Eventf(victim, pod, core.EventTypeNormal, "Preempted", "Preempting", "Preempted by %v/%v on node %v", pod.Namespace, pod.Name, candidateNode)
 	}
 
 	metrics.PreemptionVictims.Observe(float64(len(victims)))
+	klog.Infof("[Preempt] Total de pods preemptados no nó %v: %d", candidateNode, len(victims))
 
 	// Lower precedence pods nominated to run on this node, may no longer fit on
 	// this node. So, we should remove their nomination. Removing their
 	// nomination updates these pods and moves them to the active queue. It
 	// lets scheduler find another place for them.
 	nominatedPods := scheduler.getLowerPrecedenceNominatedPods(fh, pod, candidateNode)
+	klog.Infof("[Preempt] Verificando pods de menor precedência no nó %v que precisam ter o campo NominatedNodeName limpo", candidateNode)
+	for _, nominatedPod := range nominatedPods {
+		klog.Infof("[Preempt] Limpando o campo NominatedNodeName do pod %s/%s", nominatedPod.Namespace, nominatedPod.Name)
+	}
+
 	if err := util.ClearNominatedNodeName(ctx, cs, nominatedPods...); err != nil {
-		klog.Errorf("Cannot clear 'NominatedNodeName' field: %v", err)
+		klog.Errorf("[Preempt] Erro ao limpar o campo NominatedNodeName dos pods: %v", err)
 		// We do not return as this error is not critical.
 	}
 
+	klog.Infof("[Preempt] Finalizado para o nó %v. Pod %s/%s deve ser alocado agora.", candidateNode, pod.Namespace, pod.Name)
 	return candidateNode, nil
 }
 

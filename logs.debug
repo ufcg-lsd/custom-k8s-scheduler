@@ -1,223 +1,674 @@
-I0123 11:46:08.077163       1 serving.go:386] Generated self-signed cert in-memory
-Error: stat /home/ubuntu/custom-k8s-scheduler/scheduler.conf: no such file or directory
-Usage:
-  kube-scheduler [flags]
+I0123 20:13:52.676292       1 serving.go:386] Generated self-signed cert in-memory
+W0123 20:13:52.677623       1 client_config.go:659] Neither --kubeconfig nor --master was specified.  Using the inClusterConfig.  This might not work.
+I0123 20:13:53.701132       1 scheduler.go:213] [OnAddPod] Pod adicionado: kube-system/coredns-6f6b679f8f-j8ddm, Anotações: map[]
+I0123 20:13:53.707297       1 scheduler.go:69] Estado no Informer: map[]
+I0123 20:13:53.707430       1 scheduler.go:70] Estado real no cluster: map[]
+I0123 20:13:53.707474       1 scheduler.go:213] [OnAddPod] Pod adicionado: kube-system/custom-scheduler-868c6bbc7d-tz2br, Anotações: map[]
+I0123 20:13:53.710389       1 scheduler.go:69] Estado no Informer: map[]
+I0123 20:13:53.710518       1 scheduler.go:70] Estado real no cluster: map[]
+I0123 20:13:53.710625       1 scheduler.go:213] [OnAddPod] Pod adicionado: kube-system/etcd-minikube, Anotações: map[kubeadm.kubernetes.io/etcd.advertise-client-urls:https://192.168.39.253:2379 kubernetes.io/config.hash:83b49ae0e8ec1d939c80919a7e7e502b kubernetes.io/config.mirror:83b49ae0e8ec1d939c80919a7e7e502b kubernetes.io/config.seen:2025-01-23T13:21:10.529429156Z kubernetes.io/config.source:file]
+I0123 20:13:53.713737       1 scheduler.go:69] Estado no Informer: map[kubeadm.kubernetes.io/etcd.advertise-client-urls:https://192.168.39.253:2379 kubernetes.io/config.hash:83b49ae0e8ec1d939c80919a7e7e502b kubernetes.io/config.mirror:83b49ae0e8ec1d939c80919a7e7e502b kubernetes.io/config.seen:2025-01-23T13:21:10.529429156Z kubernetes.io/config.source:file]
+I0123 20:13:53.716239       1 scheduler.go:70] Estado real no cluster: map[kubeadm.kubernetes.io/etcd.advertise-client-urls:https://192.168.39.253:2379 kubernetes.io/config.hash:83b49ae0e8ec1d939c80919a7e7e502b kubernetes.io/config.mirror:83b49ae0e8ec1d939c80919a7e7e502b kubernetes.io/config.seen:2025-01-23T13:21:10.529429156Z kubernetes.io/config.source:file]
+I0123 20:13:53.716993       1 scheduler.go:213] [OnAddPod] Pod adicionado: kube-system/kube-apiserver-minikube, Anotações: map[kubeadm.kubernetes.io/kube-apiserver.advertise-address.endpoint:192.168.39.253:8443 kubernetes.io/config.hash:c85c19863b26fc8fc8ebf5568d420510 kubernetes.io/config.mirror:c85c19863b26fc8fc8ebf5568d420510 kubernetes.io/config.seen:2025-01-23T13:21:10.529440623Z kubernetes.io/config.source:file]
+I0123 20:13:53.722391       1 scheduler.go:69] Estado no Informer: map[kubeadm.kubernetes.io/kube-apiserver.advertise-address.endpoint:192.168.39.253:8443 kubernetes.io/config.hash:c85c19863b26fc8fc8ebf5568d420510 kubernetes.io/config.mirror:c85c19863b26fc8fc8ebf5568d420510 kubernetes.io/config.seen:2025-01-23T13:21:10.529440623Z kubernetes.io/config.source:file]
+I0123 20:13:53.722529       1 scheduler.go:70] Estado real no cluster: map[kubeadm.kubernetes.io/kube-apiserver.advertise-address.endpoint:192.168.39.253:8443 kubernetes.io/config.hash:c85c19863b26fc8fc8ebf5568d420510 kubernetes.io/config.mirror:c85c19863b26fc8fc8ebf5568d420510 kubernetes.io/config.seen:2025-01-23T13:21:10.529440623Z kubernetes.io/config.source:file]
+I0123 20:13:53.722664       1 scheduler.go:213] [OnAddPod] Pod adicionado: kube-system/kube-controller-manager-minikube, Anotações: map[kubernetes.io/config.hash:6e07439efa4d6dab7ea55fed1a35452a kubernetes.io/config.mirror:6e07439efa4d6dab7ea55fed1a35452a kubernetes.io/config.seen:2025-01-23T13:21:10.529446212Z kubernetes.io/config.source:file]
+I0123 20:13:53.725446       1 scheduler.go:69] Estado no Informer: map[kubernetes.io/config.hash:6e07439efa4d6dab7ea55fed1a35452a kubernetes.io/config.mirror:6e07439efa4d6dab7ea55fed1a35452a kubernetes.io/config.seen:2025-01-23T13:21:10.529446212Z kubernetes.io/config.source:file]
+I0123 20:13:53.725531       1 scheduler.go:70] Estado real no cluster: map[kubernetes.io/config.hash:6e07439efa4d6dab7ea55fed1a35452a kubernetes.io/config.mirror:6e07439efa4d6dab7ea55fed1a35452a kubernetes.io/config.seen:2025-01-23T13:21:10.529446212Z kubernetes.io/config.source:file]
+I0123 20:13:53.726142       1 scheduler.go:213] [OnAddPod] Pod adicionado: kube-system/kube-proxy-4x8nj, Anotações: map[]
+I0123 20:13:53.729280       1 scheduler.go:69] Estado no Informer: map[]
+I0123 20:13:53.729346       1 scheduler.go:70] Estado real no cluster: map[]
+I0123 20:13:53.729693       1 scheduler.go:213] [OnAddPod] Pod adicionado: kube-system/kube-scheduler-minikube, Anotações: map[kubernetes.io/config.hash:e039200acb850c82bb901653cc38ff6e kubernetes.io/config.mirror:e039200acb850c82bb901653cc38ff6e kubernetes.io/config.seen:2025-01-23T13:21:10.529450432Z kubernetes.io/config.source:file]
+I0123 20:13:53.733310       1 scheduler.go:69] Estado no Informer: map[kubernetes.io/config.hash:e039200acb850c82bb901653cc38ff6e kubernetes.io/config.mirror:e039200acb850c82bb901653cc38ff6e kubernetes.io/config.seen:2025-01-23T13:21:10.529450432Z kubernetes.io/config.source:file]
+I0123 20:13:53.733709       1 scheduler.go:70] Estado real no cluster: map[kubernetes.io/config.hash:e039200acb850c82bb901653cc38ff6e kubernetes.io/config.mirror:e039200acb850c82bb901653cc38ff6e kubernetes.io/config.seen:2025-01-23T13:21:10.529450432Z kubernetes.io/config.source:file]
+I0123 20:13:53.734218       1 scheduler.go:213] [OnAddPod] Pod adicionado: kube-system/storage-provisioner, Anotações: map[kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{},"labels":{"addonmanager.kubernetes.io/mode":"Reconcile","integration-test":"storage-provisioner"},"name":"storage-provisioner","namespace":"kube-system"},"spec":{"containers":[{"command":["/storage-provisioner"],"image":"gcr.io/k8s-minikube/storage-provisioner:v5","imagePullPolicy":"IfNotPresent","name":"storage-provisioner","volumeMounts":[{"mountPath":"/tmp","name":"tmp"}]}],"hostNetwork":true,"serviceAccountName":"storage-provisioner","volumes":[{"hostPath":{"path":"/tmp","type":"Directory"},"name":"tmp"}]}}
+]
+I0123 20:13:53.739328       1 scheduler.go:69] Estado no Informer: map[kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{},"labels":{"addonmanager.kubernetes.io/mode":"Reconcile","integration-test":"storage-provisioner"},"name":"storage-provisioner","namespace":"kube-system"},"spec":{"containers":[{"command":["/storage-provisioner"],"image":"gcr.io/k8s-minikube/storage-provisioner:v5","imagePullPolicy":"IfNotPresent","name":"storage-provisioner","volumeMounts":[{"mountPath":"/tmp","name":"tmp"}]}],"hostNetwork":true,"serviceAccountName":"storage-provisioner","volumes":[{"hostPath":{"path":"/tmp","type":"Directory"},"name":"tmp"}]}}
+]
+I0123 20:13:53.740030       1 scheduler.go:70] Estado real no cluster: map[kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{},"labels":{"addonmanager.kubernetes.io/mode":"Reconcile","integration-test":"storage-provisioner"},"name":"storage-provisioner","namespace":"kube-system"},"spec":{"containers":[{"command":["/storage-provisioner"],"image":"gcr.io/k8s-minikube/storage-provisioner:v5","imagePullPolicy":"IfNotPresent","name":"storage-provisioner","volumeMounts":[{"mountPath":"/tmp","name":"tmp"}]}],"hostNetwork":true,"serviceAccountName":"storage-provisioner","volumes":[{"hostPath":{"path":"/tmp","type":"Directory"},"name":"tmp"}]}}
+]
+I0123 20:13:53.782699       1 scheduler.go:634] PodInformer sincronizado com sucesso
+I0123 20:13:53.788053       1 server.go:167] "Starting Kubernetes Scheduler" version="v0.0.0-master+$Format:%H$"
+I0123 20:13:53.788189       1 server.go:169] "Golang settings" GOGC="" GOMAXPROCS="" GOTRACEBACK=""
+I0123 20:13:53.794207       1 secure_serving.go:213] Serving securely on [::]:10259
+I0123 20:13:53.794442       1 leaderelection.go:254] attempting to acquire leader lease kube-system/kube-scheduler...
+I0123 20:13:53.794766       1 tlsconfig.go:243] "Starting DynamicServingCertificateController"
+I0123 20:13:53.795282       1 requestheader_controller.go:172] Starting RequestHeaderAuthRequestController
+I0123 20:13:53.795737       1 shared_informer.go:313] Waiting for caches to sync for RequestHeaderAuthRequestController
+I0123 20:13:53.795426       1 configmap_cafile_content.go:205] "Starting controller" name="client-ca::kube-system::extension-apiserver-authentication::client-ca-file"
+I0123 20:13:53.795979       1 shared_informer.go:313] Waiting for caches to sync for client-ca::kube-system::extension-apiserver-authentication::client-ca-file
+I0123 20:13:53.797632       1 configmap_cafile_content.go:205] "Starting controller" name="client-ca::kube-system::extension-apiserver-authentication::requestheader-client-ca-file"
+I0123 20:13:53.797727       1 shared_informer.go:313] Waiting for caches to sync for client-ca::kube-system::extension-apiserver-authentication::requestheader-client-ca-file
+I0123 20:13:53.810133       1 leaderelection.go:268] successfully acquired lease kube-system/kube-scheduler
+I0123 20:13:53.896402       1 shared_informer.go:320] Caches are synced for RequestHeaderAuthRequestController
+I0123 20:13:53.896689       1 shared_informer.go:320] Caches are synced for client-ca::kube-system::extension-apiserver-authentication::client-ca-file
+I0123 20:13:53.898472       1 shared_informer.go:320] Caches are synced for client-ca::kube-system::extension-apiserver-authentication::requestheader-client-ca-file
+I0123 20:15:20.066415       1 scheduler.go:213] [OnAddPod] Pod adicionado: default/test-deployment2-59c6b78cd5-srwkk, Anotações: map[controller:test-controller2]
+I0123 20:15:20.079536       1 scheduler.go:145] [Reserve] resources reserved at node minikube for pod test-deployment2-59c6b78cd5-srwkk_default at 2025-01-23 20:15:20.079493706 +0000 UTC m=+87.977115764
+I0123 20:15:20.085697       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:15:20.086722       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:15:20.199623       1 scheduler.go:69] Estado no Informer: map[controller:test-controller2]
+I0123 20:15:20.203462       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller2]
+I0123 20:15:20.207485       1 scheduler.go:223] Pods test-deployment2-59c6b78cd5-srwkk_default being added:
+&Pod{ObjectMeta:{test-deployment2-59c6b78cd5-srwkk test-deployment2-59c6b78cd5- default  6a3f4f3f-82e3-4f72-b60b-c6e2731d01e5 32348 0 2025-01-23 20:15:20 +0000 UTC <nil> <nil> map[app:test-app2 pod-template-hash:59c6b78cd5] map[controller:test-controller2] [{apps/v1 ReplicaSet test-deployment2-59c6b78cd5 9a58f0dd-2c9f-4b3d-8bcf-f143c56cbfa3 0xc0001124e4 0xc0001124e5}] [] [{kube-controller-manager Update v1 2025-01-23 20:15:19 +0000 UTC FieldsV1 {"f:metadata":{"f:annotations":{".":{},"f:controller":{}},"f:generateName":{},"f:labels":{".":{},"f:app":{},"f:pod-template-hash":{}},"f:ownerReferences":{".":{},"k:{\"uid\":\"9a58f0dd-2c9f-4b3d-8bcf-f143c56cbfa3\"}":{}}},"f:spec":{"f:containers":{"k:{\"name\":\"nginx\"}":{".":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{".":{},"f:limits":{".":{},"f:cpu":{}},"f:requests":{".":{},"f:cpu":{}}},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:enableServiceLinks":{},"f:priorityClassName":{},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:terminationGracePeriodSeconds":{}}} }]},Spec:PodSpec{Volumes:[]Volume{Volume{Name:kube-api-access-gxlfj,VolumeSource:VolumeSource{HostPath:nil,EmptyDir:nil,GCEPersistentDisk:nil,AWSElasticBlockStore:nil,GitRepo:nil,Secret:nil,NFS:nil,ISCSI:nil,Glusterfs:nil,PersistentVolumeClaim:nil,RBD:nil,FlexVolume:nil,Cinder:nil,CephFS:nil,Flocker:nil,DownwardAPI:nil,FC:nil,AzureFile:nil,ConfigMap:nil,VsphereVolume:nil,Quobyte:nil,AzureDisk:nil,PhotonPersistentDisk:nil,PortworxVolume:nil,ScaleIO:nil,Projected:&ProjectedVolumeSource{Sources:[]VolumeProjection{VolumeProjection{Secret:nil,DownwardAPI:nil,ConfigMap:nil,ServiceAccountToken:&ServiceAccountTokenProjection{Audience:,ExpirationSeconds:*3607,Path:token,},ClusterTrustBundle:nil,},VolumeProjection{Secret:nil,DownwardAPI:nil,ConfigMap:&ConfigMapProjection{LocalObjectReference:LocalObjectReference{Name:kube-root-ca.crt,},Items:[]KeyToPath{KeyToPath{Key:ca.crt,Path:ca.crt,Mode:nil,},},Optional:nil,},ServiceAccountToken:nil,ClusterTrustBundle:nil,},VolumeProjection{Secret:nil,DownwardAPI:&DownwardAPIProjection{Items:[]DownwardAPIVolumeFile{DownwardAPIVolumeFile{Path:namespace,FieldRef:&ObjectFieldSelector{APIVersion:v1,FieldPath:metadata.namespace,},ResourceFieldRef:nil,Mode:nil,},},},ConfigMap:nil,ServiceAccountToken:nil,ClusterTrustBundle:nil,},},DefaultMode:*420,},StorageOS:nil,CSI:nil,Ephemeral:nil,Image:nil,},},},Containers:[]Container{Container{Name:nginx,Image:nginx:latest,Command:[],Args:[],WorkingDir:,Ports:[]ContainerPort{},Env:[]EnvVar{},Resources:ResourceRequirements{Limits:ResourceList{cpu: {{1 0} {<nil>} 1 DecimalSI},},Requests:ResourceList{cpu: {{1 0} {<nil>} 1 DecimalSI},},Claims:[]ResourceClaim{},},VolumeMounts:[]VolumeMount{VolumeMount{Name:kube-api-access-gxlfj,ReadOnly:true,MountPath:/var/run/secrets/kubernetes.io/serviceaccount,SubPath:,MountPropagation:nil,SubPathExpr:,RecursiveReadOnly:nil,},},LivenessProbe:nil,ReadinessProbe:nil,Lifecycle:nil,TerminationMessagePath:/dev/termination-log,ImagePullPolicy:IfNotPresent,SecurityContext:nil,Stdin:false,StdinOnce:false,TTY:false,EnvFrom:[]EnvFromSource{},TerminationMessagePolicy:File,VolumeDevices:[]VolumeDevice{},StartupProbe:nil,ResizePolicy:[]ContainerResizePolicy{},RestartPolicy:nil,},},RestartPolicy:Always,TerminationGracePeriodSeconds:*30,ActiveDeadlineSeconds:nil,DNSPolicy:ClusterFirst,NodeSelector:map[string]string{},ServiceAccountName:default,DeprecatedServiceAccount:default,NodeName:,HostNetwork:false,HostPID:false,HostIPC:false,SecurityContext:&PodSecurityContext{SELinuxOptions:nil,RunAsUser:nil,RunAsNonRoot:nil,SupplementalGroups:[],FSGroup:nil,RunAsGroup:nil,Sysctls:[]Sysctl{},WindowsOptions:nil,FSGroupChangePolicy:nil,SeccompProfile:nil,AppArmorProfile:nil,SupplementalGroupsPolicy:nil,},ImagePullSecrets:[]LocalObjectReference{},Hostname:,Subdomain:,Affinity:nil,SchedulerName:custom-scheduler,InitContainers:[]Container{},AutomountServiceAccountToken:nil,Tolerations:[]Toleration{Toleration{Key:node.kubernetes.io/not-ready,Operator:Exists,Value:,Effect:NoExecute,TolerationSeconds:*300,},Toleration{Key:node.kubernetes.io/unreachable,Operator:Exists,Value:,Effect:NoExecute,TolerationSeconds:*300,},},HostAliases:[]HostAlias{},PriorityClassName:batch-priority,Priority:*7,DNSConfig:nil,ShareProcessNamespace:nil,ReadinessGates:[]PodReadinessGate{},RuntimeClassName:nil,EnableServiceLinks:*true,PreemptionPolicy:*PreemptLowerPriority,Overhead:ResourceList{},TopologySpreadConstraints:[]TopologySpreadConstraint{},EphemeralContainers:[]EphemeralContainer{},SetHostnameAsFQDN:nil,OS:nil,HostUsers:nil,SchedulingGates:[]PodSchedulingGate{},ResourceClaims:[]PodResourceClaim{},},Status:PodStatus{Phase:Pending,Conditions:[]PodCondition{},Message:,Reason:,HostIP:,PodIP:,StartTime:<nil>,ContainerStatuses:[]ContainerStatus{},QOSClass:Burstable,InitContainerStatuses:[]ContainerStatus{},NominatedNodeName:,PodIPs:[]PodIP{},EphemeralContainerStatuses:[]ContainerStatus{},Resize:,ResourceClaimStatuses:[]PodResourceClaimStatus{},HostIPs:[]HostIP{},},}
+I0123 20:15:20.203435       1 scheduler.go:147] [Reserve] Status de alocação atual para o pod test-deployment2-59c6b78cd5-srwkk_default: 
+I0123 20:15:20.209579       1 scheduler.go:149] [Reserve] Status de alocação atualizado para o pod test-deployment2-59c6b78cd5-srwkk_default: allocating
+I0123 20:15:20.210783       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:15:20.210930       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:15:20.210947       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:15:20.210956       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:15:20.216576       1 scheduler.go:173] [PreBind] Validando o pod test-deployment2-59c6b78cd5-srwkk antes de vincular ao node minikube
+I0123 20:15:20.244579       1 scheduler.go:247] [OnUpdatePod] Pod atualizado: default/test-deployment2-59c6b78cd5-srwkk, Anotações: map[controller:test-controller2]
+I0123 20:15:20.245311       1 scheduler.go:181] [PostBind] Chamado para pod test-deployment2-59c6b78cd5-srwkk
+I0123 20:15:20.245333       1 scheduler.go:199] [PostBind] Pod test-deployment2-59c6b78cd5-srwkk - Início do binding: 2025-01-23 20:15:20.216630687 +0000 UTC m=+88.114252969, Fim do binding: 2025-01-23 20:15:20.245326792 +0000 UTC m=+88.142948935
+I0123 20:15:20.245369       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:15:20.245378       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:15:20.245402       1 scheduler.go:206] [PostBind] Métricas atualizadas para o pod test-deployment2-59c6b78cd5-srwkk
+I0123 20:15:20.273385       1 scheduler.go:69] Estado no Informer: map[controller:test-controller2]
+I0123 20:15:20.278046       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller2]
+I0123 20:15:20.278155       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:15:20.278167       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:15:20.368303       1 scheduler.go:247] [OnUpdatePod] Pod atualizado: default/test-deployment2-59c6b78cd5-srwkk, Anotações: map[controller:test-controller2]
+I0123 20:15:20.379197       1 scheduler.go:69] Estado no Informer: map[controller:test-controller2]
+I0123 20:15:20.379369       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller2]
+I0123 20:15:20.379386       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:15:20.379395       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:15:30.121399       1 scheduler.go:247] [OnUpdatePod] Pod atualizado: default/test-deployment2-59c6b78cd5-srwkk, Anotações: map[controller:test-controller2]
+I0123 20:15:30.141537       1 scheduler.go:69] Estado no Informer: map[controller:test-controller2]
+I0123 20:15:30.152138       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller2]
+I0123 20:15:30.153503       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:15:30.153527       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:18:38.987622       1 scheduler.go:213] [OnAddPod] Pod adicionado: default/test-deployment3-6c95cffb97-zhc9h, Anotações: map[controller:test-controller3]
+I0123 20:18:38.995334       1 postFilter.go:69] Comparando pod original com o atualizado...
+I0123 20:18:38.995416       1 postFilter.go:76] Successfully retrieved updated pod default/test-deployment3-6c95cffb97-zhc9h from lister
+I0123 20:18:39.011709       1 scheduler.go:69] Estado no Informer: map[controller:test-controller3]
+I0123 20:18:39.011777       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller3]
+I0123 20:18:39.017972       1 scheduler.go:223] Pods test-deployment3-6c95cffb97-zhc9h_default being added:
+&Pod{ObjectMeta:{test-deployment3-6c95cffb97-zhc9h test-deployment3-6c95cffb97- default  f2a9da9f-cd3f-4da2-b99a-3a3f68a78d88 32601 0 2025-01-23 20:18:38 +0000 UTC <nil> <nil> map[app:test-app3 pod-template-hash:6c95cffb97] map[controller:test-controller3] [{apps/v1 ReplicaSet test-deployment3-6c95cffb97 7e4178ab-0892-4c0a-b8b0-301ea2a4d4af 0xc000b3abb4 0xc000b3abb5}] [] [{kube-controller-manager Update v1 2025-01-23 20:18:38 +0000 UTC FieldsV1 {"f:metadata":{"f:annotations":{".":{},"f:controller":{}},"f:generateName":{},"f:labels":{".":{},"f:app":{},"f:pod-template-hash":{}},"f:ownerReferences":{".":{},"k:{\"uid\":\"7e4178ab-0892-4c0a-b8b0-301ea2a4d4af\"}":{}}},"f:spec":{"f:containers":{"k:{\"name\":\"nginx\"}":{".":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{".":{},"f:limits":{".":{},"f:cpu":{}},"f:requests":{".":{},"f:cpu":{}}},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:enableServiceLinks":{},"f:priorityClassName":{},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:terminationGracePeriodSeconds":{}}} }]},Spec:PodSpec{Volumes:[]Volume{Volume{Name:kube-api-access-p2vs5,VolumeSource:VolumeSource{HostPath:nil,EmptyDir:nil,GCEPersistentDisk:nil,AWSElasticBlockStore:nil,GitRepo:nil,Secret:nil,NFS:nil,ISCSI:nil,Glusterfs:nil,PersistentVolumeClaim:nil,RBD:nil,FlexVolume:nil,Cinder:nil,CephFS:nil,Flocker:nil,DownwardAPI:nil,FC:nil,AzureFile:nil,ConfigMap:nil,VsphereVolume:nil,Quobyte:nil,AzureDisk:nil,PhotonPersistentDisk:nil,PortworxVolume:nil,ScaleIO:nil,Projected:&ProjectedVolumeSource{Sources:[]VolumeProjection{VolumeProjection{Secret:nil,DownwardAPI:nil,ConfigMap:nil,ServiceAccountToken:&ServiceAccountTokenProjection{Audience:,ExpirationSeconds:*3607,Path:token,},ClusterTrustBundle:nil,},VolumeProjection{Secret:nil,DownwardAPI:nil,ConfigMap:&ConfigMapProjection{LocalObjectReference:LocalObjectReference{Name:kube-root-ca.crt,},Items:[]KeyToPath{KeyToPath{Key:ca.crt,Path:ca.crt,Mode:nil,},},Optional:nil,},ServiceAccountToken:nil,ClusterTrustBundle:nil,},VolumeProjection{Secret:nil,DownwardAPI:&DownwardAPIProjection{Items:[]DownwardAPIVolumeFile{DownwardAPIVolumeFile{Path:namespace,FieldRef:&ObjectFieldSelector{APIVersion:v1,FieldPath:metadata.namespace,},ResourceFieldRef:nil,Mode:nil,},},},ConfigMap:nil,ServiceAccountToken:nil,ClusterTrustBundle:nil,},},DefaultMode:*420,},StorageOS:nil,CSI:nil,Ephemeral:nil,Image:nil,},},},Containers:[]Container{Container{Name:nginx,Image:nginx:latest,Command:[],Args:[],WorkingDir:,Ports:[]ContainerPort{},Env:[]EnvVar{},Resources:ResourceRequirements{Limits:ResourceList{cpu: {{1 0} {<nil>} 1 DecimalSI},},Requests:ResourceList{cpu: {{1 0} {<nil>} 1 DecimalSI},},Claims:[]ResourceClaim{},},VolumeMounts:[]VolumeMount{VolumeMount{Name:kube-api-access-p2vs5,ReadOnly:true,MountPath:/var/run/secrets/kubernetes.io/serviceaccount,SubPath:,MountPropagation:nil,SubPathExpr:,RecursiveReadOnly:nil,},},LivenessProbe:nil,ReadinessProbe:nil,Lifecycle:nil,TerminationMessagePath:/dev/termination-log,ImagePullPolicy:IfNotPresent,SecurityContext:nil,Stdin:false,StdinOnce:false,TTY:false,EnvFrom:[]EnvFromSource{},TerminationMessagePolicy:File,VolumeDevices:[]VolumeDevice{},StartupProbe:nil,ResizePolicy:[]ContainerResizePolicy{},RestartPolicy:nil,},},RestartPolicy:Always,TerminationGracePeriodSeconds:*30,ActiveDeadlineSeconds:nil,DNSPolicy:ClusterFirst,NodeSelector:map[string]string{},ServiceAccountName:default,DeprecatedServiceAccount:default,NodeName:,HostNetwork:false,HostPID:false,HostIPC:false,SecurityContext:&PodSecurityContext{SELinuxOptions:nil,RunAsUser:nil,RunAsNonRoot:nil,SupplementalGroups:[],FSGroup:nil,RunAsGroup:nil,Sysctls:[]Sysctl{},WindowsOptions:nil,FSGroupChangePolicy:nil,SeccompProfile:nil,AppArmorProfile:nil,SupplementalGroupsPolicy:nil,},ImagePullSecrets:[]LocalObjectReference{},Hostname:,Subdomain:,Affinity:nil,SchedulerName:custom-scheduler,InitContainers:[]Container{},AutomountServiceAccountToken:nil,Tolerations:[]Toleration{Toleration{Key:node.kubernetes.io/not-ready,Operator:Exists,Value:,Effect:NoExecute,TolerationSeconds:*300,},Toleration{Key:node.kubernetes.io/unreachable,Operator:Exists,Value:,Effect:NoExecute,TolerationSeconds:*300,},},HostAliases:[]HostAlias{},PriorityClassName:batch-priority,Priority:*7,DNSConfig:nil,ShareProcessNamespace:nil,ReadinessGates:[]PodReadinessGate{},RuntimeClassName:nil,EnableServiceLinks:*true,PreemptionPolicy:*PreemptLowerPriority,Overhead:ResourceList{},TopologySpreadConstraints:[]TopologySpreadConstraint{},EphemeralContainers:[]EphemeralContainer{},SetHostnameAsFQDN:nil,OS:nil,HostUsers:nil,SchedulingGates:[]PodSchedulingGate{},ResourceClaims:[]PodResourceClaim{},},Status:PodStatus{Phase:Pending,Conditions:[]PodCondition{},Message:,Reason:,HostIP:,PodIP:,StartTime:<nil>,ContainerStatuses:[]ContainerStatus{},QOSClass:Burstable,InitContainerStatuses:[]ContainerStatus{},NominatedNodeName:,PodIPs:[]PodIP{},EphemeralContainerStatuses:[]ContainerStatus{},Resize:,ResourceClaimStatuses:[]PodResourceClaimStatus{},HostIPs:[]HostIP{},},}
+I0123 20:18:39.018104       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:39.018127       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:18:39.027933       1 postFilter.go:218] [compareNodeResources] Recursos calculados no nó minikube: CPU = 1750 mCPU, Memória = 178257920 bytes
+I0123 20:18:39.027986       1 postFilter.go:219] [compareNodeResources] Recursos do snapshot no nó minikube: CPU = 1750 mCPU, Memória = 178257920 bytes
+I0123 20:18:39.027996       1 postFilter.go:225] [compareNodeResources] Recursos de CPU do nó minikube estão sincronizados: 1750 mCPU
+I0123 20:18:39.037081       1 postFilter.go:231] [compareNodeResources] Recursos de memória do nó minikube estão sincronizados: 178257920 bytes
+I0123 20:18:39.037498       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.043958       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:39.043997       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:18:39.044040       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.044048       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.044072       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:18:39.044079       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.044086       1 scheduler.go:83] [HigherPrecedence] Calculando precedência entre test-deployment3-6c95cffb97-zhc9h e test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.044091       1 scheduler.go:116] [WaitForPodsOnCache] Verificando se o pod test-deployment3-6c95cffb97-zhc9h está no cache...
+I0123 20:18:39.044099       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:39.044104       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:39.044109       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:39.044114       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:18:39.044120       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:39.064489       1 scheduler.go:69] Estado no Informer: map[controller:test-controller3]
+I0123 20:18:39.064613       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller3]
+I0123 20:18:39.064624       1 scheduler.go:138] [WaitForPodsOnCache] Pod test-deployment3-6c95cffb97-zhc9h encontrado no cache.
+I0123 20:18:39.064630       1 scheduler.go:116] [WaitForPodsOnCache] Verificando se o pod test-deployment2-59c6b78cd5-srwkk está no cache...
+I0123 20:18:39.064637       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.064643       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.064651       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.064756       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:18:39.064767       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.103325       1 scheduler.go:69] Estado no Informer: map[controller:test-controller2]
+I0123 20:18:39.103379       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller2]
+I0123 20:18:39.103388       1 scheduler.go:138] [WaitForPodsOnCache] Pod test-deployment2-59c6b78cd5-srwkk encontrado no cache.
+I0123 20:18:39.103395       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:39.103401       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:39.103407       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:39.105929       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:18:39.106210       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:39.106341       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.106363       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.106581       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.106684       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:18:39.106779       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.106806       1 scheduler.go:97] [HigherPrecedence] Métricas para test-deployment3-6c95cffb97-zhc9h: QoS = -3.444082, Importância = 0.80
+I0123 20:18:39.106978       1 scheduler.go:98] [HigherPrecedence] Métricas para test-deployment2-59c6b78cd5-srwkk: QoS = 49.425666, Importância = 0.80
+I0123 20:18:39.107034       1 scheduler.go:109] [HigherPrecedence] Decisão final: test-deployment3-6c95cffb97-zhc9h tem precedência sobre test-deployment2-59c6b78cd5-srwkk? true
+I0123 20:18:39.107048       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:39.107060       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:18:39.107130       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.107152       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:18:39.107164       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.107177       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.107259       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.107272       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:18:39.107284       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.107357       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.107373       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.107385       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.107397       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:18:39.107465       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.107482       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.107494       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:18:39.108284       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.108407       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.108425       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.108438       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:18:39.108627       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.108737       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.108754       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.108766       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.108827       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:18:39.108947       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:39.108974       1 postFilter.go:140] [PREEMPT CALL] The node minikube  was chosen to allocate pod test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:39.109042       1 postFilter.go:144] [Preempt] Iniciando a remoção dos pods preemptados no nó minikube para alocar o pod default/test-deployment3-6c95cffb97-zhc9h. Total de vítimas: 1
+I0123 20:18:39.109308       1 postFilter.go:148] [Preempt] Tentando remover o pod default/test-deployment2-59c6b78cd5-srwkk no nó minikube
+I0123 20:18:39.454926       1 postFilter.go:153] [Preempt] Pod default/test-deployment2-59c6b78cd5-srwkk removido com sucesso no nó minikube
+I0123 20:18:39.455001       1 postFilter.go:159] test-deployment2-59c6b78cd5-srwkk_default preempted by test-deployment3-6c95cffb97-zhc9h_default on node minikube
+I0123 20:18:39.455058       1 postFilter.go:164] [Preempt] Total de pods preemptados no nó minikube: 1
+I0123 20:18:39.455113       1 postFilter.go:171] [Preempt] Verificando pods de menor precedência no nó minikube que precisam ter o campo NominatedNodeName limpo
+I0123 20:18:39.455133       1 postFilter.go:181] [Preempt] Finalizado para o nó minikube. Pod default/test-deployment3-6c95cffb97-zhc9h deve ser alocado agora.
+I0123 20:18:39.464531       1 scheduler.go:247] [OnUpdatePod] Pod atualizado: default/test-deployment2-59c6b78cd5-srwkk, Anotações: map[controller:test-controller2]
+I0123 20:18:40.898413       1 scheduler.go:69] Estado no Informer: map[controller:test-controller2]
+I0123 20:18:40.906121       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller2]
+I0123 20:18:40.906175       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:40.906192       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:18:40.906264       1 scheduler.go:213] [OnAddPod] Pod adicionado: default/test-deployment2-59c6b78cd5-csvbh, Anotações: map[controller:test-controller2]
+I0123 20:18:40.915686       1 postFilter.go:69] Comparando pod original com o atualizado...
+I0123 20:18:40.916964       1 postFilter.go:76] Successfully retrieved updated pod default/test-deployment2-59c6b78cd5-csvbh from lister
+I0123 20:18:40.917112       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:40.917120       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:18:41.038801       1 scheduler.go:69] Estado no Informer: map[controller:test-controller2]
+I0123 20:18:41.039153       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller2]
+I0123 20:18:41.039639       1 scheduler.go:223] Pods test-deployment2-59c6b78cd5-csvbh_default being added:
+&Pod{ObjectMeta:{test-deployment2-59c6b78cd5-csvbh test-deployment2-59c6b78cd5- default  dce02441-4af1-4546-8637-2640aeac9491 32609 0 2025-01-23 20:18:39 +0000 UTC <nil> <nil> map[app:test-app2 pod-template-hash:59c6b78cd5] map[controller:test-controller2] [{apps/v1 ReplicaSet test-deployment2-59c6b78cd5 9a58f0dd-2c9f-4b3d-8bcf-f143c56cbfa3 0xc0007d7ff8 0xc0007d7ff9}] [] [{kube-controller-manager Update v1 2025-01-23 20:18:39 +0000 UTC FieldsV1 {"f:metadata":{"f:annotations":{".":{},"f:controller":{}},"f:generateName":{},"f:labels":{".":{},"f:app":{},"f:pod-template-hash":{}},"f:ownerReferences":{".":{},"k:{\"uid\":\"9a58f0dd-2c9f-4b3d-8bcf-f143c56cbfa3\"}":{}}},"f:spec":{"f:containers":{"k:{\"name\":\"nginx\"}":{".":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{".":{},"f:limits":{".":{},"f:cpu":{}},"f:requests":{".":{},"f:cpu":{}}},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:enableServiceLinks":{},"f:priorityClassName":{},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:terminationGracePeriodSeconds":{}}} }]},Spec:PodSpec{Volumes:[]Volume{Volume{Name:kube-api-access-btjws,VolumeSource:VolumeSource{HostPath:nil,EmptyDir:nil,GCEPersistentDisk:nil,AWSElasticBlockStore:nil,GitRepo:nil,Secret:nil,NFS:nil,ISCSI:nil,Glusterfs:nil,PersistentVolumeClaim:nil,RBD:nil,FlexVolume:nil,Cinder:nil,CephFS:nil,Flocker:nil,DownwardAPI:nil,FC:nil,AzureFile:nil,ConfigMap:nil,VsphereVolume:nil,Quobyte:nil,AzureDisk:nil,PhotonPersistentDisk:nil,PortworxVolume:nil,ScaleIO:nil,Projected:&ProjectedVolumeSource{Sources:[]VolumeProjection{VolumeProjection{Secret:nil,DownwardAPI:nil,ConfigMap:nil,ServiceAccountToken:&ServiceAccountTokenProjection{Audience:,ExpirationSeconds:*3607,Path:token,},ClusterTrustBundle:nil,},VolumeProjection{Secret:nil,DownwardAPI:nil,ConfigMap:&ConfigMapProjection{LocalObjectReference:LocalObjectReference{Name:kube-root-ca.crt,},Items:[]KeyToPath{KeyToPath{Key:ca.crt,Path:ca.crt,Mode:nil,},},Optional:nil,},ServiceAccountToken:nil,ClusterTrustBundle:nil,},VolumeProjection{Secret:nil,DownwardAPI:&DownwardAPIProjection{Items:[]DownwardAPIVolumeFile{DownwardAPIVolumeFile{Path:namespace,FieldRef:&ObjectFieldSelector{APIVersion:v1,FieldPath:metadata.namespace,},ResourceFieldRef:nil,Mode:nil,},},},ConfigMap:nil,ServiceAccountToken:nil,ClusterTrustBundle:nil,},},DefaultMode:*420,},StorageOS:nil,CSI:nil,Ephemeral:nil,Image:nil,},},},Containers:[]Container{Container{Name:nginx,Image:nginx:latest,Command:[],Args:[],WorkingDir:,Ports:[]ContainerPort{},Env:[]EnvVar{},Resources:ResourceRequirements{Limits:ResourceList{cpu: {{1 0} {<nil>} 1 DecimalSI},},Requests:ResourceList{cpu: {{1 0} {<nil>} 1 DecimalSI},},Claims:[]ResourceClaim{},},VolumeMounts:[]VolumeMount{VolumeMount{Name:kube-api-access-btjws,ReadOnly:true,MountPath:/var/run/secrets/kubernetes.io/serviceaccount,SubPath:,MountPropagation:nil,SubPathExpr:,RecursiveReadOnly:nil,},},LivenessProbe:nil,ReadinessProbe:nil,Lifecycle:nil,TerminationMessagePath:/dev/termination-log,ImagePullPolicy:IfNotPresent,SecurityContext:nil,Stdin:false,StdinOnce:false,TTY:false,EnvFrom:[]EnvFromSource{},TerminationMessagePolicy:File,VolumeDevices:[]VolumeDevice{},StartupProbe:nil,ResizePolicy:[]ContainerResizePolicy{},RestartPolicy:nil,},},RestartPolicy:Always,TerminationGracePeriodSeconds:*30,ActiveDeadlineSeconds:nil,DNSPolicy:ClusterFirst,NodeSelector:map[string]string{},ServiceAccountName:default,DeprecatedServiceAccount:default,NodeName:,HostNetwork:false,HostPID:false,HostIPC:false,SecurityContext:&PodSecurityContext{SELinuxOptions:nil,RunAsUser:nil,RunAsNonRoot:nil,SupplementalGroups:[],FSGroup:nil,RunAsGroup:nil,Sysctls:[]Sysctl{},WindowsOptions:nil,FSGroupChangePolicy:nil,SeccompProfile:nil,AppArmorProfile:nil,SupplementalGroupsPolicy:nil,},ImagePullSecrets:[]LocalObjectReference{},Hostname:,Subdomain:,Affinity:nil,SchedulerName:custom-scheduler,InitContainers:[]Container{},AutomountServiceAccountToken:nil,Tolerations:[]Toleration{Toleration{Key:node.kubernetes.io/not-ready,Operator:Exists,Value:,Effect:NoExecute,TolerationSeconds:*300,},Toleration{Key:node.kubernetes.io/unreachable,Operator:Exists,Value:,Effect:NoExecute,TolerationSeconds:*300,},},HostAliases:[]HostAlias{},PriorityClassName:batch-priority,Priority:*7,DNSConfig:nil,ShareProcessNamespace:nil,ReadinessGates:[]PodReadinessGate{},RuntimeClassName:nil,EnableServiceLinks:*true,PreemptionPolicy:*PreemptLowerPriority,Overhead:ResourceList{},TopologySpreadConstraints:[]TopologySpreadConstraint{},EphemeralContainers:[]EphemeralContainer{},SetHostnameAsFQDN:nil,OS:nil,HostUsers:nil,SchedulingGates:[]PodSchedulingGate{},ResourceClaims:[]PodResourceClaim{},},Status:PodStatus{Phase:Pending,Conditions:[]PodCondition{},Message:,Reason:,HostIP:,PodIP:,StartTime:<nil>,ContainerStatuses:[]ContainerStatus{},QOSClass:Burstable,InitContainerStatuses:[]ContainerStatus{},NominatedNodeName:,PodIPs:[]PodIP{},EphemeralContainerStatuses:[]ContainerStatus{},Resize:,ResourceClaimStatuses:[]PodResourceClaimStatus{},HostIPs:[]HostIP{},},}
+I0123 20:18:41.040282       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:41.040383       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-csvbh: test-controller2
+I0123 20:18:41.040619       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:41.040714       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-csvbh: test-controller2
+I0123 20:18:41.040895       1 scheduler.go:247] [OnUpdatePod] Pod atualizado: default/test-deployment3-6c95cffb97-zhc9h, Anotações: map[controller:test-controller3]
+I0123 20:18:41.049369       1 postFilter.go:218] [compareNodeResources] Recursos calculados no nó minikube: CPU = 1750 mCPU, Memória = 178257920 bytes
+I0123 20:18:41.049417       1 postFilter.go:219] [compareNodeResources] Recursos do snapshot no nó minikube: CPU = 1750 mCPU, Memória = 178257920 bytes
+I0123 20:18:41.049426       1 postFilter.go:225] [compareNodeResources] Recursos de CPU do nó minikube estão sincronizados: 1750 mCPU
+I0123 20:18:41.049433       1 postFilter.go:231] [compareNodeResources] Recursos de memória do nó minikube estão sincronizados: 178257920 bytes
+I0123 20:18:41.049588       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:41.049635       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:41.049644       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:41.049651       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:18:41.049657       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:41.049664       1 scheduler.go:83] [HigherPrecedence] Calculando precedência entre test-deployment2-59c6b78cd5-csvbh e test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:41.049669       1 scheduler.go:116] [WaitForPodsOnCache] Verificando se o pod test-deployment2-59c6b78cd5-csvbh está no cache...
+I0123 20:18:41.049674       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:41.049679       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:41.049685       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:41.049690       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-csvbh: test-controller2
+I0123 20:18:41.049696       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:41.368521       1 scheduler.go:69] Estado no Informer: map[controller:test-controller2]
+I0123 20:18:41.376135       1 scheduler.go:69] Estado no Informer: map[controller:test-controller3]
+I0123 20:18:41.380749       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller3]
+I0123 20:18:41.380800       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller2]
+I0123 20:18:41.380814       1 scheduler.go:138] [WaitForPodsOnCache] Pod test-deployment2-59c6b78cd5-csvbh encontrado no cache.
+I0123 20:18:41.380824       1 scheduler.go:116] [WaitForPodsOnCache] Verificando se o pod test-deployment2-59c6b78cd5-srwkk está no cache...
+I0123 20:18:41.380835       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:41.381004       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:41.381023       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:18:41.381064       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:41.381075       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:41.381084       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:18:41.381094       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:41.450167       1 scheduler.go:69] Estado no Informer: map[controller:test-controller2]
+I0123 20:18:41.450270       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller2]
+I0123 20:18:41.450287       1 scheduler.go:138] [WaitForPodsOnCache] Pod test-deployment2-59c6b78cd5-srwkk encontrado no cache.
+I0123 20:18:41.450299       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:41.450354       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:41.450367       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:41.450378       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-csvbh: test-controller2
+I0123 20:18:41.459746       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:41.459824       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:41.459835       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:41.460717       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:41.460743       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:18:41.460755       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:41.460777       1 scheduler.go:97] [HigherPrecedence] Métricas para test-deployment2-59c6b78cd5-csvbh: QoS = 47.891748, Importância = 0.80
+I0123 20:18:41.460791       1 scheduler.go:98] [HigherPrecedence] Métricas para test-deployment2-59c6b78cd5-srwkk: QoS = 21.277250, Importância = 0.80
+I0123 20:18:41.460807       1 scheduler.go:109] [HigherPrecedence] Decisão final: test-deployment2-59c6b78cd5-csvbh tem precedência sobre test-deployment2-59c6b78cd5-srwkk? false
+I0123 20:18:41.460938       1 postFilter.go:137] [PREEMPT CALL] No node was chosen to allocate pod test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:41.481982       1 scheduler.go:247] [OnUpdatePod] Pod atualizado: default/test-deployment2-59c6b78cd5-csvbh, Anotações: map[controller:test-controller2]
+I0123 20:18:41.490976       1 scheduler.go:69] Estado no Informer: map[controller:test-controller2]
+I0123 20:18:41.491000       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller2]
+I0123 20:18:41.491011       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:41.491017       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-csvbh: test-controller2
+I0123 20:18:44.442304       1 scheduler.go:263] [OnDeletePod] Iniciando a execução do OnDeletePod
+I0123 20:18:44.443046       1 scheduler.go:272] [OnDeletePod] DeepCopy realizado para o pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:44.448825       1 scheduler.go:279] [OnDeletePod] Pod deletado detectado: default/test-deployment2-59c6b78cd5-srwkk
+Detalhes do pod: &Pod{ObjectMeta:{test-deployment2-59c6b78cd5-srwkk test-deployment2-59c6b78cd5- default  6a3f4f3f-82e3-4f72-b60b-c6e2731d01e5 32625 0 2025-01-23 20:15:20 +0000 UTC 2025-01-23 20:19:09 +0000 UTC 0xc0009a4f68 map[app:test-app2 pod-template-hash:59c6b78cd5] map[controller:test-controller2] [{apps/v1 ReplicaSet test-deployment2-59c6b78cd5 9a58f0dd-2c9f-4b3d-8bcf-f143c56cbfa3 0xc0009a4f70 0xc0009a4f71}] [] [{kube-controller-manager Update v1 2025-01-23 20:15:19 +0000 UTC FieldsV1 {"f:metadata":{"f:annotations":{".":{},"f:controller":{}},"f:generateName":{},"f:labels":{".":{},"f:app":{},"f:pod-template-hash":{}},"f:ownerReferences":{".":{},"k:{\"uid\":\"9a58f0dd-2c9f-4b3d-8bcf-f143c56cbfa3\"}":{}}},"f:spec":{"f:containers":{"k:{\"name\":\"nginx\"}":{".":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{".":{},"f:limits":{".":{},"f:cpu":{}},"f:requests":{".":{},"f:cpu":{}}},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:enableServiceLinks":{},"f:priorityClassName":{},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:terminationGracePeriodSeconds":{}}} } {kubelet Update v1 2025-01-23 20:15:29 +0000 UTC FieldsV1 {"f:status":{"f:conditions":{"k:{\"type\":\"ContainersReady\"}":{".":{},"f:lastProbeTime":{},"f:lastTransitionTime":{},"f:status":{},"f:type":{}},"k:{\"type\":\"Initialized\"}":{".":{},"f:lastProbeTime":{},"f:lastTransitionTime":{},"f:status":{},"f:type":{}},"k:{\"type\":\"PodReadyToStartContainers\"}":{".":{},"f:lastProbeTime":{},"f:lastTransitionTime":{},"f:status":{},"f:type":{}},"k:{\"type\":\"Ready\"}":{".":{},"f:lastProbeTime":{},"f:lastTransitionTime":{},"f:status":{},"f:type":{}}},"f:containerStatuses":{},"f:hostIP":{},"f:hostIPs":{},"f:phase":{},"f:podIP":{},"f:podIPs":{".":{},"k:{\"ip\":\"10.244.0.46\"}":{".":{},"f:ip":{}}},"f:startTime":{}}} status}]},Spec:PodSpec{Volumes:[]Volume{Volume{Name:kube-api-access-gxlfj,VolumeSource:VolumeSource{HostPath:nil,EmptyDir:nil,GCEPersistentDisk:nil,AWSElasticBlockStore:nil,GitRepo:nil,Secret:nil,NFS:nil,ISCSI:nil,Glusterfs:nil,PersistentVolumeClaim:nil,RBD:nil,FlexVolume:nil,Cinder:nil,CephFS:nil,Flocker:nil,DownwardAPI:nil,FC:nil,AzureFile:nil,ConfigMap:nil,VsphereVolume:nil,Quobyte:nil,AzureDisk:nil,PhotonPersistentDisk:nil,PortworxVolume:nil,ScaleIO:nil,Projected:&ProjectedVolumeSource{Sources:[]VolumeProjection{VolumeProjection{Secret:nil,DownwardAPI:nil,ConfigMap:nil,ServiceAccountToken:&ServiceAccountTokenProjection{Audience:,ExpirationSeconds:*3607,Path:token,},ClusterTrustBundle:nil,},VolumeProjection{Secret:nil,DownwardAPI:nil,ConfigMap:&ConfigMapProjection{LocalObjectReference:LocalObjectReference{Name:kube-root-ca.crt,},Items:[]KeyToPath{KeyToPath{Key:ca.crt,Path:ca.crt,Mode:nil,},},Optional:nil,},ServiceAccountToken:nil,ClusterTrustBundle:nil,},VolumeProjection{Secret:nil,DownwardAPI:&DownwardAPIProjection{Items:[]DownwardAPIVolumeFile{DownwardAPIVolumeFile{Path:namespace,FieldRef:&ObjectFieldSelector{APIVersion:v1,FieldPath:metadata.namespace,},ResourceFieldRef:nil,Mode:nil,},},},ConfigMap:nil,ServiceAccountToken:nil,ClusterTrustBundle:nil,},},DefaultMode:*420,},StorageOS:nil,CSI:nil,Ephemeral:nil,Image:nil,},},},Containers:[]Container{Container{Name:nginx,Image:nginx:latest,Command:[],Args:[],WorkingDir:,Ports:[]ContainerPort{},Env:[]EnvVar{},Resources:ResourceRequirements{Limits:ResourceList{cpu: {{1 0} {<nil>} 1 DecimalSI},},Requests:ResourceList{cpu: {{1 0} {<nil>} 1 DecimalSI},},Claims:[]ResourceClaim{},},VolumeMounts:[]VolumeMount{VolumeMount{Name:kube-api-access-gxlfj,ReadOnly:true,MountPath:/var/run/secrets/kubernetes.io/serviceaccount,SubPath:,MountPropagation:nil,SubPathExpr:,RecursiveReadOnly:nil,},},LivenessProbe:nil,ReadinessProbe:nil,Lifecycle:nil,TerminationMessagePath:/dev/termination-log,ImagePullPolicy:IfNotPresent,SecurityContext:nil,Stdin:false,StdinOnce:false,TTY:false,EnvFrom:[]EnvFromSource{},TerminationMessagePolicy:File,VolumeDevices:[]VolumeDevice{},StartupProbe:nil,ResizePolicy:[]ContainerResizePolicy{},RestartPolicy:nil,},},RestartPolicy:Always,TerminationGracePeriodSeconds:*30,ActiveDeadlineSeconds:nil,DNSPolicy:ClusterFirst,NodeSelector:map[string]string{},ServiceAccountName:default,DeprecatedServiceAccount:default,NodeName:minikube,HostNetwork:false,HostPID:false,HostIPC:false,SecurityContext:&PodSecurityContext{SELinuxOptions:nil,RunAsUser:nil,RunAsNonRoot:nil,SupplementalGroups:[],FSGroup:nil,RunAsGroup:nil,Sysctls:[]Sysctl{},WindowsOptions:nil,FSGroupChangePolicy:nil,SeccompProfile:nil,AppArmorProfile:nil,SupplementalGroupsPolicy:nil,},ImagePullSecrets:[]LocalObjectReference{},Hostname:,Subdomain:,Affinity:nil,SchedulerName:custom-scheduler,InitContainers:[]Container{},AutomountServiceAccountToken:nil,Tolerations:[]Toleration{Toleration{Key:node.kubernetes.io/not-ready,Operator:Exists,Value:,Effect:NoExecute,TolerationSeconds:*300,},Toleration{Key:node.kubernetes.io/unreachable,Operator:Exists,Value:,Effect:NoExecute,TolerationSeconds:*300,},},HostAliases:[]HostAlias{},PriorityClassName:batch-priority,Priority:*7,DNSConfig:nil,ShareProcessNamespace:nil,ReadinessGates:[]PodReadinessGate{},RuntimeClassName:nil,EnableServiceLinks:*true,PreemptionPolicy:*PreemptLowerPriority,Overhead:ResourceList{},TopologySpreadConstraints:[]TopologySpreadConstraint{},EphemeralContainers:[]EphemeralContainer{},SetHostnameAsFQDN:nil,OS:nil,HostUsers:nil,SchedulingGates:[]PodSchedulingGate{},ResourceClaims:[]PodResourceClaim{},},Status:PodStatus{Phase:Running,Conditions:[]PodCondition{PodCondition{Type:PodReadyToStartContainers,Status:True,LastProbeTime:0001-01-01 00:00:00 +0000 UTC,LastTransitionTime:2025-01-23 20:15:28 +0000 UTC,Reason:,Message:,},PodCondition{Type:Initialized,Status:True,LastProbeTime:0001-01-01 00:00:00 +0000 UTC,LastTransitionTime:2025-01-23 20:15:20 +0000 UTC,Reason:,Message:,},PodCondition{Type:Ready,Status:True,LastProbeTime:0001-01-01 00:00:00 +0000 UTC,LastTransitionTime:2025-01-23 20:15:28 +0000 UTC,Reason:,Message:,},PodCondition{Type:ContainersReady,Status:True,LastProbeTime:0001-01-01 00:00:00 +0000 UTC,LastTransitionTime:2025-01-23 20:15:28 +0000 UTC,Reason:,Message:,},PodCondition{Type:PodScheduled,Status:True,LastProbeTime:0001-01-01 00:00:00 +0000 UTC,LastTransitionTime:2025-01-23 20:15:20 +0000 UTC,Reason:,Message:,},},Message:,Reason:,HostIP:192.168.39.253,PodIP:10.244.0.46,StartTime:2025-01-23 20:15:20 +0000 UTC,ContainerStatuses:[]ContainerStatus{ContainerStatus{Name:nginx,State:ContainerState{Waiting:nil,Running:&ContainerStateRunning{StartedAt:2025-01-23 20:15:27 +0000 UTC,},Terminated:nil,},LastTerminationState:ContainerState{Waiting:nil,Running:nil,Terminated:nil,},Ready:true,RestartCount:0,Image:nginx:latest,ImageID:docker-pullable://nginx@sha256:0a399eb16751829e1af26fea27b20c3ec28d7ab1fb72182879dcae1cca21206a,ContainerID:docker://4999ceea309507ec1019a8e556750f8568ffb042804ac2f0983fb5d6ee058345,Started:*true,AllocatedResources:ResourceList{},Resources:nil,VolumeMounts:[]VolumeMountStatus{VolumeMountStatus{Name:kube-api-access-gxlfj,MountPath:/var/run/secrets/kubernetes.io/serviceaccount,ReadOnly:true,RecursiveReadOnly:*Disabled,},},User:nil,AllocatedResourcesStatus:[]ResourceStatus{},},},QOSClass:Burstable,InitContainerStatuses:[]ContainerStatus{},NominatedNodeName:,PodIPs:[]PodIP{PodIP{IP:10.244.0.46,},},EphemeralContainerStatuses:[]ContainerStatus{},Resize:,ResourceClaimStatuses:[]PodResourceClaimStatus{},HostIPs:[]HostIP{HostIP{IP:192.168.39.253,},},},}
+I0123 20:18:44.449009       1 scheduler.go:281] [OnDeletePod] Atualizando métricas do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:44.449026       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:44.449037       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-srwkk: test-controller2
+I0123 20:18:44.449054       1 scheduler.go:283] [OnDeletePod] Verificando o estado do pod default/test-deployment2-59c6b78cd5-srwkk nas métricas
+I0123 20:18:44.449067       1 scheduler.go:293] [OnDeletePod] EndTime atualizado para o pod default/test-deployment2-59c6b78cd5-srwkk: 2025-01-23 20:18:44.449060138 +0000 UTC m=+292.346682682
+I0123 20:18:44.449522       1 scheduler.go:297] [OnDeletePod] Finalizando a execução do OnDeletePod para o pod default/test-deployment2-59c6b78cd5-srwkk
+I0123 20:18:44.449951       1 scheduler.go:53] [QueueSort] Comparando prioridade de test-deployment3-6c95cffb97-zhc9h com test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:44.451733       1 scheduler.go:83] [HigherPrecedence] Calculando precedência entre test-deployment3-6c95cffb97-zhc9h e test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:44.452429       1 scheduler.go:116] [WaitForPodsOnCache] Verificando se o pod test-deployment3-6c95cffb97-zhc9h está no cache...
+I0123 20:18:44.452450       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.453008       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.453361       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.453600       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:18:44.454174       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.468353       1 scheduler.go:69] Estado no Informer: map[controller:test-controller3]
+I0123 20:18:44.468603       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller3]
+I0123 20:18:44.468689       1 scheduler.go:138] [WaitForPodsOnCache] Pod test-deployment3-6c95cffb97-zhc9h encontrado no cache.
+I0123 20:18:44.468718       1 scheduler.go:116] [WaitForPodsOnCache] Verificando se o pod test-deployment2-59c6b78cd5-csvbh está no cache...
+I0123 20:18:44.468806       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:44.469124       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:44.469227       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:44.469345       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-csvbh: test-controller2
+I0123 20:18:44.469405       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:44.478021       1 scheduler.go:69] Estado no Informer: map[controller:test-controller2]
+I0123 20:18:44.478094       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller2]
+I0123 20:18:44.478111       1 scheduler.go:138] [WaitForPodsOnCache] Pod test-deployment2-59c6b78cd5-csvbh encontrado no cache.
+I0123 20:18:44.478121       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.478444       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.482603       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.486184       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:18:44.488136       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.488194       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:44.488204       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:44.488211       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:44.488219       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-csvbh: test-controller2
+I0123 20:18:44.488226       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:44.488244       1 scheduler.go:97] [HigherPrecedence] Métricas para test-deployment3-6c95cffb97-zhc9h: QoS = -8.849964, Importância = 0.80
+I0123 20:18:44.488257       1 scheduler.go:98] [HigherPrecedence] Métricas para test-deployment2-59c6b78cd5-csvbh: QoS = 45.341295, Importância = 0.80
+I0123 20:18:44.488268       1 scheduler.go:109] [HigherPrecedence] Decisão final: test-deployment3-6c95cffb97-zhc9h tem precedência sobre test-deployment2-59c6b78cd5-csvbh? true
+I0123 20:18:44.488297       1 scheduler.go:59] [QueueSort] Precedência determinada: test-deployment3-6c95cffb97-zhc9h tem precedência sobre test-deployment2-59c6b78cd5-csvbh? true
+I0123 20:18:44.492015       1 scheduler.go:145] [Reserve] resources reserved at node minikube for pod test-deployment3-6c95cffb97-zhc9h_default at 2025-01-23 20:18:44.492003623 +0000 UTC m=+292.389625690
+I0123 20:18:44.492118       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.492128       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:18:44.492142       1 scheduler.go:147] [Reserve] Status de alocação atual para o pod test-deployment3-6c95cffb97-zhc9h_default: 
+I0123 20:18:44.492150       1 scheduler.go:149] [Reserve] Status de alocação atualizado para o pod test-deployment3-6c95cffb97-zhc9h_default: allocating
+I0123 20:18:44.492358       1 postFilter.go:69] Comparando pod original com o atualizado...
+I0123 20:18:44.492371       1 postFilter.go:76] Successfully retrieved updated pod default/test-deployment2-59c6b78cd5-csvbh from lister
+I0123 20:18:44.493784       1 scheduler.go:173] [PreBind] Validando o pod test-deployment3-6c95cffb97-zhc9h antes de vincular ao node minikube
+I0123 20:18:44.671837       1 scheduler.go:247] [OnUpdatePod] Pod atualizado: default/test-deployment3-6c95cffb97-zhc9h, Anotações: map[controller:test-controller3]
+I0123 20:18:44.673368       1 postFilter.go:218] [compareNodeResources] Recursos calculados no nó minikube: CPU = 1750 mCPU, Memória = 178257920 bytes
+I0123 20:18:44.673467       1 postFilter.go:219] [compareNodeResources] Recursos do snapshot no nó minikube: CPU = 1750 mCPU, Memória = 178257920 bytes
+I0123 20:18:44.673487       1 postFilter.go:225] [compareNodeResources] Recursos de CPU do nó minikube estão sincronizados: 1750 mCPU
+I0123 20:18:44.673559       1 postFilter.go:231] [compareNodeResources] Recursos de memória do nó minikube estão sincronizados: 178257920 bytes
+I0123 20:18:44.679968       1 scheduler.go:181] [PostBind] Chamado para pod test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.680325       1 scheduler.go:199] [PostBind] Pod test-deployment3-6c95cffb97-zhc9h - Início do binding: 2025-01-23 20:18:44.493795026 +0000 UTC m=+292.391417081, Fim do binding: 2025-01-23 20:18:44.680313407 +0000 UTC m=+292.577935859
+I0123 20:18:44.680730       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.681186       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:18:44.681784       1 scheduler.go:206] [PostBind] Métricas atualizadas para o pod test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.688661       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.688698       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.688710       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.688721       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:18:44.688733       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.688746       1 scheduler.go:83] [HigherPrecedence] Calculando precedência entre test-deployment2-59c6b78cd5-csvbh e test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.688755       1 scheduler.go:116] [WaitForPodsOnCache] Verificando se o pod test-deployment2-59c6b78cd5-csvbh está no cache...
+I0123 20:18:44.688763       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:44.688779       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:44.688787       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:44.688797       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-csvbh: test-controller2
+I0123 20:18:44.688807       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:44.717136       1 scheduler.go:69] Estado no Informer: map[controller:test-controller2]
+I0123 20:18:44.717275       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller2]
+I0123 20:18:44.718771       1 scheduler.go:138] [WaitForPodsOnCache] Pod test-deployment2-59c6b78cd5-csvbh encontrado no cache.
+I0123 20:18:44.718800       1 scheduler.go:116] [WaitForPodsOnCache] Verificando se o pod test-deployment3-6c95cffb97-zhc9h está no cache...
+I0123 20:18:44.719090       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.719104       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.719255       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.719270       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:18:44.719539       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.723429       1 scheduler.go:69] Estado no Informer: map[controller:test-controller3]
+I0123 20:18:44.725976       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller3]
+I0123 20:18:44.871075       1 scheduler.go:69] Estado no Informer: map[controller:test-controller3]
+I0123 20:18:44.881540       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller3]
+I0123 20:18:44.881968       1 scheduler.go:138] [WaitForPodsOnCache] Pod test-deployment3-6c95cffb97-zhc9h encontrado no cache.
+I0123 20:18:44.882096       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.882210       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:18:44.882398       1 scheduler.go:247] [OnUpdatePod] Pod atualizado: default/test-deployment3-6c95cffb97-zhc9h, Anotações: map[controller:test-controller3]
+I0123 20:18:44.893675       1 scheduler.go:69] Estado no Informer: map[controller:test-controller3]
+I0123 20:18:44.893790       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller3]
+I0123 20:18:44.893904       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.893933       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:18:44.894031       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:44.894043       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:44.894048       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:44.894054       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-csvbh: test-controller2
+I0123 20:18:44.894060       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:44.894069       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.894145       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.894152       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.894158       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:18:44.894163       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:44.894186       1 scheduler.go:97] [HigherPrecedence] Métricas para test-deployment2-59c6b78cd5-csvbh: QoS = 45.102519, Importância = 0.80
+I0123 20:18:44.894261       1 scheduler.go:98] [HigherPrecedence] Métricas para test-deployment3-6c95cffb97-zhc9h: QoS = -6.864726, Importância = 0.80
+I0123 20:18:44.894269       1 scheduler.go:109] [HigherPrecedence] Decisão final: test-deployment2-59c6b78cd5-csvbh tem precedência sobre test-deployment3-6c95cffb97-zhc9h? false
+I0123 20:18:44.894377       1 postFilter.go:137] [PREEMPT CALL] No node was chosen to allocate pod test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:47.100834       1 postFilter.go:69] Comparando pod original com o atualizado...
+I0123 20:18:47.111814       1 postFilter.go:76] Successfully retrieved updated pod default/test-deployment2-59c6b78cd5-csvbh from lister
+I0123 20:18:47.128018       1 postFilter.go:218] [compareNodeResources] Recursos calculados no nó minikube: CPU = 1750 mCPU, Memória = 178257920 bytes
+I0123 20:18:47.134793       1 postFilter.go:219] [compareNodeResources] Recursos do snapshot no nó minikube: CPU = 1750 mCPU, Memória = 178257920 bytes
+I0123 20:18:47.134833       1 postFilter.go:225] [compareNodeResources] Recursos de CPU do nó minikube estão sincronizados: 1750 mCPU
+I0123 20:18:47.134966       1 postFilter.go:231] [compareNodeResources] Recursos de memória do nó minikube estão sincronizados: 178257920 bytes
+I0123 20:18:47.148714       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:47.148750       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:47.148762       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:47.148776       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:18:47.148788       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:47.148801       1 scheduler.go:83] [HigherPrecedence] Calculando precedência entre test-deployment2-59c6b78cd5-csvbh e test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:47.148812       1 scheduler.go:116] [WaitForPodsOnCache] Verificando se o pod test-deployment2-59c6b78cd5-csvbh está no cache...
+I0123 20:18:47.148821       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:47.148831       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:47.148840       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:47.148955       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-csvbh: test-controller2
+I0123 20:18:47.148969       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:47.170302       1 scheduler.go:69] Estado no Informer: map[controller:test-controller2]
+I0123 20:18:47.170334       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller2]
+I0123 20:18:47.170343       1 scheduler.go:138] [WaitForPodsOnCache] Pod test-deployment2-59c6b78cd5-csvbh encontrado no cache.
+I0123 20:18:47.170350       1 scheduler.go:116] [WaitForPodsOnCache] Verificando se o pod test-deployment3-6c95cffb97-zhc9h está no cache...
+I0123 20:18:47.170359       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:47.170366       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:47.170373       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:47.170381       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:18:47.170390       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:47.179811       1 scheduler.go:69] Estado no Informer: map[controller:test-controller3]
+I0123 20:18:47.179936       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller3]
+I0123 20:18:47.179952       1 scheduler.go:138] [WaitForPodsOnCache] Pod test-deployment3-6c95cffb97-zhc9h encontrado no cache.
+I0123 20:18:47.179959       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:47.179968       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:47.180066       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:47.180298       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-csvbh: test-controller2
+I0123 20:18:47.180309       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:47.180319       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:47.180325       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:47.180329       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:47.180335       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:18:47.180423       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:47.180447       1 scheduler.go:97] [HigherPrecedence] Métricas para test-deployment2-59c6b78cd5-csvbh: QoS = 42.642464, Importância = 0.80
+I0123 20:18:47.180459       1 scheduler.go:98] [HigherPrecedence] Métricas para test-deployment3-6c95cffb97-zhc9h: QoS = -6.249712, Importância = 0.80
+I0123 20:18:47.180551       1 scheduler.go:109] [HigherPrecedence] Decisão final: test-deployment2-59c6b78cd5-csvbh tem precedência sobre test-deployment3-6c95cffb97-zhc9h? false
+I0123 20:18:47.180696       1 postFilter.go:137] [PREEMPT CALL] No node was chosen to allocate pod test-deployment2-59c6b78cd5-csvbh
+I0123 20:18:54.779748       1 scheduler.go:247] [OnUpdatePod] Pod atualizado: default/test-deployment3-6c95cffb97-zhc9h, Anotações: map[controller:test-controller3]
+I0123 20:18:54.804312       1 scheduler.go:69] Estado no Informer: map[controller:test-controller3]
+I0123 20:18:54.804540       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller3]
+I0123 20:18:54.804734       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:18:54.805003       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
 
-Misc flags:
 
-      --config string            The path to the configuration file.
-      --master string            The address of the Kubernetes API server (overrides any value in kubeconfig)
-      --write-config-to string   If set, write the configuration values to this file and exit.
 
-Secure serving flags:
 
-      --bind-address ip                        The IP address on which to listen for the --secure-port port. The associated interface(s) must be reachable by the rest of the cluster, and by CLI/web clients. If blank or an unspecified address (0.0.0.0 or ::), all interfaces and IP address families will be used. (default 0.0.0.0)
-      --cert-dir string                        The directory where the TLS certs are located. If --tls-cert-file and --tls-private-key-file are provided, this flag will be ignored.
-      --disable-http2-serving                  If true, HTTP2 serving will be disabled [default=false]
-      --http2-max-streams-per-connection int   The limit that the server gives to clients for the maximum number of streams in an HTTP/2 connection. Zero means to use golang's default.
-      --permit-address-sharing                 If true, SO_REUSEADDR will be used when binding the port. This allows binding to wildcard IPs like 0.0.0.0 and specific IPs in parallel, and it avoids waiting for the kernel to release sockets in TIME_WAIT state. [default=false]
-      --permit-port-sharing                    If true, SO_REUSEPORT will be used when binding the port, which allows more than one instance to bind on the same address and port. [default=false]
-      --secure-port int                        The port on which to serve HTTPS with authentication and authorization. If 0, don't serve HTTPS at all. (default 10259)
-      --tls-cert-file string                   File containing the default x509 Certificate for HTTPS. (CA cert, if any, concatenated after server cert). If HTTPS serving is enabled, and --tls-cert-file and --tls-private-key-file are not provided, a self-signed certificate and key are generated for the public address and saved to the directory specified by --cert-dir.
-      --tls-cipher-suites strings              Comma-separated list of cipher suites for the server. If omitted, the default Go cipher suites will be used. 
-                                               Preferred values: TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384, TLS_CHACHA20_POLY1305_SHA256, TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA, TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256, TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA, TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384, TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305, TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256, TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA, TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256, TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA, TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384, TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305, TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256. 
-                                               Insecure values: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256, TLS_ECDHE_ECDSA_WITH_RC4_128_SHA, TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA, TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256, TLS_ECDHE_RSA_WITH_RC4_128_SHA, TLS_RSA_WITH_3DES_EDE_CBC_SHA, TLS_RSA_WITH_AES_128_CBC_SHA, TLS_RSA_WITH_AES_128_CBC_SHA256, TLS_RSA_WITH_AES_128_GCM_SHA256, TLS_RSA_WITH_AES_256_CBC_SHA, TLS_RSA_WITH_AES_256_GCM_SHA384, TLS_RSA_WITH_RC4_128_SHA.
-      --tls-min-version string                 Minimum TLS version supported. Possible values: VersionTLS10, VersionTLS11, VersionTLS12, VersionTLS13
-      --tls-private-key-file string            File containing the default x509 private key matching --tls-cert-file.
-      --tls-sni-cert-key namedCertKey          A pair of x509 certificate and private key file paths, optionally suffixed with a list of domain patterns which are fully qualified domain names, possibly with prefixed wildcard segments. The domain patterns also allow IP addresses, but IPs should only be used if the apiserver has visibility to the IP address requested by a client. If no domain patterns are provided, the names of the certificate are extracted. Non-wildcard matches trump over wildcard matches, explicit domain patterns trump over extracted names. For multiple key/certificate pairs, use the --tls-sni-cert-key multiple times. Examples: "example.crt,example.key" or "foo.crt,foo.key:*.foo.com,foo.com". (default [])
 
-Authentication flags:
 
-      --authentication-kubeconfig string                  kubeconfig file pointing at the 'core' kubernetes server with enough rights to create tokenreviews.authentication.k8s.io. This is optional. If empty, all token requests are considered to be anonymous and no client CA is looked up in the cluster.
-      --authentication-skip-lookup                        If false, the authentication-kubeconfig will be used to lookup missing authentication configuration from the cluster.
-      --authentication-token-webhook-cache-ttl duration   The duration to cache responses from the webhook token authenticator. (default 10s)
-      --authentication-tolerate-lookup-failure            If true, failures to look up missing authentication configuration from the cluster are not considered fatal. Note that this can result in authentication that treats all requests as anonymous. (default true)
-      --client-ca-file string                             If set, any request presenting a client certificate signed by one of the authorities in the client-ca-file is authenticated with an identity corresponding to the CommonName of the client certificate.
-      --requestheader-allowed-names strings               List of client certificate common names to allow to provide usernames in headers specified by --requestheader-username-headers. If empty, any client certificate validated by the authorities in --requestheader-client-ca-file is allowed.
-      --requestheader-client-ca-file string               Root certificate bundle to use to verify client certificates on incoming requests before trusting usernames in headers specified by --requestheader-username-headers. WARNING: generally do not depend on authorization being already done for incoming requests.
-      --requestheader-extra-headers-prefix strings        List of request header prefixes to inspect. X-Remote-Extra- is suggested. (default [x-remote-extra-])
-      --requestheader-group-headers strings               List of request headers to inspect for groups. X-Remote-Group is suggested. (default [x-remote-group])
-      --requestheader-username-headers strings            List of request headers to inspect for usernames. X-Remote-User is common. (default [x-remote-user])
 
-Authorization flags:
 
-      --authorization-always-allow-paths strings                A list of HTTP paths to skip during authorization, i.e. these are authorized without contacting the 'core' kubernetes server. (default [/healthz,/readyz,/livez])
-      --authorization-kubeconfig string                         kubeconfig file pointing at the 'core' kubernetes server with enough rights to create subjectaccessreviews.authorization.k8s.io. This is optional. If empty, all requests not skipped by authorization are forbidden.
-      --authorization-webhook-cache-authorized-ttl duration     The duration to cache 'authorized' responses from the webhook authorizer. (default 10s)
-      --authorization-webhook-cache-unauthorized-ttl duration   The duration to cache 'unauthorized' responses from the webhook authorizer. (default 10s)
 
-Deprecated flags:
 
-      --contention-profiling                              DEPRECATED: enable block profiling, if profiling is enabled. This parameter is ignored if a config file is specified in --config. (default true)
-      --kube-api-burst int32                              DEPRECATED: burst to use while talking with kubernetes apiserver. This parameter is ignored if a config file is specified in --config. (default 100)
-      --kube-api-content-type string                      DEPRECATED: content type of requests sent to apiserver. This parameter is ignored if a config file is specified in --config. (default "application/vnd.kubernetes.protobuf")
-      --kube-api-qps float32                              DEPRECATED: QPS to use while talking with kubernetes apiserver. This parameter is ignored if a config file is specified in --config. (default 50)
-      --kubeconfig string                                 DEPRECATED: path to kubeconfig file with authorization and master location information. This parameter is ignored if a config file is specified in --config.
-      --pod-max-in-unschedulable-pods-duration duration   DEPRECATED: the maximum time a pod can stay in unschedulablePods. If a pod stays in unschedulablePods for longer than this value, the pod will be moved from unschedulablePods to backoffQ or activeQ. This flag is deprecated and will be removed in a future version. (default 5m0s)
-      --profiling                                         DEPRECATED: enable profiling via web interface host:port/debug/pprof/. This parameter is ignored if a config file is specified in --config. (default true)
 
-Leader election flags:
 
-      --leader-elect                             Start a leader election client and gain leadership before executing the main loop. Enable this when running replicated components for high availability. (default true)
-      --leader-elect-lease-duration duration     The duration that non-leader candidates will wait after observing a leadership renewal until attempting to acquire leadership of a led but unrenewed leader slot. This is effectively the maximum duration that a leader can be stopped before it is replaced by another candidate. This is only applicable if leader election is enabled. (default 15s)
-      --leader-elect-renew-deadline duration     The interval between attempts by the acting master to renew a leadership slot before it stops leading. This must be less than the lease duration. This is only applicable if leader election is enabled. (default 10s)
-      --leader-elect-resource-lock string        The type of resource object that is used for locking during leader election. Supported options are 'leases', 'endpointsleases' and 'configmapsleases'. (default "leases")
-      --leader-elect-resource-name string        The name of resource object that is used for locking during leader election. (default "kube-scheduler")
-      --leader-elect-resource-namespace string   The namespace of resource object that is used for locking during leader election. (default "kube-system")
-      --leader-elect-retry-period duration       The duration the clients should wait between attempting acquisition and renewal of a leadership. This is only applicable if leader election is enabled. (default 2s)
 
-Feature gate flags:
 
-      --emulated-version strings                           The versions different components emulate their capabilities (APIs, features, ...) of.
-                                                           If set, the component will emulate the behavior of this version instead of the underlying binary version.
-                                                           Version format could only be major.minor, for example: '--emulated-version=wardle=1.2,kube=1.31'. Options are:
-                                                           kube=1.31..1.31 (default=1.31)If the component is not specified, defaults to "kube"
-      --feature-gates colonSeparatedMultimapStringString   Comma-separated list of component:key=value pairs that describe feature gates for alpha/experimental features of different components.
-                                                           If the component is not specified, defaults to "kube". This flag can be repeatedly invoked. For example: --feature-gates 'wardle:featureA=true,wardle:featureB=false' --feature-gates 'kube:featureC=true'Options are:
-                                                           kube:APIResponseCompression=true|false (BETA - default=true)
-                                                           kube:APIServerIdentity=true|false (BETA - default=true)
-                                                           kube:APIServerTracing=true|false (BETA - default=true)
-                                                           kube:APIServingWithRoutine=true|false (ALPHA - default=false)
-                                                           kube:AllAlpha=true|false (ALPHA - default=false)
-                                                           kube:AllBeta=true|false (BETA - default=false)
-                                                           kube:AnonymousAuthConfigurableEndpoints=true|false (ALPHA - default=false)
-                                                           kube:AnyVolumeDataSource=true|false (BETA - default=true)
-                                                           kube:AuthorizeNodeWithSelectors=true|false (ALPHA - default=false)
-                                                           kube:AuthorizeWithSelectors=true|false (ALPHA - default=false)
-                                                           kube:CPUManagerPolicyAlphaOptions=true|false (ALPHA - default=false)
-                                                           kube:CPUManagerPolicyBetaOptions=true|false (BETA - default=true)
-                                                           kube:CPUManagerPolicyOptions=true|false (BETA - default=true)
-                                                           kube:CRDValidationRatcheting=true|false (BETA - default=true)
-                                                           kube:CSIMigrationPortworx=true|false (BETA - default=true)
-                                                           kube:CSIVolumeHealth=true|false (ALPHA - default=false)
-                                                           kube:CloudControllerManagerWebhook=true|false (ALPHA - default=false)
-                                                           kube:ClusterTrustBundle=true|false (ALPHA - default=false)
-                                                           kube:ClusterTrustBundleProjection=true|false (ALPHA - default=false)
-                                                           kube:ComponentSLIs=true|false (BETA - default=true)
-                                                           kube:ConcurrentWatchObjectDecode=true|false (BETA - default=false)
-                                                           kube:ConsistentListFromCache=true|false (BETA - default=true)
-                                                           kube:ContainerCheckpoint=true|false (BETA - default=true)
-                                                           kube:ContextualLogging=true|false (BETA - default=true)
-                                                           kube:CoordinatedLeaderElection=true|false (ALPHA - default=false)
-                                                           kube:CronJobsScheduledAnnotation=true|false (BETA - default=true)
-                                                           kube:CrossNamespaceVolumeDataSource=true|false (ALPHA - default=false)
-                                                           kube:CustomCPUCFSQuotaPeriod=true|false (ALPHA - default=false)
-                                                           kube:CustomResourceFieldSelectors=true|false (BETA - default=true)
-                                                           kube:DRAControlPlaneController=true|false (ALPHA - default=false)
-                                                           kube:DisableAllocatorDualWrite=true|false (ALPHA - default=false)
-                                                           kube:DynamicResourceAllocation=true|false (ALPHA - default=false)
-                                                           kube:EventedPLEG=true|false (ALPHA - default=false)
-                                                           kube:GracefulNodeShutdown=true|false (BETA - default=true)
-                                                           kube:GracefulNodeShutdownBasedOnPodPriority=true|false (BETA - default=true)
-                                                           kube:HPAScaleToZero=true|false (ALPHA - default=false)
-                                                           kube:HonorPVReclaimPolicy=true|false (BETA - default=true)
-                                                           kube:ImageMaximumGCAge=true|false (BETA - default=true)
-                                                           kube:ImageVolume=true|false (ALPHA - default=false)
-                                                           kube:InPlacePodVerticalScaling=true|false (ALPHA - default=false)
-                                                           kube:InTreePluginPortworxUnregister=true|false (ALPHA - default=false)
-                                                           kube:InformerResourceVersion=true|false (ALPHA - default=false)
-                                                           kube:JobBackoffLimitPerIndex=true|false (BETA - default=true)
-                                                           kube:JobManagedBy=true|false (ALPHA - default=false)
-                                                           kube:JobPodReplacementPolicy=true|false (BETA - default=true)
-                                                           kube:JobSuccessPolicy=true|false (BETA - default=true)
-                                                           kube:KubeletCgroupDriverFromCRI=true|false (BETA - default=true)
-                                                           kube:KubeletInUserNamespace=true|false (ALPHA - default=false)
-                                                           kube:KubeletPodResourcesDynamicResources=true|false (ALPHA - default=false)
-                                                           kube:KubeletPodResourcesGet=true|false (ALPHA - default=false)
-                                                           kube:KubeletSeparateDiskGC=true|false (BETA - default=true)
-                                                           kube:KubeletTracing=true|false (BETA - default=true)
-                                                           kube:LoadBalancerIPMode=true|false (BETA - default=true)
-                                                           kube:LocalStorageCapacityIsolationFSQuotaMonitoring=true|false (BETA - default=false)
-                                                           kube:LoggingAlphaOptions=true|false (ALPHA - default=false)
-                                                           kube:LoggingBetaOptions=true|false (BETA - default=true)
-                                                           kube:MatchLabelKeysInPodAffinity=true|false (BETA - default=true)
-                                                           kube:MatchLabelKeysInPodTopologySpread=true|false (BETA - default=true)
-                                                           kube:MaxUnavailableStatefulSet=true|false (ALPHA - default=false)
-                                                           kube:MemoryManager=true|false (BETA - default=true)
-                                                           kube:MemoryQoS=true|false (ALPHA - default=false)
-                                                           kube:MultiCIDRServiceAllocator=true|false (BETA - default=false)
-                                                           kube:MutatingAdmissionPolicy=true|false (ALPHA - default=false)
-                                                           kube:NFTablesProxyMode=true|false (BETA - default=true)
-                                                           kube:NodeInclusionPolicyInPodTopologySpread=true|false (BETA - default=true)
-                                                           kube:NodeLogQuery=true|false (BETA - default=false)
-                                                           kube:NodeSwap=true|false (BETA - default=true)
-                                                           kube:OpenAPIEnums=true|false (BETA - default=true)
-                                                           kube:PodAndContainerStatsFromCRI=true|false (ALPHA - default=false)
-                                                           kube:PodDeletionCost=true|false (BETA - default=true)
-                                                           kube:PodIndexLabel=true|false (BETA - default=true)
-                                                           kube:PodLifecycleSleepAction=true|false (BETA - default=true)
-                                                           kube:PodReadyToStartContainersCondition=true|false (BETA - default=true)
-                                                           kube:PortForwardWebsockets=true|false (BETA - default=true)
-                                                           kube:ProcMountType=true|false (BETA - default=false)
-                                                           kube:QOSReserved=true|false (ALPHA - default=false)
-                                                           kube:RecoverVolumeExpansionFailure=true|false (ALPHA - default=false)
-                                                           kube:RecursiveReadOnlyMounts=true|false (BETA - default=true)
-                                                           kube:RelaxedEnvironmentVariableValidation=true|false (ALPHA - default=false)
-                                                           kube:ReloadKubeletServerCertificateFile=true|false (BETA - default=true)
-                                                           kube:ResilientWatchCacheInitialization=true|false (BETA - default=true)
-                                                           kube:ResourceHealthStatus=true|false (ALPHA - default=false)
-                                                           kube:RetryGenerateName=true|false (BETA - default=true)
-                                                           kube:RotateKubeletServerCertificate=true|false (BETA - default=true)
-                                                           kube:RuntimeClassInImageCriApi=true|false (ALPHA - default=false)
-                                                           kube:SELinuxMount=true|false (ALPHA - default=false)
-                                                           kube:SELinuxMountReadWriteOncePod=true|false (BETA - default=true)
-                                                           kube:SchedulerQueueingHints=true|false (BETA - default=false)
-                                                           kube:SeparateCacheWatchRPC=true|false (BETA - default=true)
-                                                           kube:SeparateTaintEvictionController=true|false (BETA - default=true)
-                                                           kube:ServiceAccountTokenJTI=true|false (BETA - default=true)
-                                                           kube:ServiceAccountTokenNodeBinding=true|false (BETA - default=true)
-                                                           kube:ServiceAccountTokenNodeBindingValidation=true|false (BETA - default=true)
-                                                           kube:ServiceAccountTokenPodNodeInfo=true|false (BETA - default=true)
-                                                           kube:ServiceTrafficDistribution=true|false (BETA - default=true)
-                                                           kube:SidecarContainers=true|false (BETA - default=true)
-                                                           kube:SizeMemoryBackedVolumes=true|false (BETA - default=true)
-                                                           kube:StatefulSetAutoDeletePVC=true|false (BETA - default=true)
-                                                           kube:StorageNamespaceIndex=true|false (BETA - default=true)
-                                                           kube:StorageVersionAPI=true|false (ALPHA - default=false)
-                                                           kube:StorageVersionHash=true|false (BETA - default=true)
-                                                           kube:StorageVersionMigrator=true|false (ALPHA - default=false)
-                                                           kube:StrictCostEnforcementForVAP=true|false (BETA - default=false)
-                                                           kube:StrictCostEnforcementForWebhooks=true|false (BETA - default=false)
-                                                           kube:StructuredAuthenticationConfiguration=true|false (BETA - default=true)
-                                                           kube:StructuredAuthorizationConfiguration=true|false (BETA - default=true)
-                                                           kube:SupplementalGroupsPolicy=true|false (ALPHA - default=false)
-                                                           kube:TopologyAwareHints=true|false (BETA - default=true)
-                                                           kube:TopologyManagerPolicyAlphaOptions=true|false (ALPHA - default=false)
-                                                           kube:TopologyManagerPolicyBetaOptions=true|false (BETA - default=true)
-                                                           kube:TopologyManagerPolicyOptions=true|false (BETA - default=true)
-                                                           kube:TranslateStreamCloseWebsocketRequests=true|false (BETA - default=true)
-                                                           kube:UnauthenticatedHTTP2DOSMitigation=true|false (BETA - default=true)
-                                                           kube:UnknownVersionInteroperabilityProxy=true|false (ALPHA - default=false)
-                                                           kube:UserNamespacesPodSecurityStandards=true|false (ALPHA - default=false)
-                                                           kube:UserNamespacesSupport=true|false (BETA - default=false)
-                                                           kube:VolumeAttributesClass=true|false (BETA - default=false)
-                                                           kube:VolumeCapacityPriority=true|false (ALPHA - default=false)
-                                                           kube:WatchCacheInitializationPostStartHook=true|false (BETA - default=false)
-                                                           kube:WatchFromStorageWithoutResourceVersion=true|false (BETA - default=false)
-                                                           kube:WatchList=true|false (ALPHA - default=false)
-                                                           kube:WatchListClient=true|false (BETA - default=false)
-                                                           kube:WinDSR=true|false (ALPHA - default=false)
-                                                           kube:WinOverlay=true|false (BETA - default=true)
-                                                           kube:WindowsHostNetwork=true|false (ALPHA - default=true)
 
-Metrics flags:
 
-      --allow-metric-labels stringToString       The map from metric-label to value allow-list of this label. The key's format is <MetricName>,<LabelName>. The value's format is <allowed_value>,<allowed_value>...e.g. metric1,label1='v1,v2,v3', metric1,label2='v1,v2,v3' metric2,label1='v1,v2,v3'. (default [])
-      --allow-metric-labels-manifest string      The path to the manifest file that contains the allow-list mapping. The format of the file is the same as the flag --allow-metric-labels. Note that the flag --allow-metric-labels will override the manifest file.
-      --disabled-metrics strings                 This flag provides an escape hatch for misbehaving metrics. You must provide the fully qualified metric name in order to disable it. Disclaimer: disabling metrics is higher in precedence than showing hidden metrics.
-      --show-hidden-metrics-for-version string   The previous version for which you want to show hidden metrics. Only the previous minor version is meaningful, other values will not be allowed. The format is <major>.<minor>, e.g.: '1.16'. The purpose of this format is make sure you have the opportunity to notice if the next release hides additional metrics, rather than being surprised when they are permanently removed in the release after that.
 
-Logs flags:
 
-      --log-flush-frequency duration         Maximum number of seconds between log flushes (default 5s)
-      --log-text-info-buffer-size quantity   [Alpha] In text format with split output streams, the info messages can be buffered for a while to increase performance. The default value of zero bytes disables buffering. The size can be specified as number of bytes (512), multiples of 1000 (1K), multiples of 1024 (2Ki), or powers of those (3M, 4G, 5Mi, 6Gi). Enable the LoggingAlphaOptions feature gate to use this.
-      --log-text-split-stream                [Alpha] In text format, write error messages to stderr and info messages to stdout. The default is to write a single stream to stdout. Enable the LoggingAlphaOptions feature gate to use this.
-      --logging-format string                Sets the log format. Permitted formats: "text". (default "text")
-  -v, --v Level                              number for the log level verbosity
-      --vmodule pattern=N,...                comma-separated list of pattern=N settings for file-filtered logging (only works for text log format)
 
-Global flags:
 
-  -h, --help                     help for kube-scheduler
-      --version version[=true]   --version, --version=raw prints version information and quits; --version=vX.Y.Z... sets the reported version
 
+
+
+
+
+I0123 20:23:53.834052       1 postFilter.go:69] Comparando pod original com o atualizado...
+I0123 20:23:53.837740       1 postFilter.go:76] Successfully retrieved updated pod default/test-deployment2-59c6b78cd5-csvbh from lister
+I0123 20:23:53.856732       1 postFilter.go:218] [compareNodeResources] Recursos calculados no nó minikube: CPU = 1750 mCPU, Memória = 178257920 bytes
+I0123 20:23:53.859075       1 postFilter.go:219] [compareNodeResources] Recursos do snapshot no nó minikube: CPU = 1750 mCPU, Memória = 178257920 bytes
+I0123 20:23:53.859105       1 postFilter.go:225] [compareNodeResources] Recursos de CPU do nó minikube estão sincronizados: 1750 mCPU
+I0123 20:23:53.859209       1 postFilter.go:231] [compareNodeResources] Recursos de memória do nó minikube estão sincronizados: 178257920 bytes
+I0123 20:23:53.860167       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.860204       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.860261       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.860293       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:23:53.860338       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.860370       1 scheduler.go:83] [HigherPrecedence] Calculando precedência entre test-deployment2-59c6b78cd5-csvbh e test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.860395       1 scheduler.go:116] [WaitForPodsOnCache] Verificando se o pod test-deployment2-59c6b78cd5-csvbh está no cache...
+I0123 20:23:53.860406       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:23:53.860416       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:23:53.860425       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:23:53.860437       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-csvbh: test-controller2
+I0123 20:23:53.860447       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:23:53.881803       1 scheduler.go:69] Estado no Informer: map[controller:test-controller2]
+I0123 20:23:53.882185       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller2]
+I0123 20:23:53.882391       1 scheduler.go:138] [WaitForPodsOnCache] Pod test-deployment2-59c6b78cd5-csvbh encontrado no cache.
+I0123 20:23:53.882563       1 scheduler.go:116] [WaitForPodsOnCache] Verificando se o pod test-deployment3-6c95cffb97-zhc9h está no cache...
+I0123 20:23:53.882666       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.882790       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.882814       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.882837       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:23:53.882987       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.890169       1 scheduler.go:69] Estado no Informer: map[controller:test-controller3]
+I0123 20:23:53.890241       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller3]
+I0123 20:23:53.890254       1 scheduler.go:138] [WaitForPodsOnCache] Pod test-deployment3-6c95cffb97-zhc9h encontrado no cache.
+I0123 20:23:53.890282       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:23:53.890291       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:23:53.890307       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:23:53.890316       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-csvbh: test-controller2
+I0123 20:23:53.890326       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:23:53.890340       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.890382       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.890391       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.890402       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:23:53.890442       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.890470       1 scheduler.go:97] [HigherPrecedence] Métricas para test-deployment2-59c6b78cd5-csvbh: QoS = -264.069087, Importância = 0.80
+I0123 20:23:53.890547       1 scheduler.go:98] [HigherPrecedence] Métricas para test-deployment3-6c95cffb97-zhc9h: QoS = 70.428176, Importância = 0.80
+I0123 20:23:53.890561       1 scheduler.go:109] [HigherPrecedence] Decisão final: test-deployment2-59c6b78cd5-csvbh tem precedência sobre test-deployment3-6c95cffb97-zhc9h? true
+I0123 20:23:53.890573       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:23:53.890580       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-csvbh: test-controller2
+I0123 20:23:53.890586       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.890591       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:23:53.890597       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.890603       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.890612       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.890649       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:23:53.890659       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.890666       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.890673       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.890680       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.890716       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:23:53.890726       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.890734       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.890772       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:23:53.890980       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.891020       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.891028       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.891035       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:23:53.891043       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.891052       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.891058       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.891063       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.891069       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:23:53.891075       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:53.891094       1 postFilter.go:140] [PREEMPT CALL] The node minikube  was chosen to allocate pod test-deployment2-59c6b78cd5-csvbh
+I0123 20:23:53.891106       1 postFilter.go:144] [Preempt] Iniciando a remoção dos pods preemptados no nó minikube para alocar o pod default/test-deployment2-59c6b78cd5-csvbh. Total de vítimas: 1
+I0123 20:23:53.891134       1 postFilter.go:148] [Preempt] Tentando remover o pod default/test-deployment3-6c95cffb97-zhc9h no nó minikube
+I0123 20:23:53.948766       1 scheduler.go:247] [OnUpdatePod] Pod atualizado: default/test-deployment3-6c95cffb97-zhc9h, Anotações: map[controller:test-controller3]
+I0123 20:23:53.952570       1 postFilter.go:153] [Preempt] Pod default/test-deployment3-6c95cffb97-zhc9h removido com sucesso no nó minikube
+I0123 20:23:53.965473       1 postFilter.go:159] test-deployment3-6c95cffb97-zhc9h_default preempted by test-deployment2-59c6b78cd5-csvbh_default on node minikube
+I0123 20:23:53.967290       1 postFilter.go:164] [Preempt] Total de pods preemptados no nó minikube: 1
+I0123 20:23:53.967405       1 postFilter.go:171] [Preempt] Verificando pods de menor precedência no nó minikube que precisam ter o campo NominatedNodeName limpo
+I0123 20:23:53.967420       1 postFilter.go:181] [Preempt] Finalizado para o nó minikube. Pod default/test-deployment2-59c6b78cd5-csvbh deve ser alocado agora.
+I0123 20:23:54.293186       1 scheduler.go:69] Estado no Informer: map[controller:test-controller3]
+I0123 20:23:54.293282       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller3]
+I0123 20:23:54.293304       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:54.293320       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:23:54.293479       1 scheduler.go:247] [OnUpdatePod] Pod atualizado: default/test-deployment2-59c6b78cd5-csvbh, Anotações: map[controller:test-controller2]
+I0123 20:23:54.293943       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:54.294008       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:23:54.319602       1 scheduler.go:69] Estado no Informer: map[controller:test-controller2]
+I0123 20:23:54.319666       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller2]
+I0123 20:23:54.319681       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:23:54.319690       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-csvbh: test-controller2
+I0123 20:23:54.637013       1 scheduler.go:213] [OnAddPod] Pod adicionado: default/test-deployment3-6c95cffb97-sns7c, Anotações: map[controller:test-controller3]
+I0123 20:23:54.648114       1 postFilter.go:69] Comparando pod original com o atualizado...
+I0123 20:23:54.648192       1 postFilter.go:76] Successfully retrieved updated pod default/test-deployment3-6c95cffb97-sns7c from lister
+I0123 20:23:55.053225       1 scheduler.go:69] Estado no Informer: map[controller:test-controller3]
+I0123 20:23:55.053257       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller3]
+I0123 20:23:55.055177       1 scheduler.go:223] Pods test-deployment3-6c95cffb97-sns7c_default being added:
+&Pod{ObjectMeta:{test-deployment3-6c95cffb97-sns7c test-deployment3-6c95cffb97- default  ddd2dc15-7cf4-4350-b7b9-cf6db404dcc4 33015 0 2025-01-23 20:23:54 +0000 UTC <nil> <nil> map[app:test-app3 pod-template-hash:6c95cffb97] map[controller:test-controller3] [{apps/v1 ReplicaSet test-deployment3-6c95cffb97 7e4178ab-0892-4c0a-b8b0-301ea2a4d4af 0xc00079049c 0xc00079049d}] [] [{kube-controller-manager Update v1 2025-01-23 20:23:53 +0000 UTC FieldsV1 {"f:metadata":{"f:annotations":{".":{},"f:controller":{}},"f:generateName":{},"f:labels":{".":{},"f:app":{},"f:pod-template-hash":{}},"f:ownerReferences":{".":{},"k:{\"uid\":\"7e4178ab-0892-4c0a-b8b0-301ea2a4d4af\"}":{}}},"f:spec":{"f:containers":{"k:{\"name\":\"nginx\"}":{".":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{".":{},"f:limits":{".":{},"f:cpu":{}},"f:requests":{".":{},"f:cpu":{}}},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:enableServiceLinks":{},"f:priorityClassName":{},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:terminationGracePeriodSeconds":{}}} }]},Spec:PodSpec{Volumes:[]Volume{Volume{Name:kube-api-access-9n666,VolumeSource:VolumeSource{HostPath:nil,EmptyDir:nil,GCEPersistentDisk:nil,AWSElasticBlockStore:nil,GitRepo:nil,Secret:nil,NFS:nil,ISCSI:nil,Glusterfs:nil,PersistentVolumeClaim:nil,RBD:nil,FlexVolume:nil,Cinder:nil,CephFS:nil,Flocker:nil,DownwardAPI:nil,FC:nil,AzureFile:nil,ConfigMap:nil,VsphereVolume:nil,Quobyte:nil,AzureDisk:nil,PhotonPersistentDisk:nil,PortworxVolume:nil,ScaleIO:nil,Projected:&ProjectedVolumeSource{Sources:[]VolumeProjection{VolumeProjection{Secret:nil,DownwardAPI:nil,ConfigMap:nil,ServiceAccountToken:&ServiceAccountTokenProjection{Audience:,ExpirationSeconds:*3607,Path:token,},ClusterTrustBundle:nil,},VolumeProjection{Secret:nil,DownwardAPI:nil,ConfigMap:&ConfigMapProjection{LocalObjectReference:LocalObjectReference{Name:kube-root-ca.crt,},Items:[]KeyToPath{KeyToPath{Key:ca.crt,Path:ca.crt,Mode:nil,},},Optional:nil,},ServiceAccountToken:nil,ClusterTrustBundle:nil,},VolumeProjection{Secret:nil,DownwardAPI:&DownwardAPIProjection{Items:[]DownwardAPIVolumeFile{DownwardAPIVolumeFile{Path:namespace,FieldRef:&ObjectFieldSelector{APIVersion:v1,FieldPath:metadata.namespace,},ResourceFieldRef:nil,Mode:nil,},},},ConfigMap:nil,ServiceAccountToken:nil,ClusterTrustBundle:nil,},},DefaultMode:*420,},StorageOS:nil,CSI:nil,Ephemeral:nil,Image:nil,},},},Containers:[]Container{Container{Name:nginx,Image:nginx:latest,Command:[],Args:[],WorkingDir:,Ports:[]ContainerPort{},Env:[]EnvVar{},Resources:ResourceRequirements{Limits:ResourceList{cpu: {{1 0} {<nil>} 1 DecimalSI},},Requests:ResourceList{cpu: {{1 0} {<nil>} 1 DecimalSI},},Claims:[]ResourceClaim{},},VolumeMounts:[]VolumeMount{VolumeMount{Name:kube-api-access-9n666,ReadOnly:true,MountPath:/var/run/secrets/kubernetes.io/serviceaccount,SubPath:,MountPropagation:nil,SubPathExpr:,RecursiveReadOnly:nil,},},LivenessProbe:nil,ReadinessProbe:nil,Lifecycle:nil,TerminationMessagePath:/dev/termination-log,ImagePullPolicy:IfNotPresent,SecurityContext:nil,Stdin:false,StdinOnce:false,TTY:false,EnvFrom:[]EnvFromSource{},TerminationMessagePolicy:File,VolumeDevices:[]VolumeDevice{},StartupProbe:nil,ResizePolicy:[]ContainerResizePolicy{},RestartPolicy:nil,},},RestartPolicy:Always,TerminationGracePeriodSeconds:*30,ActiveDeadlineSeconds:nil,DNSPolicy:ClusterFirst,NodeSelector:map[string]string{},ServiceAccountName:default,DeprecatedServiceAccount:default,NodeName:,HostNetwork:false,HostPID:false,HostIPC:false,SecurityContext:&PodSecurityContext{SELinuxOptions:nil,RunAsUser:nil,RunAsNonRoot:nil,SupplementalGroups:[],FSGroup:nil,RunAsGroup:nil,Sysctls:[]Sysctl{},WindowsOptions:nil,FSGroupChangePolicy:nil,SeccompProfile:nil,AppArmorProfile:nil,SupplementalGroupsPolicy:nil,},ImagePullSecrets:[]LocalObjectReference{},Hostname:,Subdomain:,Affinity:nil,SchedulerName:custom-scheduler,InitContainers:[]Container{},AutomountServiceAccountToken:nil,Tolerations:[]Toleration{Toleration{Key:node.kubernetes.io/not-ready,Operator:Exists,Value:,Effect:NoExecute,TolerationSeconds:*300,},Toleration{Key:node.kubernetes.io/unreachable,Operator:Exists,Value:,Effect:NoExecute,TolerationSeconds:*300,},},HostAliases:[]HostAlias{},PriorityClassName:batch-priority,Priority:*7,DNSConfig:nil,ShareProcessNamespace:nil,ReadinessGates:[]PodReadinessGate{},RuntimeClassName:nil,EnableServiceLinks:*true,PreemptionPolicy:*PreemptLowerPriority,Overhead:ResourceList{},TopologySpreadConstraints:[]TopologySpreadConstraint{},EphemeralContainers:[]EphemeralContainer{},SetHostnameAsFQDN:nil,OS:nil,HostUsers:nil,SchedulingGates:[]PodSchedulingGate{},ResourceClaims:[]PodResourceClaim{},},Status:PodStatus{Phase:Pending,Conditions:[]PodCondition{},Message:,Reason:,HostIP:,PodIP:,StartTime:<nil>,ContainerStatuses:[]ContainerStatus{},QOSClass:Burstable,InitContainerStatuses:[]ContainerStatus{},NominatedNodeName:,PodIPs:[]PodIP{},EphemeralContainerStatuses:[]ContainerStatus{},Resize:,ResourceClaimStatuses:[]PodResourceClaimStatus{},HostIPs:[]HostIP{},},}
+I0123 20:23:55.055248       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-sns7c
+I0123 20:23:55.055261       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-sns7c: test-controller3
+I0123 20:23:55.055283       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-sns7c
+I0123 20:23:55.055317       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-sns7c: test-controller3
+I0123 20:23:55.082774       1 postFilter.go:218] [compareNodeResources] Recursos calculados no nó minikube: CPU = 1750 mCPU, Memória = 178257920 bytes
+I0123 20:23:55.082821       1 postFilter.go:219] [compareNodeResources] Recursos do snapshot no nó minikube: CPU = 1750 mCPU, Memória = 178257920 bytes
+I0123 20:23:55.082830       1 postFilter.go:225] [compareNodeResources] Recursos de CPU do nó minikube estão sincronizados: 1750 mCPU
+I0123 20:23:55.101728       1 postFilter.go:231] [compareNodeResources] Recursos de memória do nó minikube estão sincronizados: 178257920 bytes
+I0123 20:23:55.104512       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:55.104562       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:55.104570       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:55.104576       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:23:55.104582       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:55.104656       1 scheduler.go:83] [HigherPrecedence] Calculando precedência entre test-deployment3-6c95cffb97-sns7c e test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:55.104664       1 scheduler.go:116] [WaitForPodsOnCache] Verificando se o pod test-deployment3-6c95cffb97-sns7c está no cache...
+I0123 20:23:55.104668       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-sns7c
+I0123 20:23:55.104672       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-sns7c
+I0123 20:23:55.104676       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-sns7c
+I0123 20:23:55.104680       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-sns7c: test-controller3
+I0123 20:23:55.104685       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-sns7c
+I0123 20:23:55.508517       1 scheduler.go:69] Estado no Informer: map[controller:test-controller3]
+I0123 20:23:55.509129       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller3]
+I0123 20:23:55.509656       1 scheduler.go:138] [WaitForPodsOnCache] Pod test-deployment3-6c95cffb97-sns7c encontrado no cache.
+I0123 20:23:55.509829       1 scheduler.go:116] [WaitForPodsOnCache] Verificando se o pod test-deployment3-6c95cffb97-zhc9h está no cache...
+I0123 20:23:55.510037       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:55.510235       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:55.510652       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:55.510812       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:23:55.511703       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:55.534577       1 scheduler.go:69] Estado no Informer: map[controller:test-controller3]
+I0123 20:23:55.546780       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller3]
+I0123 20:23:55.552203       1 scheduler.go:138] [WaitForPodsOnCache] Pod test-deployment3-6c95cffb97-zhc9h encontrado no cache.
+I0123 20:23:55.552241       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-sns7c
+I0123 20:23:55.552260       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-sns7c
+I0123 20:23:55.552275       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-sns7c
+I0123 20:23:55.552312       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-sns7c: test-controller3
+I0123 20:23:55.552332       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-sns7c
+I0123 20:23:55.552355       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:55.552370       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:55.552382       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:55.552398       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:23:55.552412       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:55.552442       1 scheduler.go:97] [HigherPrecedence] Métricas para test-deployment3-6c95cffb97-sns7c: QoS = 69.727910, Importância = 0.80
+I0123 20:23:55.552467       1 scheduler.go:98] [HigherPrecedence] Métricas para test-deployment3-6c95cffb97-zhc9h: QoS = 30.938371, Importância = 0.80
+I0123 20:23:55.552488       1 scheduler.go:109] [HigherPrecedence] Decisão final: test-deployment3-6c95cffb97-sns7c tem precedência sobre test-deployment3-6c95cffb97-zhc9h? false
+I0123 20:23:55.552636       1 postFilter.go:137] [PREEMPT CALL] No node was chosen to allocate pod test-deployment3-6c95cffb97-sns7c
+I0123 20:23:55.834137       1 scheduler.go:247] [OnUpdatePod] Pod atualizado: default/test-deployment3-6c95cffb97-sns7c, Anotações: map[controller:test-controller3]
+I0123 20:23:55.853248       1 scheduler.go:69] Estado no Informer: map[controller:test-controller3]
+I0123 20:23:55.853441       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller3]
+I0123 20:23:55.853497       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-sns7c
+I0123 20:23:55.853534       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-sns7c: test-controller3
+I0123 20:23:56.720168       1 scheduler.go:263] [OnDeletePod] Iniciando a execução do OnDeletePod
+I0123 20:23:56.720235       1 scheduler.go:272] [OnDeletePod] DeepCopy realizado para o pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:56.729283       1 scheduler.go:279] [OnDeletePod] Pod deletado detectado: default/test-deployment3-6c95cffb97-zhc9h
+Detalhes do pod: &Pod{ObjectMeta:{test-deployment3-6c95cffb97-zhc9h test-deployment3-6c95cffb97- default  f2a9da9f-cd3f-4da2-b99a-3a3f68a78d88 33026 0 2025-01-23 20:18:38 +0000 UTC 2025-01-23 20:24:23 +0000 UTC 0xc00066e538 map[app:test-app3 pod-template-hash:6c95cffb97] map[controller:test-controller3] [{apps/v1 ReplicaSet test-deployment3-6c95cffb97 7e4178ab-0892-4c0a-b8b0-301ea2a4d4af 0xc00066e540 0xc00066e541}] [] [{kube-controller-manager Update v1 2025-01-23 20:18:38 +0000 UTC FieldsV1 {"f:metadata":{"f:annotations":{".":{},"f:controller":{}},"f:generateName":{},"f:labels":{".":{},"f:app":{},"f:pod-template-hash":{}},"f:ownerReferences":{".":{},"k:{\"uid\":\"7e4178ab-0892-4c0a-b8b0-301ea2a4d4af\"}":{}}},"f:spec":{"f:containers":{"k:{\"name\":\"nginx\"}":{".":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{".":{},"f:limits":{".":{},"f:cpu":{}},"f:requests":{".":{},"f:cpu":{}}},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:enableServiceLinks":{},"f:priorityClassName":{},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:terminationGracePeriodSeconds":{}}} } {custom-scheduler Update v1 2025-01-23 20:18:39 +0000 UTC FieldsV1 {"f:status":{"f:conditions":{".":{},"k:{\"type\":\"PodScheduled\"}":{".":{},"f:lastProbeTime":{},"f:lastTransitionTime":{},"f:message":{},"f:reason":{},"f:status":{},"f:type":{}}}}} status} {kubelet Update v1 2025-01-23 20:18:54 +0000 UTC FieldsV1 {"f:status":{"f:conditions":{"k:{\"type\":\"ContainersReady\"}":{".":{},"f:lastProbeTime":{},"f:lastTransitionTime":{},"f:status":{},"f:type":{}},"k:{\"type\":\"Initialized\"}":{".":{},"f:lastProbeTime":{},"f:lastTransitionTime":{},"f:status":{},"f:type":{}},"k:{\"type\":\"PodReadyToStartContainers\"}":{".":{},"f:lastProbeTime":{},"f:lastTransitionTime":{},"f:status":{},"f:type":{}},"k:{\"type\":\"Ready\"}":{".":{},"f:lastProbeTime":{},"f:lastTransitionTime":{},"f:status":{},"f:type":{}}},"f:containerStatuses":{},"f:hostIP":{},"f:hostIPs":{},"f:phase":{},"f:podIP":{},"f:podIPs":{".":{},"k:{\"ip\":\"10.244.0.47\"}":{".":{},"f:ip":{}}},"f:startTime":{}}} status}]},Spec:PodSpec{Volumes:[]Volume{Volume{Name:kube-api-access-p2vs5,VolumeSource:VolumeSource{HostPath:nil,EmptyDir:nil,GCEPersistentDisk:nil,AWSElasticBlockStore:nil,GitRepo:nil,Secret:nil,NFS:nil,ISCSI:nil,Glusterfs:nil,PersistentVolumeClaim:nil,RBD:nil,FlexVolume:nil,Cinder:nil,CephFS:nil,Flocker:nil,DownwardAPI:nil,FC:nil,AzureFile:nil,ConfigMap:nil,VsphereVolume:nil,Quobyte:nil,AzureDisk:nil,PhotonPersistentDisk:nil,PortworxVolume:nil,ScaleIO:nil,Projected:&ProjectedVolumeSource{Sources:[]VolumeProjection{VolumeProjection{Secret:nil,DownwardAPI:nil,ConfigMap:nil,ServiceAccountToken:&ServiceAccountTokenProjection{Audience:,ExpirationSeconds:*3607,Path:token,},ClusterTrustBundle:nil,},VolumeProjection{Secret:nil,DownwardAPI:nil,ConfigMap:&ConfigMapProjection{LocalObjectReference:LocalObjectReference{Name:kube-root-ca.crt,},Items:[]KeyToPath{KeyToPath{Key:ca.crt,Path:ca.crt,Mode:nil,},},Optional:nil,},ServiceAccountToken:nil,ClusterTrustBundle:nil,},VolumeProjection{Secret:nil,DownwardAPI:&DownwardAPIProjection{Items:[]DownwardAPIVolumeFile{DownwardAPIVolumeFile{Path:namespace,FieldRef:&ObjectFieldSelector{APIVersion:v1,FieldPath:metadata.namespace,},ResourceFieldRef:nil,Mode:nil,},},},ConfigMap:nil,ServiceAccountToken:nil,ClusterTrustBundle:nil,},},DefaultMode:*420,},StorageOS:nil,CSI:nil,Ephemeral:nil,Image:nil,},},},Containers:[]Container{Container{Name:nginx,Image:nginx:latest,Command:[],Args:[],WorkingDir:,Ports:[]ContainerPort{},Env:[]EnvVar{},Resources:ResourceRequirements{Limits:ResourceList{cpu: {{1 0} {<nil>} 1 DecimalSI},},Requests:ResourceList{cpu: {{1 0} {<nil>} 1 DecimalSI},},Claims:[]ResourceClaim{},},VolumeMounts:[]VolumeMount{VolumeMount{Name:kube-api-access-p2vs5,ReadOnly:true,MountPath:/var/run/secrets/kubernetes.io/serviceaccount,SubPath:,MountPropagation:nil,SubPathExpr:,RecursiveReadOnly:nil,},},LivenessProbe:nil,ReadinessProbe:nil,Lifecycle:nil,TerminationMessagePath:/dev/termination-log,ImagePullPolicy:IfNotPresent,SecurityContext:nil,Stdin:false,StdinOnce:false,TTY:false,EnvFrom:[]EnvFromSource{},TerminationMessagePolicy:File,VolumeDevices:[]VolumeDevice{},StartupProbe:nil,ResizePolicy:[]ContainerResizePolicy{},RestartPolicy:nil,},},RestartPolicy:Always,TerminationGracePeriodSeconds:*30,ActiveDeadlineSeconds:nil,DNSPolicy:ClusterFirst,NodeSelector:map[string]string{},ServiceAccountName:default,DeprecatedServiceAccount:default,NodeName:minikube,HostNetwork:false,HostPID:false,HostIPC:false,SecurityContext:&PodSecurityContext{SELinuxOptions:nil,RunAsUser:nil,RunAsNonRoot:nil,SupplementalGroups:[],FSGroup:nil,RunAsGroup:nil,Sysctls:[]Sysctl{},WindowsOptions:nil,FSGroupChangePolicy:nil,SeccompProfile:nil,AppArmorProfile:nil,SupplementalGroupsPolicy:nil,},ImagePullSecrets:[]LocalObjectReference{},Hostname:,Subdomain:,Affinity:nil,SchedulerName:custom-scheduler,InitContainers:[]Container{},AutomountServiceAccountToken:nil,Tolerations:[]Toleration{Toleration{Key:node.kubernetes.io/not-ready,Operator:Exists,Value:,Effect:NoExecute,TolerationSeconds:*300,},Toleration{Key:node.kubernetes.io/unreachable,Operator:Exists,Value:,Effect:NoExecute,TolerationSeconds:*300,},},HostAliases:[]HostAlias{},PriorityClassName:batch-priority,Priority:*7,DNSConfig:nil,ShareProcessNamespace:nil,ReadinessGates:[]PodReadinessGate{},RuntimeClassName:nil,EnableServiceLinks:*true,PreemptionPolicy:*PreemptLowerPriority,Overhead:ResourceList{},TopologySpreadConstraints:[]TopologySpreadConstraint{},EphemeralContainers:[]EphemeralContainer{},SetHostnameAsFQDN:nil,OS:nil,HostUsers:nil,SchedulingGates:[]PodSchedulingGate{},ResourceClaims:[]PodResourceClaim{},},Status:PodStatus{Phase:Running,Conditions:[]PodCondition{PodCondition{Type:PodReadyToStartContainers,Status:True,LastProbeTime:0001-01-01 00:00:00 +0000 UTC,LastTransitionTime:2025-01-23 20:18:54 +0000 UTC,Reason:,Message:,},PodCondition{Type:Initialized,Status:True,LastProbeTime:0001-01-01 00:00:00 +0000 UTC,LastTransitionTime:2025-01-23 20:18:44 +0000 UTC,Reason:,Message:,},PodCondition{Type:Ready,Status:True,LastProbeTime:0001-01-01 00:00:00 +0000 UTC,LastTransitionTime:2025-01-23 20:18:54 +0000 UTC,Reason:,Message:,},PodCondition{Type:ContainersReady,Status:True,LastProbeTime:0001-01-01 00:00:00 +0000 UTC,LastTransitionTime:2025-01-23 20:18:54 +0000 UTC,Reason:,Message:,},PodCondition{Type:PodScheduled,Status:True,LastProbeTime:0001-01-01 00:00:00 +0000 UTC,LastTransitionTime:2025-01-23 20:18:44 +0000 UTC,Reason:,Message:,},},Message:,Reason:,HostIP:192.168.39.253,PodIP:10.244.0.47,StartTime:2025-01-23 20:18:44 +0000 UTC,ContainerStatuses:[]ContainerStatus{ContainerStatus{Name:nginx,State:ContainerState{Waiting:nil,Running:&ContainerStateRunning{StartedAt:2025-01-23 20:18:51 +0000 UTC,},Terminated:nil,},LastTerminationState:ContainerState{Waiting:nil,Running:nil,Terminated:nil,},Ready:true,RestartCount:0,Image:nginx:latest,ImageID:docker-pullable://nginx@sha256:0a399eb16751829e1af26fea27b20c3ec28d7ab1fb72182879dcae1cca21206a,ContainerID:docker://f7f22656e0d17368538f60252cd84f5b69ef6e199c048f387b57d8824f796ba0,Started:*true,AllocatedResources:ResourceList{},Resources:nil,VolumeMounts:[]VolumeMountStatus{VolumeMountStatus{Name:kube-api-access-p2vs5,MountPath:/var/run/secrets/kubernetes.io/serviceaccount,ReadOnly:true,RecursiveReadOnly:*Disabled,},},User:nil,AllocatedResourcesStatus:[]ResourceStatus{},},},QOSClass:Burstable,InitContainerStatuses:[]ContainerStatus{},NominatedNodeName:,PodIPs:[]PodIP{PodIP{IP:10.244.0.47,},},EphemeralContainerStatuses:[]ContainerStatus{},Resize:,ResourceClaimStatuses:[]PodResourceClaimStatus{},HostIPs:[]HostIP{HostIP{IP:192.168.39.253,},},},}
+I0123 20:23:56.729546       1 scheduler.go:281] [OnDeletePod] Atualizando métricas do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:56.729595       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:56.729637       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-zhc9h: test-controller3
+I0123 20:23:56.729680       1 scheduler.go:283] [OnDeletePod] Verificando o estado do pod default/test-deployment3-6c95cffb97-zhc9h nas métricas
+I0123 20:23:56.729718       1 scheduler.go:293] [OnDeletePod] EndTime atualizado para o pod default/test-deployment3-6c95cffb97-zhc9h: 2025-01-23 20:23:56.729709435 +0000 UTC m=+604.627332036
+I0123 20:23:56.729838       1 scheduler.go:297] [OnDeletePod] Finalizando a execução do OnDeletePod para o pod default/test-deployment3-6c95cffb97-zhc9h
+I0123 20:23:56.747782       1 postFilter.go:69] Comparando pod original com o atualizado...
+I0123 20:23:56.747975       1 postFilter.go:76] Successfully retrieved updated pod default/test-deployment3-6c95cffb97-sns7c from lister
+I0123 20:23:56.760681       1 postFilter.go:218] [compareNodeResources] Recursos calculados no nó minikube: CPU = 750 mCPU, Memória = 178257920 bytes
+I0123 20:23:56.760757       1 postFilter.go:219] [compareNodeResources] Recursos do snapshot no nó minikube: CPU = 750 mCPU, Memória = 178257920 bytes
+I0123 20:23:56.760772       1 postFilter.go:225] [compareNodeResources] Recursos de CPU do nó minikube estão sincronizados: 750 mCPU
+I0123 20:23:56.760783       1 postFilter.go:231] [compareNodeResources] Recursos de memória do nó minikube estão sincronizados: 178257920 bytes
+I0123 20:23:56.765404       1 postFilter.go:140] [PREEMPT CALL] The node minikube  was chosen to allocate pod test-deployment3-6c95cffb97-sns7c
+I0123 20:23:56.765668       1 postFilter.go:144] [Preempt] Iniciando a remoção dos pods preemptados no nó minikube para alocar o pod default/test-deployment3-6c95cffb97-sns7c. Total de vítimas: 0
+I0123 20:23:56.765696       1 postFilter.go:164] [Preempt] Total de pods preemptados no nó minikube: 0
+I0123 20:23:56.766090       1 scheduler.go:83] [HigherPrecedence] Calculando precedência entre test-deployment3-6c95cffb97-sns7c e test-deployment2-59c6b78cd5-csvbh
+I0123 20:23:56.766105       1 scheduler.go:116] [WaitForPodsOnCache] Verificando se o pod test-deployment3-6c95cffb97-sns7c está no cache...
+I0123 20:23:56.766122       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-sns7c
+I0123 20:23:56.771058       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-sns7c
+I0123 20:23:56.771177       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-sns7c
+I0123 20:23:56.771190       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-sns7c: test-controller3
+I0123 20:23:56.771200       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-sns7c
+I0123 20:23:56.797153       1 scheduler.go:69] Estado no Informer: map[controller:test-controller3]
+I0123 20:23:56.797290       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller3]
+I0123 20:23:56.797303       1 scheduler.go:138] [WaitForPodsOnCache] Pod test-deployment3-6c95cffb97-sns7c encontrado no cache.
+I0123 20:23:56.797311       1 scheduler.go:116] [WaitForPodsOnCache] Verificando se o pod test-deployment2-59c6b78cd5-csvbh está no cache...
+I0123 20:23:56.797319       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:23:56.797326       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:23:56.797333       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:23:56.797341       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-csvbh: test-controller2
+I0123 20:23:56.797355       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:23:56.814591       1 scheduler.go:69] Estado no Informer: map[controller:test-controller2]
+I0123 20:23:56.814618       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller2]
+I0123 20:23:56.814625       1 scheduler.go:138] [WaitForPodsOnCache] Pod test-deployment2-59c6b78cd5-csvbh encontrado no cache.
+I0123 20:23:56.814632       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-sns7c
+I0123 20:23:56.814638       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-sns7c
+I0123 20:23:56.814644       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-sns7c
+I0123 20:23:56.814651       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-sns7c: test-controller3
+I0123 20:23:56.814665       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-sns7c
+I0123 20:23:56.814687       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:23:56.814692       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:23:56.814696       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:23:56.814701       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-csvbh: test-controller2
+I0123 20:23:56.814706       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:23:56.814724       1 scheduler.go:97] [HigherPrecedence] Métricas para test-deployment3-6c95cffb97-sns7c: QoS = 68.472795, Importância = 0.80
+I0123 20:23:56.814735       1 scheduler.go:98] [HigherPrecedence] Métricas para test-deployment2-59c6b78cd5-csvbh: QoS = -266.974722, Importância = 0.80
+I0123 20:23:56.814741       1 scheduler.go:109] [HigherPrecedence] Decisão final: test-deployment3-6c95cffb97-sns7c tem precedência sobre test-deployment2-59c6b78cd5-csvbh? false
+I0123 20:23:56.814756       1 postFilter.go:171] [Preempt] Verificando pods de menor precedência no nó minikube que precisam ter o campo NominatedNodeName limpo
+I0123 20:23:56.814771       1 postFilter.go:181] [Preempt] Finalizado para o nó minikube. Pod default/test-deployment3-6c95cffb97-sns7c deve ser alocado agora.
+I0123 20:23:56.878905       1 scheduler.go:247] [OnUpdatePod] Pod atualizado: default/test-deployment3-6c95cffb97-sns7c, Anotações: map[controller:test-controller3]
+I0123 20:23:56.883938       1 scheduler.go:69] Estado no Informer: map[controller:test-controller3]
+I0123 20:23:56.884130       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller3]
+I0123 20:23:56.886164       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-sns7c
+I0123 20:23:56.886242       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-sns7c: test-controller3
+I0123 20:24:02.421948       1 postFilter.go:69] Comparando pod original com o atualizado...
+I0123 20:24:02.421999       1 postFilter.go:76] Successfully retrieved updated pod default/test-deployment2-59c6b78cd5-csvbh from lister
+I0123 20:24:02.430498       1 postFilter.go:218] [compareNodeResources] Recursos calculados no nó minikube: CPU = 750 mCPU, Memória = 178257920 bytes
+I0123 20:24:02.430544       1 postFilter.go:219] [compareNodeResources] Recursos do snapshot no nó minikube: CPU = 750 mCPU, Memória = 178257920 bytes
+I0123 20:24:02.430553       1 postFilter.go:225] [compareNodeResources] Recursos de CPU do nó minikube estão sincronizados: 750 mCPU
+I0123 20:24:02.430561       1 postFilter.go:231] [compareNodeResources] Recursos de memória do nó minikube estão sincronizados: 178257920 bytes
+I0123 20:24:02.430784       1 postFilter.go:140] [PREEMPT CALL] The node minikube  was chosen to allocate pod test-deployment2-59c6b78cd5-csvbh
+I0123 20:24:02.430810       1 postFilter.go:144] [Preempt] Iniciando a remoção dos pods preemptados no nó minikube para alocar o pod default/test-deployment2-59c6b78cd5-csvbh. Total de vítimas: 0
+I0123 20:24:02.430825       1 postFilter.go:164] [Preempt] Total de pods preemptados no nó minikube: 0
+W0123 20:24:02.431211       1 scheduler.go:78] [HigherPrecedence] Tentativa de comparar o pod test-deployment2-59c6b78cd5-csvbh consigo mesmo. Retornando false.
+I0123 20:24:02.431265       1 scheduler.go:83] [HigherPrecedence] Calculando precedência entre test-deployment2-59c6b78cd5-csvbh e test-deployment3-6c95cffb97-sns7c
+I0123 20:24:02.431273       1 scheduler.go:116] [WaitForPodsOnCache] Verificando se o pod test-deployment2-59c6b78cd5-csvbh está no cache...
+I0123 20:24:02.431289       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:24:02.431295       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:24:02.431309       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:24:02.431315       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-csvbh: test-controller2
+I0123 20:24:02.431322       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:24:02.444401       1 scheduler.go:69] Estado no Informer: map[controller:test-controller2]
+I0123 20:24:02.444455       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller2]
+I0123 20:24:02.444465       1 scheduler.go:138] [WaitForPodsOnCache] Pod test-deployment2-59c6b78cd5-csvbh encontrado no cache.
+I0123 20:24:02.444471       1 scheduler.go:116] [WaitForPodsOnCache] Verificando se o pod test-deployment3-6c95cffb97-sns7c está no cache...
+I0123 20:24:02.444478       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-sns7c
+I0123 20:24:02.444484       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-sns7c
+I0123 20:24:02.444489       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-sns7c
+I0123 20:24:02.444546       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-sns7c: test-controller3
+I0123 20:24:02.444561       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-sns7c
+I0123 20:24:02.456499       1 scheduler.go:69] Estado no Informer: map[controller:test-controller3]
+I0123 20:24:02.456542       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller3]
+I0123 20:24:02.456555       1 scheduler.go:138] [WaitForPodsOnCache] Pod test-deployment3-6c95cffb97-sns7c encontrado no cache.
+I0123 20:24:02.456567       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:24:02.456578       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:24:02.456589       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:24:02.456600       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment2-59c6b78cd5-csvbh: test-controller2
+I0123 20:24:02.456611       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment2-59c6b78cd5-csvbh
+I0123 20:24:02.456650       1 scheduler.go:578] [GetControllerMetricInfo] Iniciando para o pod: default/test-deployment3-6c95cffb97-sns7c
+I0123 20:24:02.456661       1 scheduler.go:583] [GetControllerMetricInfo] Obtendo o nome do controlador para o pod: default/test-deployment3-6c95cffb97-sns7c
+I0123 20:24:02.456670       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-sns7c
+I0123 20:24:02.456680       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-sns7c: test-controller3
+I0123 20:24:02.456690       1 scheduler.go:586] [GetControllerMetricInfo] Métricas do controlador definidas para o pod: default/test-deployment3-6c95cffb97-sns7c
+I0123 20:24:02.456722       1 scheduler.go:97] [HigherPrecedence] Métricas para test-deployment2-59c6b78cd5-csvbh: QoS = -272.640002, Importância = 0.80
+I0123 20:24:02.456739       1 scheduler.go:98] [HigherPrecedence] Métricas para test-deployment3-6c95cffb97-sns7c: QoS = 62.807515, Importância = 0.80
+I0123 20:24:02.456752       1 scheduler.go:109] [HigherPrecedence] Decisão final: test-deployment2-59c6b78cd5-csvbh tem precedência sobre test-deployment3-6c95cffb97-sns7c? true
+I0123 20:24:02.456784       1 postFilter.go:171] [Preempt] Verificando pods de menor precedência no nó minikube que precisam ter o campo NominatedNodeName limpo
+I0123 20:24:02.456816       1 postFilter.go:173] [Preempt] Limpando o campo NominatedNodeName do pod default/test-deployment3-6c95cffb97-sns7c
+I0123 20:24:02.684164       1 postFilter.go:181] [Preempt] Finalizado para o nó minikube. Pod default/test-deployment2-59c6b78cd5-csvbh deve ser alocado agora.
+I0123 20:24:02.685495       1 scheduler.go:247] [OnUpdatePod] Pod atualizado: default/test-deployment3-6c95cffb97-sns7c, Anotações: map[controller:test-controller3]
+I0123 20:24:02.716130       1 scheduler.go:69] Estado no Informer: map[controller:test-controller3]
+I0123 20:24:02.716420       1 scheduler.go:70] Estado real no cluster: map[controller:test-controller3]
+I0123 20:24:02.716439       1 types.go:743] [ControllerName] Verificando as anotações do pod default/test-deployment3-6c95cffb97-sns7c
+I0123 20:24:02.716448       1 types.go:761] [ControllerName] Anotação 'controller' encontrada para o pod default/test-deployment3-6c95cffb97-sns7c: test-controller3

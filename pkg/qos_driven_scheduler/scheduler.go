@@ -220,7 +220,7 @@ func (scheduler *QosDrivenScheduler) OnAddPod(obj interface{}) {
 	}
 
 	start := p.GetCreationTimestamp().Time
-	klog.V(1).Infof("Pods %s being added:\n%s", PodName(p), p.String())
+	klog.Infof("Pods %s being added:\n%s", PodName(p), p.String())
 
 	// CreationTimestamp is marked as +optional in the API, so we put this fallback
 	if start.IsZero() {
@@ -243,44 +243,70 @@ func (scheduler *QosDrivenScheduler) OnAddPod(obj interface{}) {
 }
 
 func (scheduler *QosDrivenScheduler) OnUpdatePod(_, newObj interface{}) {
-	p := newObj.(*corev1.Pod).DeepCopy()
-	klog.Infof("[OnUpdatePod] Pod atualizado: %s/%s, Anotações: %+v", p.Namespace, p.Name, p.Annotations)
+	klog.Infof("[OnUpdatePod] Iniciando processamento de atualização de pod")
 
-	// Comparar o estado no Informer com o estado real no cluster
+	// Criando uma cópia do pod atualizado
+	p := newObj.(*corev1.Pod).DeepCopy()
+	klog.Infof("[OnUpdatePod] Pod atualizado detectado: %s/%s, Anotações: %+v", p.Namespace, p.Name, p.Annotations)
+
+	// Comparando o estado no Informer com o estado real no cluster
+	klog.Infof("[OnUpdatePod] Comparando estado no Informer e estado real no cluster para o pod %s/%s", p.Namespace, p.Name)
 	scheduler.CompareInformerAndRealState(p)
 
+	// Ignorando pods no namespace kube-system
 	if p.Namespace == "kube-system" {
+		klog.Infof("[OnUpdatePod] Pod %s/%s pertence ao namespace 'kube-system'. Ignorando...", p.Namespace, p.Name)
 		return
 	}
 
+	// Atualizando informações de métricas do pod
+	klog.Infof("[OnUpdatePod] Atualizando informações de métricas para o pod %s/%s", p.Namespace, p.Name)
 	scheduler.UpdatePodMetricInfo(p, func(pMetricInfo PodMetricInfo) PodMetricInfo {
+		klog.Infof("[OnUpdatePod] Atualizando 'LastStatus' do pod %s/%s nas métricas", p.Namespace, p.Name)
 		pMetricInfo.LastStatus = p
+		klog.Infof("[OnUpdatePod] Métrica atualizada para o pod %s/%s: %+v", p.Namespace, p.Name, pMetricInfo)
 		return pMetricInfo
 	})
+
+	klog.Infof("[OnUpdatePod] Finalizando processamento de atualização de pod para %s/%s", p.Namespace, p.Name)
 }
 
 func (scheduler *QosDrivenScheduler) OnDeletePod(lastState interface{}) {
+	klog.Infof("[OnDeletePod] Iniciando a execução do OnDeletePod")
+
 	p, ok := lastState.(*corev1.Pod)
 	if !ok {
-		klog.V(1).Infof("last state from deleted pod was unknown")
+		klog.Warningf("[OnDeletePod] O estado anterior do pod deletado é desconhecido")
 		return
 	}
-	p = p.DeepCopy()
-	if p.Namespace == "kube-system" {
-		return
-	}
-	klog.V(1).Infof("Pod %s deleted:\n%s", PodName(p), p.String())
 
+	p = p.DeepCopy()
+	klog.Infof("[OnDeletePod] DeepCopy realizado para o pod %s/%s", p.Namespace, p.Name)
+
+	if p.Namespace == "kube-system" {
+		klog.Infof("[OnDeletePod] Pod %s/%s pertence ao namespace 'kube-system'. Ignorando...", p.Namespace, p.Name)
+		return
+	}
+
+	klog.Infof("[OnDeletePod] Pod deletado detectado: %s/%s\nDetalhes do pod: %s", p.Namespace, p.Name, p.String())
+
+	klog.Infof("[OnDeletePod] Atualizando métricas do pod %s/%s", p.Namespace, p.Name)
 	scheduler.UpdatePodMetricInfo(p, func(pMetricInfo PodMetricInfo) PodMetricInfo {
+		klog.Infof("[OnDeletePod] Verificando o estado do pod %s/%s nas métricas", p.Namespace, p.Name)
+
 		// if pod was succeeded terminate, its endTime has already been set
 		if pMetricInfo.IsSucceeded {
+			klog.Infof("[OnDeletePod] Pod %s/%s já foi marcado como 'Succeeded'. Nenhuma ação necessária.", p.Namespace, p.Name)
 			return pMetricInfo
 		}
 
 		// pod is being deleted at this moment
 		pMetricInfo.EndTime = time.Now()
+		klog.Infof("[OnDeletePod] EndTime atualizado para o pod %s/%s: %v", p.Namespace, p.Name, pMetricInfo.EndTime)
 		return pMetricInfo
 	})
+
+	klog.Infof("[OnDeletePod] Finalizando a execução do OnDeletePod para o pod %s/%s", p.Namespace, p.Name)
 }
 
 func (scheduler *QosDrivenScheduler) UpdatePodMetricInfo(pod *corev1.Pod, f func(PodMetricInfo) PodMetricInfo) {
@@ -288,7 +314,7 @@ func (scheduler *QosDrivenScheduler) UpdatePodMetricInfo(pod *corev1.Pod, f func
 	defer scheduler.lock.Unlock()
 
 	if pod.Namespace == "kube-system" {
-		klog.V(1).Infof("Pod %s is from kube-system namespace. There is no need to update podMetricInfo.", pod.Name)
+		klog.Infof("Pod %s is from kube-system namespace. There is no need to update podMetricInfo.", pod.Name)
 		return
 	}
 
