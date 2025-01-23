@@ -175,40 +175,51 @@ func (scheduler *QosDrivenScheduler) preempt(ctx context.Context, state *framewo
 
 func (scheduler *QosDrivenScheduler) compareNodeResources(nodeName string) {
 	// Obter informações do nó diretamente do API Server
-	node, err := scheduler.fh.ClientSet().CoreV1().Nodes().Get(context.TODO(), nodeName, metav1.GetOptions{})
+	_, err := scheduler.fh.ClientSet().CoreV1().Nodes().Get(context.TODO(), nodeName, metav1.GetOptions{})
 	if err != nil {
-		klog.Errorf("Erro ao obter informações do nó %s do API Server: %v", nodeName, err)
+		klog.Errorf("[compareNodeResources] Erro ao obter informações do nó %s do API Server: %v", nodeName, err)
 		return
 	}
 
 	// Obter informações do nó do snapshot do scheduler
 	nodeInfo, err := scheduler.fh.SnapshotSharedLister().NodeInfos().Get(nodeName)
 	if err != nil {
-		klog.Errorf("Erro ao obter informações do nó %s do snapshot do scheduler: %v", nodeName, err)
+		klog.Errorf("[compareNodeResources] Erro ao obter informações do nó %s do snapshot do scheduler: %v", nodeName, err)
 		return
 	}
 
-	// Extrair recursos alocáveis do NodeInfo (do snapshot do scheduler)
-	snapshotCPU := nodeInfo.Allocatable.MilliCPU
-	snapshotMemory := nodeInfo.Allocatable.Memory
-
-	// Extrair recursos alocáveis do objeto Node (diretamente do API Server)
-	allocatableFromNode := node.Status.Allocatable
-	apiServerCPU := allocatableFromNode[core.ResourceCPU]
-	apiServerMemory := allocatableFromNode[core.ResourceMemory]
-
-	// Comparar CPU
-	if snapshotCPU != apiServerCPU.MilliValue() {
-		klog.Warningf("Desincronização detectada no recurso CPU do nó %s: Snapshot = %d mCPU, API Server = %d mCPU", nodeName, snapshotCPU, apiServerCPU.MilliValue())
-	} else {
-		klog.Infof("Recursos CPU do nó %s estão sincronizados: %d mCPU", nodeName, snapshotCPU)
+	// Cálculo manual dos recursos alocados
+	var calculatedCPU, calculatedMemory int64
+	for _, podInfo := range nodeInfo.Pods {
+		for _, container := range podInfo.Pod.Spec.Containers {
+			if cpuRequest, ok := container.Resources.Requests[core.ResourceCPU]; ok {
+				calculatedCPU += cpuRequest.MilliValue()
+			}
+			if memRequest, ok := container.Resources.Requests[core.ResourceMemory]; ok {
+				calculatedMemory += memRequest.Value()
+			}
+		}
 	}
 
-	// Comparar Memória
-	if snapshotMemory != apiServerMemory.Value() {
-		klog.Warningf("Desincronização detectada no recurso Memória do nó %s: Snapshot = %d bytes, API Server = %d bytes", nodeName, snapshotMemory, apiServerMemory.Value())
+	// Obter informações alocadas do snapshot
+	snapshotCPU := nodeInfo.Requested.MilliCPU
+	snapshotMemory := nodeInfo.Requested.Memory
+
+	// Logs detalhados para análise
+	klog.Infof("[compareNodeResources] Recursos calculados no nó %s: CPU = %d mCPU, Memória = %d bytes", nodeName, calculatedCPU, calculatedMemory)
+	klog.Infof("[compareNodeResources] Recursos do snapshot no nó %s: CPU = %d mCPU, Memória = %d bytes", nodeName, snapshotCPU, snapshotMemory)
+
+	// Comparar o cálculo manual com o snapshot
+	if snapshotCPU != calculatedCPU {
+		klog.Warningf("[compareNodeResources] Desincronização detectada no CPU alocado do nó %s: Snapshot = %d mCPU, Calculado = %d mCPU", nodeName, snapshotCPU, calculatedCPU)
 	} else {
-		klog.Infof("Recursos Memória do nó %s estão sincronizados: %d bytes", nodeName, snapshotMemory)
+		klog.Infof("[compareNodeResources] Recursos de CPU do nó %s estão sincronizados: %d mCPU", nodeName, snapshotCPU)
+	}
+
+	if snapshotMemory != calculatedMemory {
+		klog.Warningf("[compareNodeResources] Desincronização detectada na memória alocada do nó %s: Snapshot = %d bytes, Calculado = %d bytes", nodeName, snapshotMemory, calculatedMemory)
+	} else {
+		klog.Infof("[compareNodeResources] Recursos de memória do nó %s estão sincronizados: %d bytes", nodeName, snapshotMemory)
 	}
 }
 
