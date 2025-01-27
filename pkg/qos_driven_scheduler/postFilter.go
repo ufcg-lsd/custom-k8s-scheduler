@@ -26,6 +26,7 @@ var _ framework.PostFilterPlugin = &QosDrivenScheduler{}
 // It is called to a pod after it failed at filtering phase.
 // It will try to make room for the pod by preempting lower precedence pods.
 func (scheduler *QosDrivenScheduler) PostFilter(ctx context.Context, state *framework.CycleState, pod *core.Pod, m framework.NodeToStatusMap) (*framework.PostFilterResult, *framework.Status) {
+	klog.Infof("[PostFilter] PostFilter chamado para pod: %s/%s", pod.Namespace, pod.Name)
 
 	//	preemptionStartTime := time.Now()
 	defer func() {
@@ -36,11 +37,17 @@ func (scheduler *QosDrivenScheduler) PostFilter(ctx context.Context, state *fram
 
 	nominatedNode, err := scheduler.preempt(ctx, state, pod, m)
 	if err != nil {
+		klog.Errorf("[PostFilter] Erro durante a preempção: %v", err)
 		return nil, framework.NewStatus(framework.Error, err.Error())
 	}
+
 	if nominatedNode == "" {
+		klog.Warningf("[PostFilter] Nenhum nó nominado após a preempção para o pod: %s/%s", pod.Namespace, pod.Name)
 		return nil, framework.NewStatus(framework.Unschedulable)
 	}
+
+	klog.Infof("[PostFilter] Nó nominado para o pod %s/%s: %s", pod.Namespace, pod.Name, nominatedNode)
+
 	return framework.NewPostFilterResultWithNominatedNode(nominatedNode), framework.NewStatus(framework.Success)
 }
 

@@ -34,6 +34,7 @@ type QosDrivenScheduler struct {
 	Controllers map[string]ControllerMetricInfo
 	lock        sync.RWMutex
 	PodLister   corelisters.PodLister
+	mu          sync.Mutex
 }
 
 // Garantindo que QosDrivenScheduler implementa as interfaces necessárias
@@ -209,6 +210,10 @@ func (scheduler *QosDrivenScheduler) PostBind(ctx context.Context, state *framew
 }
 
 func (scheduler *QosDrivenScheduler) OnAddPod(obj interface{}) {
+
+	scheduler.mu.Lock()
+	defer scheduler.mu.Unlock()
+
 	p := obj.(*corev1.Pod).DeepCopy()
 	klog.Infof("[OnAddPod] Pod adicionado: %s/%s, Anotações: %+v", p.Namespace, p.Name, p.Annotations)
 
@@ -216,18 +221,21 @@ func (scheduler *QosDrivenScheduler) OnAddPod(obj interface{}) {
 	scheduler.CompareInformerAndRealState(p)
 
 	if p.Namespace == "kube-system" {
+		klog.Infof("[OnAddPod] Ignorando pod %s/%s pois pertence ao namespace kube-system", p.Namespace, p.Name)
 		return
 	}
 
 	start := p.GetCreationTimestamp().Time
-	klog.Infof("Pods %s being added:\n%s", PodName(p), p.String())
+	klog.Infof("[OnAddPod] Adicionando pod %s/%s com os seguintes detalhes:\n%s", p.Namespace, p.Name, p.String())
 
 	// CreationTimestamp is marked as +optional in the API, so we put this fallback
 	if start.IsZero() {
 		start = time.Now()
+		klog.Infof("[OnAddPod] Timestamp de criação não definido para o pod %s/%s, usando o horário atual: %v", p.Namespace, p.Name, start)
 	}
 
 	scheduler.UpdatePodMetricInfo(p, func(pMetricInfo PodMetricInfo) PodMetricInfo {
+		klog.Infof("[OnAddPod] Atualizando métricas para o pod %s/%s", p.Namespace, p.Name)
 		pMetricInfo.ControllerName = ControllerName(p)
 		pMetricInfo.LastStatus = p
 		pMetricInfo.CreationTime = start
@@ -235,14 +243,18 @@ func (scheduler *QosDrivenScheduler) OnAddPod(obj interface{}) {
 		// pod starts running at this moment
 		if pMetricInfo.StartRunningTime.IsZero() && p.Status.Phase == corev1.PodRunning {
 			pMetricInfo.StartRunningTime = time.Now()
+			klog.Infof("[OnAddPod] Pod %s/%s entrou no estado Running", p.Namespace, p.Name)
 		}
 
 		return pMetricInfo
 	})
-	klog.V(1).Infof("Pods %s added successfully", PodName(p))
+	klog.Infof("[OnAddPod] Pod %s/%s adicionado com sucesso", p.Namespace, p.Name)
 }
 
 func (scheduler *QosDrivenScheduler) OnUpdatePod(_, newObj interface{}) {
+	scheduler.mu.Lock()
+	defer scheduler.mu.Unlock()
+
 	klog.Infof("[OnUpdatePod] Iniciando processamento de atualização de pod")
 
 	// Criando uma cópia do pod atualizado
@@ -264,7 +276,7 @@ func (scheduler *QosDrivenScheduler) OnUpdatePod(_, newObj interface{}) {
 	scheduler.UpdatePodMetricInfo(p, func(pMetricInfo PodMetricInfo) PodMetricInfo {
 		klog.Infof("[OnUpdatePod] Atualizando 'LastStatus' do pod %s/%s nas métricas", p.Namespace, p.Name)
 		pMetricInfo.LastStatus = p
-		klog.Infof("[OnUpdatePod] Métrica atualizada para o pod %s/%s: %+v", p.Namespace, p.Name, pMetricInfo)
+		klog.Infof("[OnUpdatePod] Métrica atualizada para o pod %s/%s", p.Namespace, p.Name)
 		return pMetricInfo
 	})
 
@@ -272,6 +284,10 @@ func (scheduler *QosDrivenScheduler) OnUpdatePod(_, newObj interface{}) {
 }
 
 func (scheduler *QosDrivenScheduler) OnDeletePod(lastState interface{}) {
+
+	scheduler.mu.Lock()
+	defer scheduler.mu.Unlock()
+
 	klog.Infof("[OnDeletePod] Iniciando a execução do OnDeletePod")
 
 	p, ok := lastState.(*corev1.Pod)
