@@ -20,6 +20,7 @@ spec:
         - /custom-scheduler                
         args:
         - --config=/etc/kubernetes/scheduler-config.yaml
+        - --pod-max-in-unschedulable-pods-duration=10s
         volumeMounts:
         - mountPath: /etc/kubernetes       
           name: config-volume
