@@ -8,11 +8,11 @@ Este repositório contém o código atualizado para o sistema QoS-Driven Schedul
 
 ### Status Atual
 
-Atualmente o scheduler possui os plugins de PreBind, PostBind e Reserve. 
+Atualmente todos os plugins foram implementados.
 
 ### Próximos Passos
 
-Serão adicionados os plugins de QueueSort e PostFilter.
+Será realizado testes em maior escala para verificar o funcionamento do scheduler.
 
 ## Comandos Úteis
 
