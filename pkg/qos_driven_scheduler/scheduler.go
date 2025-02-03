@@ -34,15 +34,14 @@ type QosDrivenScheduler struct {
 	Controllers map[string]ControllerMetricInfo
 	lock        sync.RWMutex
 	PodLister   corelisters.PodLister
-	mu          sync.Mutex
 }
 
 // Garantindo que QosDrivenScheduler implementa as interfaces necessárias
-var _ framework.QueueSortPlugin = &QosDrivenScheduler{}
-var _ framework.ReservePlugin = &QosDrivenScheduler{}  // Feito
-var _ framework.PreBindPlugin = &QosDrivenScheduler{}  // Feito
-var _ framework.PostBindPlugin = &QosDrivenScheduler{} // Feito
-var _ framework.PostFilterPlugin = &QosDrivenScheduler{}
+var _ framework.QueueSortPlugin = &QosDrivenScheduler{}  //Feito
+var _ framework.ReservePlugin = &QosDrivenScheduler{}    // Feito
+var _ framework.PreBindPlugin = &QosDrivenScheduler{}    // Feito
+var _ framework.PostBindPlugin = &QosDrivenScheduler{}   // Feito
+var _ framework.PostFilterPlugin = &QosDrivenScheduler{} //Feito
 
 // Name retorna o nome do plugin
 func (scheduler *QosDrivenScheduler) Name() string {
@@ -211,9 +210,6 @@ func (scheduler *QosDrivenScheduler) PostBind(ctx context.Context, state *framew
 
 func (scheduler *QosDrivenScheduler) OnAddPod(obj interface{}) {
 
-	scheduler.mu.Lock()
-	defer scheduler.mu.Unlock()
-
 	p := obj.(*corev1.Pod).DeepCopy()
 	klog.Infof("[OnAddPod] Pod adicionado: %s/%s, Anotações: %+v", p.Namespace, p.Name, p.Annotations)
 
@@ -252,8 +248,6 @@ func (scheduler *QosDrivenScheduler) OnAddPod(obj interface{}) {
 }
 
 func (scheduler *QosDrivenScheduler) OnUpdatePod(_, newObj interface{}) {
-	scheduler.mu.Lock()
-	defer scheduler.mu.Unlock()
 
 	klog.Infof("[OnUpdatePod] Iniciando processamento de atualização de pod")
 
@@ -284,9 +278,6 @@ func (scheduler *QosDrivenScheduler) OnUpdatePod(_, newObj interface{}) {
 }
 
 func (scheduler *QosDrivenScheduler) OnDeletePod(lastState interface{}) {
-
-	scheduler.mu.Lock()
-	defer scheduler.mu.Unlock()
 
 	klog.Infof("[OnDeletePod] Iniciando a execução do OnDeletePod")
 

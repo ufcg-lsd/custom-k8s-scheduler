@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: test-deployment3
+  name: onepending
   labels:
-    app: test-app3
+    app: one-pending1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: test-app3
+      app: one-pending1
   template:
     metadata:
       labels:
-        app: test-app3
+        app: one-pending1
       annotations:
-        controller: "test-controller3"  # Nome do controlador no experimento
+        controller: "onepending-controller"  # Nome do controlador no experimento
         qosMeasuring: "average"  
         acceptablePreemptionOverhead: "1.00"
     spec:
@@ -26,9 +26,9 @@ spec:
         imagePullPolicy: IfNotPresent
         resources:
           requests:
-            cpu: "700m"
-            memory: "268Mi"
+            cpu: "63m"
+            memory: "10Mi"
           limits:
-            cpu: "700m"
-            memory: "268Mi"
+            cpu: "63m"
+            memory: "10Mi"
       schedulerName: custom-scheduler

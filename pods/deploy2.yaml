@@ -16,7 +16,7 @@ spec:
       annotations:
         controller: "test-controller2"  # Nome do controlador no experimento
         qosMeasuring: "average"  
-        acceptablePreemptionOverhead: "10"
+        acceptablePreemptionOverhead: "0.05"
     spec:
       priorityClassName: batch-priority
       terminationGracePeriodSeconds: 0
