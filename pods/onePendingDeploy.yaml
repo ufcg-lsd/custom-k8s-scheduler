@@ -5,7 +5,7 @@ metadata:
   labels:
     app: one-pending1
 spec:
-  replicas: 21
+  replicas: 2
   selector:
     matchLabels:
       app: one-pending1
@@ -15,8 +15,8 @@ spec:
         app: one-pending1
       annotations:
         controller: "onepending-controller"  # Nome do controlador no experimento
-        qosMeasuring: "average"  
-        acceptablePreemptionOverhead: "1.00"
+        qosMeasuring: "independent"  
+        acceptablePreemptionOverhead: "0.05"
         slo: "0.8"
     spec:
       priorityClassName: batch-priority
@@ -27,7 +27,7 @@ spec:
         imagePullPolicy: IfNotPresent
         resources:
           requests:
-            cpu: "62m"
+            cpu: "8000m"
           limits:
-            cpu: "62m"
+            cpu: "8000m"
       schedulerName: custom-scheduler

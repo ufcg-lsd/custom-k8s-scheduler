@@ -10,6 +10,11 @@ require (
 )
 
 require (
+	github.com/influxdata/tdigest v0.0.1 // indirect
+	github.com/tsenart/vegeta v12.7.0+incompatible // indirect
+)
+
+require (
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
 	github.com/NYTimes/gziphandler v1.1.1 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect

@@ -525,11 +525,17 @@ func (cMetrics *ControllerMetrics) QoS() float64 {
 	discardedRunning := cMetrics.DiscardedRunningTime.Seconds()
 	waiting := cMetrics.WaitingTime.Seconds()
 	binding := cMetrics.BindingTime.Seconds()
-	result := effectiveRunning / (effectiveRunning + discardedRunning + waiting + binding)
 
-	if math.IsNaN(result) {
-		return 0
-	}
+	denominator := effectiveRunning + discardedRunning + waiting + binding
+
+	// Log dos valores utilizados no cálculo
+	klog.Infof("[QoS DEBUG] effectiveRunning: %f | discardedRunning: %f | waiting: %f | binding: %f | denominator: %f",
+		effectiveRunning, discardedRunning, waiting, binding, denominator)
+
+	result := effectiveRunning / denominator
+
+	// Log do resultado inicial
+	klog.Infof("[QoS DEBUG] QoS calculado: %f", result)
 
 	return result
 }

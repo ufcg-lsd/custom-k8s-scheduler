@@ -26,9 +26,9 @@ spec:
         imagePullPolicy: IfNotPresent
         resources:
           requests:
-            cpu: "700m"
+            cpu: "8000m"
             memory: "268Mi"
           limits:
-            cpu: "700m"
+            cpu: "8000m"
             memory: "268Mi"
       schedulerName: custom-scheduler
