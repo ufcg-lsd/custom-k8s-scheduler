@@ -543,6 +543,8 @@ func (cMetrics *ControllerMetrics) QoS() float64 {
 func (cMetrics *ControllerMetrics) QoSMetric(pod *core.Pod) float64 {
 	qosMeasuringApproach := cMetrics.QoSMeasuringApproach
 
+	klog.Infof("[QoSMetric] qosMeasuringApproach: %s", qosMeasuringApproach)
+
 	switch qosMeasuringApproach {
 	case AverageQoSMeasuring:
 		return CalculateQoSMetricBasedOnAverageApproach(cMetrics, pod)
@@ -606,7 +608,7 @@ func CalculateQoSMetricBasedOnAverageApproach(cMetrics *ControllerMetrics, pod *
 			qosMetric = (effectiveRuntime-slo*(effectiveRuntime+pendingTime+bindingTime))/((float64(nRunning+nWaiting)*slo)-float64(residualContribution)) - estimatedOverhead
 		}
 	}
-	klog.V(1).Infof("[COMPUTE QoS METRIC - AVERAGE] The pod %s: availability %f | runtime %f | pendingTime %f | nRunning: %d | nWaiting: %d | residualContr %d | estimatedOverhead %f | QoSMetric %f",
+	klog.Infof("[COMPUTE QoS METRIC - AVERAGE] The pod %s: availability %f | runtime %f | pendingTime %f | nRunning: %d | nWaiting: %d | residualContr %d | estimatedOverhead %f | QoSMetric %f",
 		pod.Name, availability, effectiveRuntime, pendingTime, nRunning, nWaiting, residualContribution, estimatedOverhead, qosMetric)
 	return qosMetric
 }

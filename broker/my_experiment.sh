@@ -32,7 +32,7 @@ while [  $COUNTER -ne 0 ]; do
         AGGR_TIME=$((AGGR_TIME+1))
         COUNTER=`kubectl get pods | grep -v resources | wc -l`
 
-        echo "waiting for "$AGG_TIME" seconds."
+        echo "waiting for "$AGGR_TIME" seconds."
         if [ $AGGR_TIME -gt $MAX_DURATION ]
         then
                 echo "Deleting all deployments, services and jobs from default namespace"
@@ -47,22 +47,25 @@ echo "We will copy the result file from scheduler to local storage."
 
 sleep 10
 
-#kubectl cp kube-system/$SCHPOD:/metrics.log data/$OUTPUT_BASE/metrics.log
-#cp $HOME/*.latency data/$OUTPUT_BASE/
-#
-#cp $HOME/serviceapplication.dat data/$OUTPUT_BASE/
-#
-#sleep 1
-#
-#Rscript ../R/compute_final_availability.r data/$OUTPUT_BASE/metrics.log data/$OUTPUT_BASE/final-controllers-qos.csv
-#
-#Rscript ../R/compute_makespan.r data/$OUTPUT_BASE/metrics.log data/$OUTPUT_BASE/job-qos-metrics.csv
-#
-#Rscript ../R/compute_service_metrics.r data/$OUTPUT_BASE/
-#
+kubectl cp kube-system/$SCHPOD:/metrics.log data/$OUTPUT_BASE/metrics.log
+cp $HOME/*.latency data/$OUTPUT_BASE/
+
+cp $HOME/serviceapplication.dat data/$OUTPUT_BASE/
+
+echo "Output base directory: data/$OUTPUT_BASE"
+
+
+sleep 1
+
+Rscript ../R/compute_final_availability.r data/$OUTPUT_BASE/metrics.log data/$OUTPUT_BASE/final-controllers-qos.csv
+
+Rscript ../R/compute_makespan.r data/$OUTPUT_BASE/metrics.log data/$OUTPUT_BASE/job-qos-metrics.csv
+
+Rscript ../R/compute_service_metrics.r data/$OUTPUT_BASE/
+
 ## probably to be used with new broker-exp.go file
 ##Rscript ../R/compute_service_metrics_diff_moments.r data/$OUTPUT_BASE/
 #
 ##kubectl cp /dev/null kube-system/$SCHPOD:/metrics.log
-#rm $HOME/*.latency
+rm $HOME/*.latency
 

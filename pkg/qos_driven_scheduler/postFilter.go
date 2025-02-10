@@ -101,13 +101,23 @@ func (scheduler *QosDrivenScheduler) preempt(ctx context.Context, state *framewo
 	}
 
 	potentialNodes := nodesWherePreemptionMightHelp(allNodes, m)
+	klog.Infof("[Preempt] Verificando se é necessário limpar NominatedNodeName do pod %s/%s antes de continuar.", pod.Namespace, pod.Name)
 	if len(potentialNodes) == 0 {
 		klog.V(3).Infof("Preemption will not help schedule pod %v/%v on any node.", pod.Namespace, pod.Name)
 		// In this case, we should clean-up any existing nominated node name of the pod.
+		klog.Infof("[Preempt] Limpando NominatedNodeName do pod %s/%s pois nenhum nó foi encontrado para preempção.", pod.Namespace, pod.Name)
 		if err := util.ClearNominatedNodeName(ctx, cs, pod); err != nil {
 			klog.Errorf("Cannot clear 'NominatedNodeName' field of pod %v/%v: %v", pod.Namespace, pod.Name, err)
 			// We do not return as this error is not critical.
+		} else {
+			klog.Infof("[Preempt] NominatedNodeName do pod %s/%s removido com sucesso.", pod.Namespace, pod.Name)
 		}
+
+		// 🚀 SOLICITA REAVALIAÇÃO DO POD APÓS PREEMPÇÃO
+		klog.Infof("[Preempt] Solicitando reavaliação do pod %s/%s via evento.", pod.Namespace, pod.Name)
+		fh.EventRecorder().Eventf(pod, nil, core.EventTypeNormal, "PreemptionReevaluation", "Reevaluating", "Reevaluating pod %s/%s after preemption", pod.Namespace, pod.Name)
+
+		klog.Infof("[Preempt] Após limpeza do NominatedNodeName, o pod %s/%s deve retornar para a ActiveQueue.", pod.Namespace, pod.Name)
 		return "", nil
 	}
 	if klog.V(5).Enabled() {
@@ -181,12 +191,26 @@ func (scheduler *QosDrivenScheduler) preempt(ctx context.Context, state *framewo
 		klog.Infof("[Preempt] Limpando o campo NominatedNodeName do pod %s/%s", nominatedPod.Namespace, nominatedPod.Name)
 	}
 
+	klog.Infof("[Preempt] Limpando NominatedNodeName dos pods de menor precedência no nó %s para evitar conflito com o pod %s/%s.", candidateNode, pod.Namespace, pod.Name)
 	if err := util.ClearNominatedNodeName(ctx, cs, nominatedPods...); err != nil {
 		klog.Errorf("[Preempt] Erro ao limpar o campo NominatedNodeName dos pods: %v", err)
 		// We do not return as this error is not critical.
+	} else {
+		klog.Infof("[Preempt] NominatedNodeName dos pods de menor precedência no nó %s removido com sucesso.", candidateNode)
 	}
 
 	klog.Infof("[Preempt] Finalizado para o nó %v. Pod %s/%s deve ser alocado agora.", candidateNode, pod.Namespace, pod.Name)
+
+	go func() {
+		time.Sleep(5 * time.Second) // Aguarde alguns segundos para a atualização do cluster
+		updatedPod, err := scheduler.PodLister.Pods(pod.Namespace).Get(pod.Name)
+		if err != nil {
+			klog.Errorf("[Preempt] Erro ao obter o pod %s/%s após preempção: %v", pod.Namespace, pod.Name, err)
+		} else {
+			klog.Infof("[Preempt] Status do pod %s/%s após preempção: %v", updatedPod.Namespace, updatedPod.Name, updatedPod.Status.Phase)
+		}
+	}()
+
 	return candidateNode, nil
 }
 
@@ -308,7 +332,7 @@ func comparePods(originalPod, updatedPod *core.Pod) {
 // terminating pods on the node, we don't consider this for preempting more pods.
 func (scheduler *QosDrivenScheduler) podEligibleToPreemptOthers(pod *core.Pod, nodeInfos framework.NodeInfoLister, nominatedNodeStatus *framework.Status) bool {
 	if pod.Spec.PreemptionPolicy != nil && *pod.Spec.PreemptionPolicy == core.PreemptNever {
-		klog.V(5).Infof("Pod %v/%v is not eligible for preemption because it has a preemptionPolicy of %v", pod.Namespace, pod.Name, core.PreemptNever)
+		klog.Infof("Pod %v/%v is not eligible for preemption because it has a preemptionPolicy of %v", pod.Namespace, pod.Name, core.PreemptNever)
 		return false
 	}
 	nomNodeName := pod.Status.NominatedNodeName
@@ -323,7 +347,7 @@ func (scheduler *QosDrivenScheduler) podEligibleToPreemptOthers(pod *core.Pod, n
 			for _, p := range nodeInfo.Pods {
 				if p.Pod.DeletionTimestamp != nil && scheduler.HigherPrecedence(pod, p.Pod) {
 					// There is a terminating pod on the nominated node.
-					klog.V(1).Infof("Victim candidate %s is already terminating, skipping preemption.", PodName(p.Pod))
+					klog.Infof("Victim candidate %s is already terminating, skipping preemption.", PodName(p.Pod))
 					return false
 				}
 			}
@@ -649,6 +673,7 @@ func (scheduler *QosDrivenScheduler) selectVictimsOnNode(
 		if p.Pod.Namespace != "kube-system" &&
 			(!scheduler.isPodContributingToImproveControllerQoS(p.Pod) || scheduler.HigherPrecedence(pod, p.Pod)) &&
 			scheduler.CanPreempt(pod, p.Pod) {
+			klog.Infof("[selectVictimsOnNode]")
 
 			potentialVictims = append(potentialVictims, p.Pod)
 			if err := removePod(p.Pod); err != nil {
@@ -768,16 +793,28 @@ func (scheduler *QosDrivenScheduler) getLowerPrecedenceNominatedPods(pn framewor
 	pods := pn.NominatedPodsForNode(nodeName)
 
 	if len(pods) == 0 {
+		klog.Infof("[getLowerPrecedenceNominatedPods] Nenhum pod nomeado encontrado para o nó: %s", nodeName)
 		return nil
 	}
 
 	var lowerPrecedencePods []*core.Pod
+	klog.Infof("[getLowerPrecedenceNominatedPods]Verificando pods nomeados para o nó: %s", nodeName)
+
 	for _, p := range pods {
-		// TODO Do we need to check the mechanisms for limiting preemption here too? Probably not
+		klog.Infof("[getLowerPrecedenceNominatedPods]Comparando pod %s/%s com prioridade %d com pod %s/%s com prioridade %d",
+			pod.Namespace, pod.Name, pod.Spec.Priority, p.Pod.Namespace, p.Pod.Name, p.Pod.Spec.Priority)
+
 		if scheduler.HigherPrecedence(pod, p.Pod) {
+			klog.Infof("[getLowerPrecedenceNominatedPods]Pod %s/%s tem maior precedência que %s/%s, adicionando à lista.",
+				pod.Namespace, pod.Name, p.Pod.Namespace, p.Pod.Name)
 			lowerPrecedencePods = append(lowerPrecedencePods, p.Pod)
+		} else {
+			klog.Infof("[getLowerPrecedenceNominatedPods]Pod %s/%s não tem maior precedência que %s/%s, ignorando.",
+				pod.Namespace, pod.Name, p.Pod.Namespace, p.Pod.Name)
 		}
 	}
+
+	klog.Infof("[getLowerPrecedenceNominatedPods]Total de pods de menor precedência encontrados: %d", len(lowerPrecedencePods))
 	return lowerPrecedencePods
 }
 
