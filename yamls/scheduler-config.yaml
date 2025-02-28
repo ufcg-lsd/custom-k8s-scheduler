@@ -3,11 +3,9 @@ kind: KubeSchedulerConfiguration
 profiles:
 - schedulerName: custom-scheduler
   plugins:
-    queueSort:
+    preEnqueue:
       enabled:
       - name: QosAware
-      disabled:
-      - name: "*"
     reserve:
       enabled:
       - name: QosAware
@@ -27,4 +25,3 @@ profiles:
       args:
         safetyMargin: 30s
         minimumRunningTime: 30s
-

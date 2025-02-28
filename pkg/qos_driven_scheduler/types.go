@@ -797,7 +797,7 @@ func ControllerQoSMeasuring(pod *core.Pod) string {
 func (scheduler *QosDrivenScheduler) AcceptablePreemptionOverhead(p *core.Pod) float64 {
 	acceptableOverhead, err := strconv.ParseFloat(p.Annotations[AcceptablePreemptionOverheadAnnotation], 64)
 	if err != nil {
-		acceptableOverhead = scheduler.Args.AcceptablePreemptionOverhead
+		acceptableOverhead = scheduler.args.AcceptablePreemptionOverhead
 	}
 	return math.Min(1-ControllerSlo(p), acceptableOverhead)
 }

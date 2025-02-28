@@ -13,11 +13,12 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/informers"
 	corelisters "k8s.io/client-go/listers/core/v1"
+	policylisters "k8s.io/client-go/listers/policy/v1"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/klog/v2"
 	framework "k8s.io/kubernetes/pkg/scheduler/framework"
-	frameworkruntime "k8s.io/kubernetes/pkg/scheduler/framework/runtime"
 )
 
 const (
@@ -28,12 +29,15 @@ const (
 
 // QosDrivenScheduler implementa as interfaces de plugins solicitadas
 type QosDrivenScheduler struct {
-	fh          framework.Handle
-	Args        QosDrivenSchedulerArgs
-	PodInformer cache.SharedIndexInformer
-	Controllers map[string]ControllerMetricInfo
-	lock        sync.RWMutex
-	PodLister   corelisters.PodLister
+	fh                    framework.Handle
+	args                  QosDrivenSchedulerArgs
+	PodInformer           cache.SharedIndexInformer
+	Controllers           map[string]ControllerMetricInfo
+	lock                  sync.RWMutex
+	podLister             corelisters.PodLister
+	pdbLister             policylisters.PodDisruptionBudgetLister
+	Evaluator             *Evaluator
+	enableAsyncPreemption bool
 }
 
 // Garantindo que QosDrivenScheduler implementa as interfaces necessárias
@@ -42,6 +46,7 @@ var _ framework.ReservePlugin = &QosDrivenScheduler{}    // Feito
 var _ framework.PreBindPlugin = &QosDrivenScheduler{}    // Feito
 var _ framework.PostBindPlugin = &QosDrivenScheduler{}   // Feito
 var _ framework.PostFilterPlugin = &QosDrivenScheduler{} //Feito
+var _ framework.PreEnqueuePlugin = &QosDrivenScheduler{}
 
 // Name retorna o nome do plugin
 func (scheduler *QosDrivenScheduler) Name() string {
@@ -97,7 +102,7 @@ func (scheduler *QosDrivenScheduler) HigherPrecedence(p1, p2 *corev1.Pod) bool {
 	klog.Infof("[HigherPrecedence] Métricas para %s: QoS = %f, Importância = %.2f", p1.Name, qosMetric1, importance1)
 	klog.Infof("[HigherPrecedence] Métricas para %s: QoS = %f, Importância = %.2f", p2.Name, qosMetric2, importance2)
 
-	safetyMargin := scheduler.Args.SafetyMargin.Duration.Seconds()
+	safetyMargin := scheduler.args.SafetyMargin.Duration.Seconds()
 
 	// Is in resource contention
 	if (qosMetric1 < safetyMargin) && (qosMetric2 < safetyMargin) && importance1 != importance2 {
@@ -337,8 +342,8 @@ func (scheduler *QosDrivenScheduler) UpdatePodMetricInfo(pod *corev1.Pod, f func
 	//	klog.Infof("[UpdatePodMetricInfo] Controller encontrado? %t", found)
 
 	if !found {
-		cMetricInfo.SafetyMargin = scheduler.Args.SafetyMargin.Duration
-		cMetricInfo.MinimumRunningTime = scheduler.Args.MinimumRunningTime.Duration
+		cMetricInfo.SafetyMargin = scheduler.args.SafetyMargin.Duration
+		cMetricInfo.MinimumRunningTime = scheduler.args.MinimumRunningTime.Duration
 		cMetricInfo.QoSMeasuringApproach = ControllerQoSMeasuring(pod)
 
 		// TODO remove code, it is only for debugging
@@ -519,6 +524,22 @@ type QosDrivenSchedulerArgs struct {
 	AcceptablePreemptionOverhead float64 `json:"acceptablePreemptionOverhead,omitempty"`
 	// Pods will run MinimumRunningTime until it can be preempted by another pod with same importance.
 	MinimumRunningTime metav1.Duration `json:"minimumRunningTime"`
+
+	metav1.TypeMeta
+
+	// MinCandidateNodesPercentage is the minimum number of candidates to
+	// shortlist when dry running preemption as a percentage of number of nodes.
+	// Must be in the range [0, 100]. Defaults to 10% of the cluster size if
+	// unspecified.
+	MinCandidateNodesPercentage int32
+	// MinCandidateNodesAbsolute is the absolute minimum number of candidates to
+	// shortlist. The likely number of candidates enumerated for dry running
+	// preemption is given by the formula:
+	// numCandidates = max(numNodes * minCandidateNodesPercentage, minCandidateNodesAbsolute)
+	// We say "likely" because there are other factors such as PDB violations
+	// that play a role in the number of candidates shortlisted. Must be at least
+	// 0 nodes. Defaults to 100 nodes if unspecified.
+	MinCandidateNodesAbsolute int32
 }
 
 func format(d time.Duration) string {
@@ -618,48 +639,52 @@ func (scheduler *QosDrivenScheduler) getUpdatedVersion(pod *corev1.Pod) PodMetri
 	return pMetricInfo
 }
 
-func NewQosScheduler(fh framework.Handle) *QosDrivenScheduler {
-	podInformer := fh.SharedInformerFactory().Core().V1().Pods()
-
-	return (&QosDrivenScheduler{
-		PodInformer: podInformer.Informer(),
-		PodLister:   podInformer.Lister(),
-		fh:          fh,
-		Controllers: map[string]ControllerMetricInfo{},
-	}).addEventHandler()
-}
-
 // Função de inicialização do plugin
 func New() func(ctx context.Context, args runtime.Object, f framework.Handle) (framework.Plugin, error) {
 	return func(ctx context.Context, args runtime.Object, f framework.Handle) (framework.Plugin, error) {
-		// Inicializa o scheduler com o handle fornecido
-		scheduler := NewQosScheduler(f)
-
-		// Define valores padrão para os argumentos
-		scheduler.Args.AcceptablePreemptionOverhead = DefaultAcceptablePreemptionOverhead
-
-		// Decodifica os argumentos fornecidos pelo usuário (se existirem)
-		if err := frameworkruntime.DecodeInto(args, &scheduler.Args); err != nil {
-			return nil, err
+		// Converte args para um mapa desestruturado
+		unstructuredArgs, err := runtime.DefaultUnstructuredConverter.ToUnstructured(args)
+		if err != nil {
+			return nil, fmt.Errorf("failed to convert args to unstructured format: %v", err)
 		}
 
-		// Inicia o SharedInformerFactory
-		f.SharedInformerFactory().Start(ctx.Done())
-		f.SharedInformerFactory().WaitForCacheSync(ctx.Done())
-
-		if !cache.WaitForCacheSync(ctx.Done(), scheduler.PodInformer.HasSynced) {
-			klog.Fatalf("Falha ao sincronizar o cache do PodInformer")
-		} else {
-			klog.Infof("PodInformer sincronizado com sucesso")
+		// Converte o mapa para QosDrivenSchedulerArgs
+		var schedulerArgs QosDrivenSchedulerArgs
+		if err := runtime.DefaultUnstructuredConverter.FromUnstructured(unstructuredArgs, &schedulerArgs); err != nil {
+			return nil, fmt.Errorf("failed to convert unstructured args to QosDrivenSchedulerArgs: %v", err)
 		}
 
-		// Loga os argumentos recebidos para depuração
-		klog.V(1).Infof("Plugin iniciado com argumentos: %+v", scheduler.Args)
+		podInformer := f.SharedInformerFactory().Core().V1().Pods()
+		podLister := f.SharedInformerFactory().Core().V1().Pods().Lister()
+		pdbLister := getPDBLister(f.SharedInformerFactory())
+
+		// Define se a preempção assíncrona está ativada
+		enableAsyncPreemption := true
+
+		// Inicializa o scheduler com os argumentos convertidos
+		scheduler := QosDrivenScheduler{
+			PodInformer:           podInformer.Informer(),
+			fh:                    f,
+			args:                  schedulerArgs,
+			podLister:             podLister,
+			pdbLister:             pdbLister,
+			Controllers:           map[string]ControllerMetricInfo{},
+			enableAsyncPreemption: enableAsyncPreemption,
+		}
+
+		scheduler.addEventHandler()
+
+		// Inicializa a lógica de preempção
+		scheduler.Evaluator = NewEvaluator(Name, f, &scheduler, scheduler.enableAsyncPreemption)
 
 		// Inicia a API de depuração, se necessário
 		go scheduler.debugApi()
 
 		// Retorna o plugin inicializado
-		return scheduler, nil
+		return &scheduler, nil
 	}
+}
+
+func getPDBLister(informerFactory informers.SharedInformerFactory) policylisters.PodDisruptionBudgetLister {
+	return informerFactory.Policy().V1().PodDisruptionBudgets().Lister()
 }

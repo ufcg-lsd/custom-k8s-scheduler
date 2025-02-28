@@ -18,7 +18,7 @@ spec:
         qosMeasuring: "average"  
         acceptablePreemptionOverhead: "0.05"
     spec:
-      priorityClassName: batch-priority
+      priorityClassName: prod-priority
       terminationGracePeriodSeconds: 0
       containers:
       - name: test-container
