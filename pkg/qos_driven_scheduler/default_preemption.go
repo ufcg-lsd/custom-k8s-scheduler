@@ -21,7 +21,7 @@ var _ framework.PostFilterPlugin = &QosDrivenScheduler{}
 var _ framework.PreEnqueuePlugin = &QosDrivenScheduler{}
 
 // PostFilter invoked at the postFilter extension point.
-func (pl *QosDrivenScheduler) PostFilter(ctx context.Context, state *framework.CycleState, pod *v1.Pod, m framework.NodeToStatusMap) (*framework.PostFilterResult, *framework.Status) {
+func (pl *QosDrivenScheduler) PostFilter(ctx context.Context, state *framework.CycleState, pod *v1.Pod, m framework.NodeToStatusReader) (*framework.PostFilterResult, *framework.Status) {
 	klog.InfoS("PostFilter called", "pod", klog.KObj(pod))
 
 	defer func() {

@@ -628,17 +628,6 @@ func (scheduler *QosDrivenScheduler) GetControllerMetricInfo(pod *corev1.Pod) Co
 	return cMetricInfo
 }
 
-// getUpdatedVersion returns the latest pod object in cache
-func (scheduler *QosDrivenScheduler) getUpdatedVersion(pod *corev1.Pod) PodMetricInfo {
-	scheduler.lock.RLock()
-	defer scheduler.lock.RUnlock()
-
-	cMetricInfo := scheduler.Controllers[ControllerName(pod)]
-	pMetricInfo, _ := cMetricInfo.GetPodMetricInfo(pod)
-
-	return pMetricInfo
-}
-
 // Função de inicialização do plugin
 func New() func(ctx context.Context, args runtime.Object, f framework.Handle) (framework.Plugin, error) {
 	return func(ctx context.Context, args runtime.Object, f framework.Handle) (framework.Plugin, error) {
@@ -659,7 +648,7 @@ func New() func(ctx context.Context, args runtime.Object, f framework.Handle) (f
 		pdbLister := getPDBLister(f.SharedInformerFactory())
 
 		// Define se a preempção assíncrona está ativada
-		enableAsyncPreemption := true
+		enableAsyncPreemption := false
 
 		// Inicializa o scheduler com os argumentos convertidos
 		scheduler := QosDrivenScheduler{
@@ -672,7 +661,7 @@ func New() func(ctx context.Context, args runtime.Object, f framework.Handle) (f
 			enableAsyncPreemption: enableAsyncPreemption,
 		}
 
-		scheduler.addEventHandler()
+		//scheduler.addEventHandler()
 
 		// Inicializa a lógica de preempção
 		scheduler.Evaluator = NewEvaluator(Name, f, &scheduler, scheduler.enableAsyncPreemption)

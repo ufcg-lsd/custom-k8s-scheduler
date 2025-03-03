@@ -1,224 +1,173 @@
-I0228 19:36:15.296611       1 serving.go:386] Generated self-signed cert in-memory
-W0228 19:36:15.297433       1 client_config.go:659] Neither --kubeconfig nor --master was specified.  Using the inClusterConfig.  This might not work.
-Error: initializing profiles: creating profile for scheduler name custom-scheduler: initializing plugin "QosAware": got args of type *runtime.Unknown, want *DefaultPreemptionArgs
-Usage:
-  kube-scheduler [flags]
-
-Misc flags:
-
-      --config string            The path to the configuration file.
-      --master string            The address of the Kubernetes API server (overrides any value in kubeconfig)
-      --write-config-to string   If set, write the configuration values to this file and exit.
-
-Secure serving flags:
-
-      --bind-address ip                        The IP address on which to listen for the --secure-port port. The associated interface(s) must be reachable by the rest of the cluster, and by CLI/web clients. If blank or an unspecified address (0.0.0.0 or ::), all interfaces and IP address families will be used. (default 0.0.0.0)
-      --cert-dir string                        The directory where the TLS certs are located. If --tls-cert-file and --tls-private-key-file are provided, this flag will be ignored.
-      --disable-http2-serving                  If true, HTTP2 serving will be disabled [default=false]
-      --http2-max-streams-per-connection int   The limit that the server gives to clients for the maximum number of streams in an HTTP/2 connection. Zero means to use golang's default.
-      --permit-address-sharing                 If true, SO_REUSEADDR will be used when binding the port. This allows binding to wildcard IPs like 0.0.0.0 and specific IPs in parallel, and it avoids waiting for the kernel to release sockets in TIME_WAIT state. [default=false]
-      --permit-port-sharing                    If true, SO_REUSEPORT will be used when binding the port, which allows more than one instance to bind on the same address and port. [default=false]
-      --secure-port int                        The port on which to serve HTTPS with authentication and authorization. If 0, don't serve HTTPS at all. (default 10259)
-      --tls-cert-file string                   File containing the default x509 Certificate for HTTPS. (CA cert, if any, concatenated after server cert). If HTTPS serving is enabled, and --tls-cert-file and --tls-private-key-file are not provided, a self-signed certificate and key are generated for the public address and saved to the directory specified by --cert-dir.
-      --tls-cipher-suites strings              Comma-separated list of cipher suites for the server. If omitted, the default Go cipher suites will be used. 
-                                               Preferred values: TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384, TLS_CHACHA20_POLY1305_SHA256, TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA, TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256, TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA, TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384, TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305, TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256, TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA, TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256, TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA, TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384, TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305, TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256. 
-                                               Insecure values: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256, TLS_ECDHE_ECDSA_WITH_RC4_128_SHA, TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA, TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256, TLS_ECDHE_RSA_WITH_RC4_128_SHA, TLS_RSA_WITH_3DES_EDE_CBC_SHA, TLS_RSA_WITH_AES_128_CBC_SHA, TLS_RSA_WITH_AES_128_CBC_SHA256, TLS_RSA_WITH_AES_128_GCM_SHA256, TLS_RSA_WITH_AES_256_CBC_SHA, TLS_RSA_WITH_AES_256_GCM_SHA384, TLS_RSA_WITH_RC4_128_SHA.
-      --tls-min-version string                 Minimum TLS version supported. Possible values: VersionTLS10, VersionTLS11, VersionTLS12, VersionTLS13
-      --tls-private-key-file string            File containing the default x509 private key matching --tls-cert-file.
-      --tls-sni-cert-key namedCertKey          A pair of x509 certificate and private key file paths, optionally suffixed with a list of domain patterns which are fully qualified domain names, possibly with prefixed wildcard segments. The domain patterns also allow IP addresses, but IPs should only be used if the apiserver has visibility to the IP address requested by a client. If no domain patterns are provided, the names of the certificate are extracted. Non-wildcard matches trump over wildcard matches, explicit domain patterns trump over extracted names. For multiple key/certificate pairs, use the --tls-sni-cert-key multiple times. Examples: "example.crt,example.key" or "foo.crt,foo.key:*.foo.com,foo.com". (default [])
-
-Authentication flags:
-
-      --authentication-kubeconfig string                  kubeconfig file pointing at the 'core' kubernetes server with enough rights to create tokenreviews.authentication.k8s.io. This is optional. If empty, all token requests are considered to be anonymous and no client CA is looked up in the cluster.
-      --authentication-skip-lookup                        If false, the authentication-kubeconfig will be used to lookup missing authentication configuration from the cluster.
-      --authentication-token-webhook-cache-ttl duration   The duration to cache responses from the webhook token authenticator. (default 10s)
-      --authentication-tolerate-lookup-failure            If true, failures to look up missing authentication configuration from the cluster are not considered fatal. Note that this can result in authentication that treats all requests as anonymous. (default true)
-      --client-ca-file string                             If set, any request presenting a client certificate signed by one of the authorities in the client-ca-file is authenticated with an identity corresponding to the CommonName of the client certificate.
-      --requestheader-allowed-names strings               List of client certificate common names to allow to provide usernames in headers specified by --requestheader-username-headers. If empty, any client certificate validated by the authorities in --requestheader-client-ca-file is allowed.
-      --requestheader-client-ca-file string               Root certificate bundle to use to verify client certificates on incoming requests before trusting usernames in headers specified by --requestheader-username-headers. WARNING: generally do not depend on authorization being already done for incoming requests.
-      --requestheader-extra-headers-prefix strings        List of request header prefixes to inspect. X-Remote-Extra- is suggested. (default [x-remote-extra-])
-      --requestheader-group-headers strings               List of request headers to inspect for groups. X-Remote-Group is suggested. (default [x-remote-group])
-      --requestheader-username-headers strings            List of request headers to inspect for usernames. X-Remote-User is common. (default [x-remote-user])
-
-Authorization flags:
-
-      --authorization-always-allow-paths strings                A list of HTTP paths to skip during authorization, i.e. these are authorized without contacting the 'core' kubernetes server. (default [/healthz,/readyz,/livez])
-      --authorization-kubeconfig string                         kubeconfig file pointing at the 'core' kubernetes server with enough rights to create subjectaccessreviews.authorization.k8s.io. This is optional. If empty, all requests not skipped by authorization are forbidden.
-      --authorization-webhook-cache-authorized-ttl duration     The duration to cache 'authorized' responses from the webhook authorizer. (default 10s)
-      --authorization-webhook-cache-unauthorized-ttl duration   The duration to cache 'unauthorized' responses from the webhook authorizer. (default 10s)
-
-Deprecated flags:
-
-      --contention-profiling                              DEPRECATED: enable block profiling, if profiling is enabled. This parameter is ignored if a config file is specified in --config. (default true)
-      --kube-api-burst int32                              DEPRECATED: burst to use while talking with kubernetes apiserver. This parameter is ignored if a config file is specified in --config. (default 100)
-      --kube-api-content-type string                      DEPRECATED: content type of requests sent to apiserver. This parameter is ignored if a config file is specified in --config. (default "application/vnd.kubernetes.protobuf")
-      --kube-api-qps float32                              DEPRECATED: QPS to use while talking with kubernetes apiserver. This parameter is ignored if a config file is specified in --config. (default 50)
-      --kubeconfig string                                 DEPRECATED: path to kubeconfig file with authorization and master location information. This parameter is ignored if a config file is specified in --config.
-      --pod-max-in-unschedulable-pods-duration duration   DEPRECATED: the maximum time a pod can stay in unschedulablePods. If a pod stays in unschedulablePods for longer than this value, the pod will be moved from unschedulablePods to backoffQ or activeQ. This flag is deprecated and will be removed in a future version. (default 5m0s)
-      --profiling                                         DEPRECATED: enable profiling via web interface host:port/debug/pprof/. This parameter is ignored if a config file is specified in --config. (default true)
-
-Leader election flags:
-
-      --leader-elect                             Start a leader election client and gain leadership before executing the main loop. Enable this when running replicated components for high availability. (default true)
-      --leader-elect-lease-duration duration     The duration that non-leader candidates will wait after observing a leadership renewal until attempting to acquire leadership of a led but unrenewed leader slot. This is effectively the maximum duration that a leader can be stopped before it is replaced by another candidate. This is only applicable if leader election is enabled. (default 15s)
-      --leader-elect-renew-deadline duration     The interval between attempts by the acting master to renew a leadership slot before it stops leading. This must be less than the lease duration. This is only applicable if leader election is enabled. (default 10s)
-      --leader-elect-resource-lock string        The type of resource object that is used for locking during leader election. Supported options are 'leases', 'endpointsleases' and 'configmapsleases'. (default "leases")
-      --leader-elect-resource-name string        The name of resource object that is used for locking during leader election. (default "kube-scheduler")
-      --leader-elect-resource-namespace string   The namespace of resource object that is used for locking during leader election. (default "kube-system")
-      --leader-elect-retry-period duration       The duration the clients should wait between attempting acquisition and renewal of a leadership. This is only applicable if leader election is enabled. (default 2s)
-
-Feature gate flags:
-
-      --emulated-version strings                           The versions different components emulate their capabilities (APIs, features, ...) of.
-                                                           If set, the component will emulate the behavior of this version instead of the underlying binary version.
-                                                           Version format could only be major.minor, for example: '--emulated-version=wardle=1.2,kube=1.31'. Options are:
-                                                           kube=1.31..1.31 (default=1.31)If the component is not specified, defaults to "kube"
-      --feature-gates colonSeparatedMultimapStringString   Comma-separated list of component:key=value pairs that describe feature gates for alpha/experimental features of different components.
-                                                           If the component is not specified, defaults to "kube". This flag can be repeatedly invoked. For example: --feature-gates 'wardle:featureA=true,wardle:featureB=false' --feature-gates 'kube:featureC=true'Options are:
-                                                           kube:APIResponseCompression=true|false (BETA - default=true)
-                                                           kube:APIServerIdentity=true|false (BETA - default=true)
-                                                           kube:APIServerTracing=true|false (BETA - default=true)
-                                                           kube:APIServingWithRoutine=true|false (ALPHA - default=false)
-                                                           kube:AllAlpha=true|false (ALPHA - default=false)
-                                                           kube:AllBeta=true|false (BETA - default=false)
-                                                           kube:AnonymousAuthConfigurableEndpoints=true|false (ALPHA - default=false)
-                                                           kube:AnyVolumeDataSource=true|false (BETA - default=true)
-                                                           kube:AuthorizeNodeWithSelectors=true|false (ALPHA - default=false)
-                                                           kube:AuthorizeWithSelectors=true|false (ALPHA - default=false)
-                                                           kube:CPUManagerPolicyAlphaOptions=true|false (ALPHA - default=false)
-                                                           kube:CPUManagerPolicyBetaOptions=true|false (BETA - default=true)
-                                                           kube:CPUManagerPolicyOptions=true|false (BETA - default=true)
-                                                           kube:CRDValidationRatcheting=true|false (BETA - default=true)
-                                                           kube:CSIMigrationPortworx=true|false (BETA - default=true)
-                                                           kube:CSIVolumeHealth=true|false (ALPHA - default=false)
-                                                           kube:CloudControllerManagerWebhook=true|false (ALPHA - default=false)
-                                                           kube:ClusterTrustBundle=true|false (ALPHA - default=false)
-                                                           kube:ClusterTrustBundleProjection=true|false (ALPHA - default=false)
-                                                           kube:ComponentSLIs=true|false (BETA - default=true)
-                                                           kube:ConcurrentWatchObjectDecode=true|false (BETA - default=false)
-                                                           kube:ConsistentListFromCache=true|false (BETA - default=true)
-                                                           kube:ContainerCheckpoint=true|false (BETA - default=true)
-                                                           kube:ContextualLogging=true|false (BETA - default=true)
-                                                           kube:CoordinatedLeaderElection=true|false (ALPHA - default=false)
-                                                           kube:CronJobsScheduledAnnotation=true|false (BETA - default=true)
-                                                           kube:CrossNamespaceVolumeDataSource=true|false (ALPHA - default=false)
-                                                           kube:CustomCPUCFSQuotaPeriod=true|false (ALPHA - default=false)
-                                                           kube:CustomResourceFieldSelectors=true|false (BETA - default=true)
-                                                           kube:DRAControlPlaneController=true|false (ALPHA - default=false)
-                                                           kube:DisableAllocatorDualWrite=true|false (ALPHA - default=false)
-                                                           kube:DynamicResourceAllocation=true|false (ALPHA - default=false)
-                                                           kube:EventedPLEG=true|false (ALPHA - default=false)
-                                                           kube:GracefulNodeShutdown=true|false (BETA - default=true)
-                                                           kube:GracefulNodeShutdownBasedOnPodPriority=true|false (BETA - default=true)
-                                                           kube:HPAScaleToZero=true|false (ALPHA - default=false)
-                                                           kube:HonorPVReclaimPolicy=true|false (BETA - default=true)
-                                                           kube:ImageMaximumGCAge=true|false (BETA - default=true)
-                                                           kube:ImageVolume=true|false (ALPHA - default=false)
-                                                           kube:InPlacePodVerticalScaling=true|false (ALPHA - default=false)
-                                                           kube:InTreePluginPortworxUnregister=true|false (ALPHA - default=false)
-                                                           kube:InformerResourceVersion=true|false (ALPHA - default=false)
-                                                           kube:JobBackoffLimitPerIndex=true|false (BETA - default=true)
-                                                           kube:JobManagedBy=true|false (ALPHA - default=false)
-                                                           kube:JobPodReplacementPolicy=true|false (BETA - default=true)
-                                                           kube:JobSuccessPolicy=true|false (BETA - default=true)
-                                                           kube:KubeletCgroupDriverFromCRI=true|false (BETA - default=true)
-                                                           kube:KubeletInUserNamespace=true|false (ALPHA - default=false)
-                                                           kube:KubeletPodResourcesDynamicResources=true|false (ALPHA - default=false)
-                                                           kube:KubeletPodResourcesGet=true|false (ALPHA - default=false)
-                                                           kube:KubeletSeparateDiskGC=true|false (BETA - default=true)
-                                                           kube:KubeletTracing=true|false (BETA - default=true)
-                                                           kube:LoadBalancerIPMode=true|false (BETA - default=true)
-                                                           kube:LocalStorageCapacityIsolationFSQuotaMonitoring=true|false (BETA - default=false)
-                                                           kube:LoggingAlphaOptions=true|false (ALPHA - default=false)
-                                                           kube:LoggingBetaOptions=true|false (BETA - default=true)
-                                                           kube:MatchLabelKeysInPodAffinity=true|false (BETA - default=true)
-                                                           kube:MatchLabelKeysInPodTopologySpread=true|false (BETA - default=true)
-                                                           kube:MaxUnavailableStatefulSet=true|false (ALPHA - default=false)
-                                                           kube:MemoryManager=true|false (BETA - default=true)
-                                                           kube:MemoryQoS=true|false (ALPHA - default=false)
-                                                           kube:MultiCIDRServiceAllocator=true|false (BETA - default=false)
-                                                           kube:MutatingAdmissionPolicy=true|false (ALPHA - default=false)
-                                                           kube:NFTablesProxyMode=true|false (BETA - default=true)
-                                                           kube:NodeInclusionPolicyInPodTopologySpread=true|false (BETA - default=true)
-                                                           kube:NodeLogQuery=true|false (BETA - default=false)
-                                                           kube:NodeSwap=true|false (BETA - default=true)
-                                                           kube:OpenAPIEnums=true|false (BETA - default=true)
-                                                           kube:PodAndContainerStatsFromCRI=true|false (ALPHA - default=false)
-                                                           kube:PodDeletionCost=true|false (BETA - default=true)
-                                                           kube:PodIndexLabel=true|false (BETA - default=true)
-                                                           kube:PodLifecycleSleepAction=true|false (BETA - default=true)
-                                                           kube:PodReadyToStartContainersCondition=true|false (BETA - default=true)
-                                                           kube:PortForwardWebsockets=true|false (BETA - default=true)
-                                                           kube:ProcMountType=true|false (BETA - default=false)
-                                                           kube:QOSReserved=true|false (ALPHA - default=false)
-                                                           kube:RecoverVolumeExpansionFailure=true|false (ALPHA - default=false)
-                                                           kube:RecursiveReadOnlyMounts=true|false (BETA - default=true)
-                                                           kube:RelaxedEnvironmentVariableValidation=true|false (ALPHA - default=false)
-                                                           kube:ReloadKubeletServerCertificateFile=true|false (BETA - default=true)
-                                                           kube:ResilientWatchCacheInitialization=true|false (BETA - default=true)
-                                                           kube:ResourceHealthStatus=true|false (ALPHA - default=false)
-                                                           kube:RetryGenerateName=true|false (BETA - default=true)
-                                                           kube:RotateKubeletServerCertificate=true|false (BETA - default=true)
-                                                           kube:RuntimeClassInImageCriApi=true|false (ALPHA - default=false)
-                                                           kube:SELinuxMount=true|false (ALPHA - default=false)
-                                                           kube:SELinuxMountReadWriteOncePod=true|false (BETA - default=true)
-                                                           kube:SchedulerQueueingHints=true|false (BETA - default=false)
-                                                           kube:SeparateCacheWatchRPC=true|false (BETA - default=true)
-                                                           kube:SeparateTaintEvictionController=true|false (BETA - default=true)
-                                                           kube:ServiceAccountTokenJTI=true|false (BETA - default=true)
-                                                           kube:ServiceAccountTokenNodeBinding=true|false (BETA - default=true)
-                                                           kube:ServiceAccountTokenNodeBindingValidation=true|false (BETA - default=true)
-                                                           kube:ServiceAccountTokenPodNodeInfo=true|false (BETA - default=true)
-                                                           kube:ServiceTrafficDistribution=true|false (BETA - default=true)
-                                                           kube:SidecarContainers=true|false (BETA - default=true)
-                                                           kube:SizeMemoryBackedVolumes=true|false (BETA - default=true)
-                                                           kube:StatefulSetAutoDeletePVC=true|false (BETA - default=true)
-                                                           kube:StorageNamespaceIndex=true|false (BETA - default=true)
-                                                           kube:StorageVersionAPI=true|false (ALPHA - default=false)
-                                                           kube:StorageVersionHash=true|false (BETA - default=true)
-                                                           kube:StorageVersionMigrator=true|false (ALPHA - default=false)
-                                                           kube:StrictCostEnforcementForVAP=true|false (BETA - default=false)
-                                                           kube:StrictCostEnforcementForWebhooks=true|false (BETA - default=false)
-                                                           kube:StructuredAuthenticationConfiguration=true|false (BETA - default=true)
-                                                           kube:StructuredAuthorizationConfiguration=true|false (BETA - default=true)
-                                                           kube:SupplementalGroupsPolicy=true|false (ALPHA - default=false)
-                                                           kube:TopologyAwareHints=true|false (BETA - default=true)
-                                                           kube:TopologyManagerPolicyAlphaOptions=true|false (ALPHA - default=false)
-                                                           kube:TopologyManagerPolicyBetaOptions=true|false (BETA - default=true)
-                                                           kube:TopologyManagerPolicyOptions=true|false (BETA - default=true)
-                                                           kube:TranslateStreamCloseWebsocketRequests=true|false (BETA - default=true)
-                                                           kube:UnauthenticatedHTTP2DOSMitigation=true|false (BETA - default=true)
-                                                           kube:UnknownVersionInteroperabilityProxy=true|false (ALPHA - default=false)
-                                                           kube:UserNamespacesPodSecurityStandards=true|false (ALPHA - default=false)
-                                                           kube:UserNamespacesSupport=true|false (BETA - default=false)
-                                                           kube:VolumeAttributesClass=true|false (BETA - default=false)
-                                                           kube:VolumeCapacityPriority=true|false (ALPHA - default=false)
-                                                           kube:WatchCacheInitializationPostStartHook=true|false (BETA - default=false)
-                                                           kube:WatchFromStorageWithoutResourceVersion=true|false (BETA - default=false)
-                                                           kube:WatchList=true|false (ALPHA - default=false)
-                                                           kube:WatchListClient=true|false (BETA - default=false)
-                                                           kube:WinDSR=true|false (ALPHA - default=false)
-                                                           kube:WinOverlay=true|false (BETA - default=true)
-                                                           kube:WindowsHostNetwork=true|false (ALPHA - default=true)
-
-Metrics flags:
-
-      --allow-metric-labels stringToString       The map from metric-label to value allow-list of this label. The key's format is <MetricName>,<LabelName>. The value's format is <allowed_value>,<allowed_value>...e.g. metric1,label1='v1,v2,v3', metric1,label2='v1,v2,v3' metric2,label1='v1,v2,v3'. (default [])
-      --allow-metric-labels-manifest string      The path to the manifest file that contains the allow-list mapping. The format of the file is the same as the flag --allow-metric-labels. Note that the flag --allow-metric-labels will override the manifest file.
-      --disabled-metrics strings                 This flag provides an escape hatch for misbehaving metrics. You must provide the fully qualified metric name in order to disable it. Disclaimer: disabling metrics is higher in precedence than showing hidden metrics.
-      --show-hidden-metrics-for-version string   The previous version for which you want to show hidden metrics. Only the previous minor version is meaningful, other values will not be allowed. The format is <major>.<minor>, e.g.: '1.16'. The purpose of this format is make sure you have the opportunity to notice if the next release hides additional metrics, rather than being surprised when they are permanently removed in the release after that.
-
-Logs flags:
-
-      --log-flush-frequency duration         Maximum number of seconds between log flushes (default 5s)
-      --log-text-info-buffer-size quantity   [Alpha] In text format with split output streams, the info messages can be buffered for a while to increase performance. The default value of zero bytes disables buffering. The size can be specified as number of bytes (512), multiples of 1000 (1K), multiples of 1024 (2Ki), or powers of those (3M, 4G, 5Mi, 6Gi). Enable the LoggingAlphaOptions feature gate to use this.
-      --log-text-split-stream                [Alpha] In text format, write error messages to stderr and info messages to stdout. The default is to write a single stream to stdout. Enable the LoggingAlphaOptions feature gate to use this.
-      --logging-format string                Sets the log format. Permitted formats: "text". (default "text")
-  -v, --v Level                              number for the log level verbosity
-      --vmodule pattern=N,...                comma-separated list of pattern=N settings for file-filtered logging (only works for text log format)
-
-Global flags:
-
-  -h, --help                     help for kube-scheduler
-      --version version[=true]   --version, --version=raw prints version information and quits; --version=vX.Y.Z... sets the reported version
-
+I0303 17:33:44.065860       1 serving.go:386] Generated self-signed cert in-memory
+W0303 17:33:44.066652       1 client_config.go:667] Neither --kubeconfig nor --master was specified.  Using the inClusterConfig.  This might not work.
+I0303 17:33:44.438829       1 server.go:166] "Starting Kubernetes Scheduler" version="v0.0.0-master+$Format:%H$"
+I0303 17:33:44.438858       1 server.go:168] "Golang settings" GOGC="" GOMAXPROCS="" GOTRACEBACK=""
+I0303 17:33:44.442517       1 requestheader_controller.go:180] Starting RequestHeaderAuthRequestController
+I0303 17:33:44.442560       1 shared_informer.go:313] Waiting for caches to sync for RequestHeaderAuthRequestController
+I0303 17:33:44.442602       1 configmap_cafile_content.go:205] "Starting controller" name="client-ca::kube-system::extension-apiserver-authentication::client-ca-file"
+I0303 17:33:44.442630       1 shared_informer.go:313] Waiting for caches to sync for client-ca::kube-system::extension-apiserver-authentication::client-ca-file
+I0303 17:33:44.442631       1 configmap_cafile_content.go:205] "Starting controller" name="client-ca::kube-system::extension-apiserver-authentication::requestheader-client-ca-file"
+I0303 17:33:44.442649       1 shared_informer.go:313] Waiting for caches to sync for client-ca::kube-system::extension-apiserver-authentication::requestheader-client-ca-file
+I0303 17:33:44.442707       1 secure_serving.go:213] Serving securely on [::]:10259
+I0303 17:33:44.442723       1 tlsconfig.go:243] "Starting DynamicServingCertificateController"
+I0303 17:33:44.448739       1 scheduler.go:219] [OnAddPod] Pod adicionado: kube-system/coredns-668d6bf9bc-tbzv9, Anotações: map[]
+I0303 17:33:44.450526       1 scheduler.go:74] Estado no Informer: map[]
+I0303 17:33:44.450548       1 scheduler.go:75] Estado real no cluster: map[]
+I0303 17:33:44.450553       1 scheduler.go:225] [OnAddPod] Ignorando pod kube-system/coredns-668d6bf9bc-tbzv9 pois pertence ao namespace kube-system
+I0303 17:33:44.450587       1 scheduler.go:219] [OnAddPod] Pod adicionado: kube-system/custom-scheduler-8dcdbb8b5-2tv8d, Anotações: map[]
+I0303 17:33:44.451897       1 scheduler.go:74] Estado no Informer: map[]
+I0303 17:33:44.451919       1 scheduler.go:75] Estado real no cluster: map[]
+I0303 17:33:44.451925       1 scheduler.go:225] [OnAddPod] Ignorando pod kube-system/custom-scheduler-8dcdbb8b5-2tv8d pois pertence ao namespace kube-system
+I0303 17:33:44.451964       1 scheduler.go:219] [OnAddPod] Pod adicionado: kube-system/etcd-minikube, Anotações: map[kubeadm.kubernetes.io/etcd.advertise-client-urls:https://192.168.49.2:2379 kubernetes.io/config.hash:2b4b75c2a289008e0b381891e9683040 kubernetes.io/config.mirror:2b4b75c2a289008e0b381891e9683040 kubernetes.io/config.seen:2025-02-28T14:06:38.491414868Z kubernetes.io/config.source:file]
+I0303 17:33:44.453225       1 scheduler.go:74] Estado no Informer: map[kubeadm.kubernetes.io/etcd.advertise-client-urls:https://192.168.49.2:2379 kubernetes.io/config.hash:2b4b75c2a289008e0b381891e9683040 kubernetes.io/config.mirror:2b4b75c2a289008e0b381891e9683040 kubernetes.io/config.seen:2025-02-28T14:06:38.491414868Z kubernetes.io/config.source:file]
+I0303 17:33:44.453250       1 scheduler.go:75] Estado real no cluster: map[kubeadm.kubernetes.io/etcd.advertise-client-urls:https://192.168.49.2:2379 kubernetes.io/config.hash:2b4b75c2a289008e0b381891e9683040 kubernetes.io/config.mirror:2b4b75c2a289008e0b381891e9683040 kubernetes.io/config.seen:2025-02-28T14:06:38.491414868Z kubernetes.io/config.source:file]
+I0303 17:33:44.453264       1 scheduler.go:225] [OnAddPod] Ignorando pod kube-system/etcd-minikube pois pertence ao namespace kube-system
+I0303 17:33:44.453295       1 scheduler.go:219] [OnAddPod] Pod adicionado: kube-system/kube-apiserver-minikube, Anotações: map[kubeadm.kubernetes.io/kube-apiserver.advertise-address.endpoint:192.168.49.2:8443 kubernetes.io/config.hash:d72d0a4cf4be077c9919d46b7358a5e8 kubernetes.io/config.mirror:d72d0a4cf4be077c9919d46b7358a5e8 kubernetes.io/config.seen:2025-02-28T14:06:38.491410078Z kubernetes.io/config.source:file]
+I0303 17:33:44.454692       1 scheduler.go:74] Estado no Informer: map[kubeadm.kubernetes.io/kube-apiserver.advertise-address.endpoint:192.168.49.2:8443 kubernetes.io/config.hash:d72d0a4cf4be077c9919d46b7358a5e8 kubernetes.io/config.mirror:d72d0a4cf4be077c9919d46b7358a5e8 kubernetes.io/config.seen:2025-02-28T14:06:38.491410078Z kubernetes.io/config.source:file]
+I0303 17:33:44.454713       1 scheduler.go:75] Estado real no cluster: map[kubeadm.kubernetes.io/kube-apiserver.advertise-address.endpoint:192.168.49.2:8443 kubernetes.io/config.hash:d72d0a4cf4be077c9919d46b7358a5e8 kubernetes.io/config.mirror:d72d0a4cf4be077c9919d46b7358a5e8 kubernetes.io/config.seen:2025-02-28T14:06:38.491410078Z kubernetes.io/config.source:file]
+I0303 17:33:44.454720       1 scheduler.go:225] [OnAddPod] Ignorando pod kube-system/kube-apiserver-minikube pois pertence ao namespace kube-system
+I0303 17:33:44.454745       1 scheduler.go:219] [OnAddPod] Pod adicionado: kube-system/kube-controller-manager-minikube, Anotações: map[kubernetes.io/config.hash:843c74f7b3bc7d7040a05c31708a6a30 kubernetes.io/config.mirror:843c74f7b3bc7d7040a05c31708a6a30 kubernetes.io/config.seen:2025-02-28T14:06:38.491412428Z kubernetes.io/config.source:file]
+I0303 17:33:44.455974       1 scheduler.go:74] Estado no Informer: map[kubernetes.io/config.hash:843c74f7b3bc7d7040a05c31708a6a30 kubernetes.io/config.mirror:843c74f7b3bc7d7040a05c31708a6a30 kubernetes.io/config.seen:2025-02-28T14:06:38.491412428Z kubernetes.io/config.source:file]
+I0303 17:33:44.455995       1 scheduler.go:75] Estado real no cluster: map[kubernetes.io/config.hash:843c74f7b3bc7d7040a05c31708a6a30 kubernetes.io/config.mirror:843c74f7b3bc7d7040a05c31708a6a30 kubernetes.io/config.seen:2025-02-28T14:06:38.491412428Z kubernetes.io/config.source:file]
+I0303 17:33:44.456002       1 scheduler.go:225] [OnAddPod] Ignorando pod kube-system/kube-controller-manager-minikube pois pertence ao namespace kube-system
+I0303 17:33:44.456063       1 scheduler.go:219] [OnAddPod] Pod adicionado: kube-system/kube-proxy-hqbh2, Anotações: map[]
+I0303 17:33:44.457310       1 scheduler.go:74] Estado no Informer: map[]
+I0303 17:33:44.457326       1 scheduler.go:75] Estado real no cluster: map[]
+I0303 17:33:44.457330       1 scheduler.go:225] [OnAddPod] Ignorando pod kube-system/kube-proxy-hqbh2 pois pertence ao namespace kube-system
+I0303 17:33:44.457353       1 scheduler.go:219] [OnAddPod] Pod adicionado: kube-system/kube-scheduler-minikube, Anotações: map[kubernetes.io/config.hash:d14ce008bee3a1f3bd7cf547688f9dfe kubernetes.io/config.mirror:d14ce008bee3a1f3bd7cf547688f9dfe kubernetes.io/config.seen:2025-02-28T14:06:38.491413718Z kubernetes.io/config.source:file]
+I0303 17:33:44.458587       1 scheduler.go:74] Estado no Informer: map[kubernetes.io/config.hash:d14ce008bee3a1f3bd7cf547688f9dfe kubernetes.io/config.mirror:d14ce008bee3a1f3bd7cf547688f9dfe kubernetes.io/config.seen:2025-02-28T14:06:38.491413718Z kubernetes.io/config.source:file]
+I0303 17:33:44.458614       1 scheduler.go:75] Estado real no cluster: map[kubernetes.io/config.hash:d14ce008bee3a1f3bd7cf547688f9dfe kubernetes.io/config.mirror:d14ce008bee3a1f3bd7cf547688f9dfe kubernetes.io/config.seen:2025-02-28T14:06:38.491413718Z kubernetes.io/config.source:file]
+I0303 17:33:44.458625       1 scheduler.go:225] [OnAddPod] Ignorando pod kube-system/kube-scheduler-minikube pois pertence ao namespace kube-system
+I0303 17:33:44.458664       1 scheduler.go:219] [OnAddPod] Pod adicionado: kube-system/storage-provisioner, Anotações: map[kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{},"labels":{"addonmanager.kubernetes.io/mode":"Reconcile","integration-test":"storage-provisioner"},"name":"storage-provisioner","namespace":"kube-system"},"spec":{"containers":[{"command":["/storage-provisioner"],"image":"gcr.io/k8s-minikube/storage-provisioner:v5","imagePullPolicy":"IfNotPresent","name":"storage-provisioner","volumeMounts":[{"mountPath":"/tmp","name":"tmp"}]}],"hostNetwork":true,"serviceAccountName":"storage-provisioner","volumes":[{"hostPath":{"path":"/tmp","type":"Directory"},"name":"tmp"}]}}
+]
+I0303 17:33:44.459882       1 scheduler.go:74] Estado no Informer: map[kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{},"labels":{"addonmanager.kubernetes.io/mode":"Reconcile","integration-test":"storage-provisioner"},"name":"storage-provisioner","namespace":"kube-system"},"spec":{"containers":[{"command":["/storage-provisioner"],"image":"gcr.io/k8s-minikube/storage-provisioner:v5","imagePullPolicy":"IfNotPresent","name":"storage-provisioner","volumeMounts":[{"mountPath":"/tmp","name":"tmp"}]}],"hostNetwork":true,"serviceAccountName":"storage-provisioner","volumes":[{"hostPath":{"path":"/tmp","type":"Directory"},"name":"tmp"}]}}
+]
+I0303 17:33:44.459904       1 scheduler.go:75] Estado real no cluster: map[kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{},"labels":{"addonmanager.kubernetes.io/mode":"Reconcile","integration-test":"storage-provisioner"},"name":"storage-provisioner","namespace":"kube-system"},"spec":{"containers":[{"command":["/storage-provisioner"],"image":"gcr.io/k8s-minikube/storage-provisioner:v5","imagePullPolicy":"IfNotPresent","name":"storage-provisioner","volumeMounts":[{"mountPath":"/tmp","name":"tmp"}]}],"hostNetwork":true,"serviceAccountName":"storage-provisioner","volumes":[{"hostPath":{"path":"/tmp","type":"Directory"},"name":"tmp"}]}}
+]
+I0303 17:33:44.459911       1 scheduler.go:225] [OnAddPod] Ignorando pod kube-system/storage-provisioner pois pertence ao namespace kube-system
+I0303 17:33:44.543093       1 leaderelection.go:257] attempting to acquire leader lease kube-system/kube-scheduler...
+I0303 17:33:44.543148       1 shared_informer.go:320] Caches are synced for RequestHeaderAuthRequestController
+I0303 17:33:44.543194       1 shared_informer.go:320] Caches are synced for client-ca::kube-system::extension-apiserver-authentication::client-ca-file
+I0303 17:33:44.543157       1 shared_informer.go:320] Caches are synced for client-ca::kube-system::extension-apiserver-authentication::requestheader-client-ca-file
+I0303 17:33:44.547595       1 leaderelection.go:271] successfully acquired lease kube-system/kube-scheduler
+I0303 17:36:11.133091       1 scheduler.go:219] [OnAddPod] Pod adicionado: default/low-priority-pod, Anotações: map[controller:test-controller2 kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"controller":"test-controller2"},"labels":{"app":"test-app"},"name":"low-priority-pod","namespace":"default"},"spec":{"containers":[{"image":"nginx:latest","imagePullPolicy":"IfNotPresent","name":"nginx","resources":{"limits":{"cpu":"8000m","memory":"268Mi"},"requests":{"cpu":"8000m","memory":"268Mi"}}}],"priorityClassName":"free-priority","schedulerName":"custom-scheduler"}}
+]
+I0303 17:36:11.133335       1 scheduler.go:150] [Reserve] resources reserved at node minikube for pod low-priority-pod_default at 2025-03-03 17:36:11.133327447 +0000 UTC m=+147.381928660
+I0303 17:36:11.133364       1 types.go:751] [ControllerName] Verificando as anotações do pod default/low-priority-pod
+I0303 17:36:11.133369       1 types.go:769] [ControllerName] Anotação 'controller' encontrada para o pod default/low-priority-pod: test-controller2
+I0303 17:36:11.133376       1 scheduler.go:152] [Reserve] Status de alocação atual para o pod low-priority-pod_default: 
+I0303 17:36:11.133381       1 scheduler.go:154] [Reserve] Status de alocação atualizado para o pod low-priority-pod_default: allocating
+I0303 17:36:11.133420       1 scheduler.go:178] [PreBind] Validando o pod low-priority-pod antes de vincular ao node minikube
+I0303 17:36:11.134823       1 scheduler.go:74] Estado no Informer: map[controller:test-controller2 kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"controller":"test-controller2"},"labels":{"app":"test-app"},"name":"low-priority-pod","namespace":"default"},"spec":{"containers":[{"image":"nginx:latest","imagePullPolicy":"IfNotPresent","name":"nginx","resources":{"limits":{"cpu":"8000m","memory":"268Mi"},"requests":{"cpu":"8000m","memory":"268Mi"}}}],"priorityClassName":"free-priority","schedulerName":"custom-scheduler"}}
+]
+I0303 17:36:11.134845       1 scheduler.go:75] Estado real no cluster: map[controller:test-controller2 kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"controller":"test-controller2"},"labels":{"app":"test-app"},"name":"low-priority-pod","namespace":"default"},"spec":{"containers":[{"image":"nginx:latest","imagePullPolicy":"IfNotPresent","name":"nginx","resources":{"limits":{"cpu":"8000m","memory":"268Mi"},"requests":{"cpu":"8000m","memory":"268Mi"}}}],"priorityClassName":"free-priority","schedulerName":"custom-scheduler"}}
+]
+I0303 17:36:11.135591       1 scheduler.go:230] [OnAddPod] Adicionando pod default/low-priority-pod com os seguintes detalhes:
+&Pod{ObjectMeta:{low-priority-pod  default  477e5da3-da12-412b-a82f-513749ebe981 54322 0 2025-03-03 17:36:11 +0000 UTC <nil> <nil> map[app:test-app] map[controller:test-controller2 kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"controller":"test-controller2"},"labels":{"app":"test-app"},"name":"low-priority-pod","namespace":"default"},"spec":{"containers":[{"image":"nginx:latest","imagePullPolicy":"IfNotPresent","name":"nginx","resources":{"limits":{"cpu":"8000m","memory":"268Mi"},"requests":{"cpu":"8000m","memory":"268Mi"}}}],"priorityClassName":"free-priority","schedulerName":"custom-scheduler"}}
+] [] [] [{kubectl-client-side-apply Update v1 2025-03-03 17:36:11 +0000 UTC FieldsV1 {"f:metadata":{"f:annotations":{".":{},"f:controller":{},"f:kubectl.kubernetes.io/last-applied-configuration":{}},"f:labels":{".":{},"f:app":{}}},"f:spec":{"f:containers":{"k:{\"name\":\"nginx\"}":{".":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:enableServiceLinks":{},"f:priorityClassName":{},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:terminationGracePeriodSeconds":{}}} }]},Spec:PodSpec{Volumes:[]Volume{Volume{Name:kube-api-access-xrhdb,VolumeSource:VolumeSource{HostPath:nil,EmptyDir:nil,GCEPersistentDisk:nil,AWSElasticBlockStore:nil,GitRepo:nil,Secret:nil,NFS:nil,ISCSI:nil,Glusterfs:nil,PersistentVolumeClaim:nil,RBD:nil,FlexVolume:nil,Cinder:nil,CephFS:nil,Flocker:nil,DownwardAPI:nil,FC:nil,AzureFile:nil,ConfigMap:nil,VsphereVolume:nil,Quobyte:nil,AzureDisk:nil,PhotonPersistentDisk:nil,PortworxVolume:nil,ScaleIO:nil,Projected:&ProjectedVolumeSource{Sources:[]VolumeProjection{VolumeProjection{Secret:nil,DownwardAPI:nil,ConfigMap:nil,ServiceAccountToken:&ServiceAccountTokenProjection{Audience:,ExpirationSeconds:*3607,Path:token,},ClusterTrustBundle:nil,},VolumeProjection{Secret:nil,DownwardAPI:nil,ConfigMap:&ConfigMapProjection{LocalObjectReference:LocalObjectReference{Name:kube-root-ca.crt,},Items:[]KeyToPath{KeyToPath{Key:ca.crt,Path:ca.crt,Mode:nil,},},Optional:nil,},ServiceAccountToken:nil,ClusterTrustBundle:nil,},VolumeProjection{Secret:nil,DownwardAPI:&DownwardAPIProjection{Items:[]DownwardAPIVolumeFile{DownwardAPIVolumeFile{Path:namespace,FieldRef:&ObjectFieldSelector{APIVersion:v1,FieldPath:metadata.namespace,},ResourceFieldRef:nil,Mode:nil,},},},ConfigMap:nil,ServiceAccountToken:nil,ClusterTrustBundle:nil,},},DefaultMode:*420,},StorageOS:nil,CSI:nil,Ephemeral:nil,Image:nil,},},},Containers:[]Container{Container{Name:nginx,Image:nginx:latest,Command:[],Args:[],WorkingDir:,Ports:[]ContainerPort{},Env:[]EnvVar{},Resources:ResourceRequirements{Limits:ResourceList{cpu: {{8 0} {<nil>} 8 DecimalSI},memory: {{281018368 0} {<nil>} 268Mi BinarySI},},Requests:ResourceList{cpu: {{8 0} {<nil>} 8 DecimalSI},memory: {{281018368 0} {<nil>} 268Mi BinarySI},},Claims:[]ResourceClaim{},},VolumeMounts:[]VolumeMount{VolumeMount{Name:kube-api-access-xrhdb,ReadOnly:true,MountPath:/var/run/secrets/kubernetes.io/serviceaccount,SubPath:,MountPropagation:nil,SubPathExpr:,RecursiveReadOnly:nil,},},LivenessProbe:nil,ReadinessProbe:nil,Lifecycle:nil,TerminationMessagePath:/dev/termination-log,ImagePullPolicy:IfNotPresent,SecurityContext:nil,Stdin:false,StdinOnce:false,TTY:false,EnvFrom:[]EnvFromSource{},TerminationMessagePolicy:File,VolumeDevices:[]VolumeDevice{},StartupProbe:nil,ResizePolicy:[]ContainerResizePolicy{},RestartPolicy:nil,},},RestartPolicy:Always,TerminationGracePeriodSeconds:*30,ActiveDeadlineSeconds:nil,DNSPolicy:ClusterFirst,NodeSelector:map[string]string{},ServiceAccountName:default,DeprecatedServiceAccount:default,NodeName:,HostNetwork:false,HostPID:false,HostIPC:false,SecurityContext:&PodSecurityContext{SELinuxOptions:nil,RunAsUser:nil,RunAsNonRoot:nil,SupplementalGroups:[],FSGroup:nil,RunAsGroup:nil,Sysctls:[]Sysctl{},WindowsOptions:nil,FSGroupChangePolicy:nil,SeccompProfile:nil,AppArmorProfile:nil,SupplementalGroupsPolicy:nil,SELinuxChangePolicy:nil,},ImagePullSecrets:[]LocalObjectReference{},Hostname:,Subdomain:,Affinity:nil,SchedulerName:custom-scheduler,InitContainers:[]Container{},AutomountServiceAccountToken:nil,Tolerations:[]Toleration{Toleration{Key:node.kubernetes.io/not-ready,Operator:Exists,Value:,Effect:NoExecute,TolerationSeconds:*300,},Toleration{Key:node.kubernetes.io/unreachable,Operator:Exists,Value:,Effect:NoExecute,TolerationSeconds:*300,},},HostAliases:[]HostAlias{},PriorityClassName:free-priority,Priority:*1,DNSConfig:nil,ShareProcessNamespace:nil,ReadinessGates:[]PodReadinessGate{},RuntimeClassName:nil,EnableServiceLinks:*true,PreemptionPolicy:*PreemptLowerPriority,Overhead:ResourceList{},TopologySpreadConstraints:[]TopologySpreadConstraint{},EphemeralContainers:[]EphemeralContainer{},SetHostnameAsFQDN:nil,OS:nil,HostUsers:nil,SchedulingGates:[]PodSchedulingGate{},ResourceClaims:[]PodResourceClaim{},Resources:nil,},Status:PodStatus{Phase:Pending,Conditions:[]PodCondition{},Message:,Reason:,HostIP:,PodIP:,StartTime:<nil>,ContainerStatuses:[]ContainerStatus{},QOSClass:Guaranteed,InitContainerStatuses:[]ContainerStatus{},NominatedNodeName:,PodIPs:[]PodIP{},EphemeralContainerStatuses:[]ContainerStatus{},Resize:,ResourceClaimStatuses:[]PodResourceClaimStatus{},HostIPs:[]HostIP{},},}
+I0303 17:36:11.135611       1 types.go:751] [ControllerName] Verificando as anotações do pod default/low-priority-pod
+I0303 17:36:11.135616       1 types.go:769] [ControllerName] Anotação 'controller' encontrada para o pod default/low-priority-pod: test-controller2
+I0303 17:36:11.135620       1 scheduler.go:239] [OnAddPod] Atualizando métricas para o pod default/low-priority-pod
+I0303 17:36:11.135624       1 types.go:751] [ControllerName] Verificando as anotações do pod default/low-priority-pod
+I0303 17:36:11.135627       1 types.go:769] [ControllerName] Anotação 'controller' encontrada para o pod default/low-priority-pod: test-controller2
+I0303 17:36:11.135633       1 scheduler.go:252] [OnAddPod] Pod default/low-priority-pod adicionado com sucesso
+I0303 17:36:11.136254       1 scheduler.go:186] [PostBind] Chamado para pod low-priority-pod
+I0303 17:36:11.136280       1 scheduler.go:204] [PostBind] Pod low-priority-pod - Início do binding: 2025-03-03 17:36:11.133430952 +0000 UTC m=+147.382032175, Fim do binding: 2025-03-03 17:36:11.13627675 +0000 UTC m=+147.384877983
+I0303 17:36:11.136289       1 types.go:751] [ControllerName] Verificando as anotações do pod default/low-priority-pod
+I0303 17:36:11.136294       1 types.go:769] [ControllerName] Anotação 'controller' encontrada para o pod default/low-priority-pod: test-controller2
+I0303 17:36:11.136301       1 scheduler.go:211] [PostBind] Métricas atualizadas para o pod low-priority-pod
+I0303 17:36:11.136529       1 scheduler.go:257] [OnUpdatePod] Iniciando processamento de atualização de pod
+I0303 17:36:11.136620       1 scheduler.go:261] [OnUpdatePod] Pod atualizado detectado: default/low-priority-pod, Anotações: map[controller:test-controller2 kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"controller":"test-controller2"},"labels":{"app":"test-app"},"name":"low-priority-pod","namespace":"default"},"spec":{"containers":[{"image":"nginx:latest","imagePullPolicy":"IfNotPresent","name":"nginx","resources":{"limits":{"cpu":"8000m","memory":"268Mi"},"requests":{"cpu":"8000m","memory":"268Mi"}}}],"priorityClassName":"free-priority","schedulerName":"custom-scheduler"}}
+]
+I0303 17:36:11.136648       1 scheduler.go:264] [OnUpdatePod] Comparando estado no Informer e estado real no cluster para o pod default/low-priority-pod
+I0303 17:36:11.138080       1 scheduler.go:74] Estado no Informer: map[controller:test-controller2 kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"controller":"test-controller2"},"labels":{"app":"test-app"},"name":"low-priority-pod","namespace":"default"},"spec":{"containers":[{"image":"nginx:latest","imagePullPolicy":"IfNotPresent","name":"nginx","resources":{"limits":{"cpu":"8000m","memory":"268Mi"},"requests":{"cpu":"8000m","memory":"268Mi"}}}],"priorityClassName":"free-priority","schedulerName":"custom-scheduler"}}
+]
+I0303 17:36:11.138098       1 scheduler.go:75] Estado real no cluster: map[controller:test-controller2 kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"controller":"test-controller2"},"labels":{"app":"test-app"},"name":"low-priority-pod","namespace":"default"},"spec":{"containers":[{"image":"nginx:latest","imagePullPolicy":"IfNotPresent","name":"nginx","resources":{"limits":{"cpu":"8000m","memory":"268Mi"},"requests":{"cpu":"8000m","memory":"268Mi"}}}],"priorityClassName":"free-priority","schedulerName":"custom-scheduler"}}
+]
+I0303 17:36:11.138112       1 scheduler.go:274] [OnUpdatePod] Atualizando informações de métricas para o pod default/low-priority-pod
+I0303 17:36:11.138116       1 types.go:751] [ControllerName] Verificando as anotações do pod default/low-priority-pod
+I0303 17:36:11.138120       1 types.go:769] [ControllerName] Anotação 'controller' encontrada para o pod default/low-priority-pod: test-controller2
+I0303 17:36:11.138125       1 scheduler.go:276] [OnUpdatePod] Atualizando 'LastStatus' do pod default/low-priority-pod nas métricas
+I0303 17:36:11.138129       1 scheduler.go:278] [OnUpdatePod] Métrica atualizada para o pod default/low-priority-pod
+I0303 17:36:11.138135       1 scheduler.go:282] [OnUpdatePod] Finalizando processamento de atualização de pod para default/low-priority-pod
+I0303 17:36:11.144198       1 scheduler.go:257] [OnUpdatePod] Iniciando processamento de atualização de pod
+I0303 17:36:11.144245       1 scheduler.go:261] [OnUpdatePod] Pod atualizado detectado: default/low-priority-pod, Anotações: map[controller:test-controller2 kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"controller":"test-controller2"},"labels":{"app":"test-app"},"name":"low-priority-pod","namespace":"default"},"spec":{"containers":[{"image":"nginx:latest","imagePullPolicy":"IfNotPresent","name":"nginx","resources":{"limits":{"cpu":"8000m","memory":"268Mi"},"requests":{"cpu":"8000m","memory":"268Mi"}}}],"priorityClassName":"free-priority","schedulerName":"custom-scheduler"}}
+]
+I0303 17:36:11.144261       1 scheduler.go:264] [OnUpdatePod] Comparando estado no Informer e estado real no cluster para o pod default/low-priority-pod
+I0303 17:36:11.145809       1 scheduler.go:74] Estado no Informer: map[controller:test-controller2 kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"controller":"test-controller2"},"labels":{"app":"test-app"},"name":"low-priority-pod","namespace":"default"},"spec":{"containers":[{"image":"nginx:latest","imagePullPolicy":"IfNotPresent","name":"nginx","resources":{"limits":{"cpu":"8000m","memory":"268Mi"},"requests":{"cpu":"8000m","memory":"268Mi"}}}],"priorityClassName":"free-priority","schedulerName":"custom-scheduler"}}
+]
+I0303 17:36:11.145829       1 scheduler.go:75] Estado real no cluster: map[controller:test-controller2 kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"controller":"test-controller2"},"labels":{"app":"test-app"},"name":"low-priority-pod","namespace":"default"},"spec":{"containers":[{"image":"nginx:latest","imagePullPolicy":"IfNotPresent","name":"nginx","resources":{"limits":{"cpu":"8000m","memory":"268Mi"},"requests":{"cpu":"8000m","memory":"268Mi"}}}],"priorityClassName":"free-priority","schedulerName":"custom-scheduler"}}
+]
+I0303 17:36:11.145836       1 scheduler.go:274] [OnUpdatePod] Atualizando informações de métricas para o pod default/low-priority-pod
+I0303 17:36:11.145842       1 types.go:751] [ControllerName] Verificando as anotações do pod default/low-priority-pod
+I0303 17:36:11.145846       1 types.go:769] [ControllerName] Anotação 'controller' encontrada para o pod default/low-priority-pod: test-controller2
+I0303 17:36:11.145852       1 scheduler.go:276] [OnUpdatePod] Atualizando 'LastStatus' do pod default/low-priority-pod nas métricas
+I0303 17:36:11.145855       1 scheduler.go:278] [OnUpdatePod] Métrica atualizada para o pod default/low-priority-pod
+I0303 17:36:11.145863       1 scheduler.go:282] [OnUpdatePod] Finalizando processamento de atualização de pod para default/low-priority-pod
+I0303 17:36:12.658943       1 scheduler.go:257] [OnUpdatePod] Iniciando processamento de atualização de pod
+I0303 17:36:12.658995       1 scheduler.go:261] [OnUpdatePod] Pod atualizado detectado: default/low-priority-pod, Anotações: map[controller:test-controller2 kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"controller":"test-controller2"},"labels":{"app":"test-app"},"name":"low-priority-pod","namespace":"default"},"spec":{"containers":[{"image":"nginx:latest","imagePullPolicy":"IfNotPresent","name":"nginx","resources":{"limits":{"cpu":"8000m","memory":"268Mi"},"requests":{"cpu":"8000m","memory":"268Mi"}}}],"priorityClassName":"free-priority","schedulerName":"custom-scheduler"}}
+]
+I0303 17:36:12.659009       1 scheduler.go:264] [OnUpdatePod] Comparando estado no Informer e estado real no cluster para o pod default/low-priority-pod
+I0303 17:36:12.660559       1 scheduler.go:74] Estado no Informer: map[controller:test-controller2 kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"controller":"test-controller2"},"labels":{"app":"test-app"},"name":"low-priority-pod","namespace":"default"},"spec":{"containers":[{"image":"nginx:latest","imagePullPolicy":"IfNotPresent","name":"nginx","resources":{"limits":{"cpu":"8000m","memory":"268Mi"},"requests":{"cpu":"8000m","memory":"268Mi"}}}],"priorityClassName":"free-priority","schedulerName":"custom-scheduler"}}
+]
+I0303 17:36:12.660579       1 scheduler.go:75] Estado real no cluster: map[controller:test-controller2 kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"controller":"test-controller2"},"labels":{"app":"test-app"},"name":"low-priority-pod","namespace":"default"},"spec":{"containers":[{"image":"nginx:latest","imagePullPolicy":"IfNotPresent","name":"nginx","resources":{"limits":{"cpu":"8000m","memory":"268Mi"},"requests":{"cpu":"8000m","memory":"268Mi"}}}],"priorityClassName":"free-priority","schedulerName":"custom-scheduler"}}
+]
+I0303 17:36:12.660586       1 scheduler.go:274] [OnUpdatePod] Atualizando informações de métricas para o pod default/low-priority-pod
+I0303 17:36:12.660592       1 types.go:751] [ControllerName] Verificando as anotações do pod default/low-priority-pod
+I0303 17:36:12.660597       1 types.go:769] [ControllerName] Anotação 'controller' encontrada para o pod default/low-priority-pod: test-controller2
+I0303 17:36:12.660604       1 scheduler.go:276] [OnUpdatePod] Atualizando 'LastStatus' do pod default/low-priority-pod nas métricas
+I0303 17:36:12.660609       1 scheduler.go:278] [OnUpdatePod] Métrica atualizada para o pod default/low-priority-pod
+I0303 17:36:12.660617       1 scheduler.go:282] [OnUpdatePod] Finalizando processamento de atualização de pod para default/low-priority-pod
+I0303 17:37:09.842908       1 scheduler.go:219] [OnAddPod] Pod adicionado: default/high-priority-pod, Anotações: map[controller:test-controller kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"controller":"test-controller"},"labels":{"app":"test-app"},"name":"high-priority-pod","namespace":"default"},"spec":{"containers":[{"image":"nginx:latest","imagePullPolicy":"IfNotPresent","name":"nginx","resources":{"limits":{"cpu":"8000m","memory":"268Mi"},"requests":{"cpu":"8000m","memory":"268Mi"}}}],"priorityClassName":"prod-priority","schedulerName":"custom-scheduler"}}
+]
+I0303 17:37:09.843030       1 default_preemption.go:25] "PostFilter called" pod="default/high-priority-pod"
+I0303 17:37:09.843059       1 preemption.go:242] Lista de nós obtidaallNodes[&NodeInfo{Pods:[coredns-668d6bf9bc-tbzv9 custom-scheduler-8dcdbb8b5-2tv8d etcd-minikube kube-apiserver-minikube kube-controller-manager-minikube kube-proxy-hqbh2 kube-scheduler-minikube storage-provisioner low-priority-pod], RequestedResource:&framework.Resource{MilliCPU:8750, Memory:459276288, EphemeralStorage:0, AllowedPodNumber:0, ScalarResources:map[v1.ResourceName]int64(nil)}, NonZeroRequest: &framework.Resource{MilliCPU:9050, Memory:1717567488, EphemeralStorage:0, AllowedPodNumber:0, ScalarResources:map[v1.ResourceName]int64(nil)}, UsedPort: framework.HostPortInfo{}, AllocatableResource:&framework.Resource{MilliCPU:16000, Memory:33260965888, EphemeralStorage:30083776512, AllowedPodNumber:110, ScalarResources:map[v1.ResourceName]int64{"hugepages-1Gi":0, "hugepages-2Mi":0}}}]
+I0303 17:37:09.843284       1 preemption.go:249] Número de candidatos encontradoscount0
+I0303 17:37:09.843304       1 preemption.go:250] Mapa de status dos nósnodeToStatusMap&{map[] 0xc000a35380}
+I0303 17:37:09.843316       1 preemption.go:259] "No preemption candidate is found; preemption is not helpful for scheduling" pod="default/high-priority-pod"
+I0303 17:37:09.843327       1 default_preemption.go:34] "Preemption failed or not needed" pod="default/high-priority-pod" status="0/1 nodes are available: 1 Preemption is not helpful for scheduling."
+I0303 17:37:09.844884       1 scheduler.go:74] Estado no Informer: map[controller:test-controller kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"controller":"test-controller"},"labels":{"app":"test-app"},"name":"high-priority-pod","namespace":"default"},"spec":{"containers":[{"image":"nginx:latest","imagePullPolicy":"IfNotPresent","name":"nginx","resources":{"limits":{"cpu":"8000m","memory":"268Mi"},"requests":{"cpu":"8000m","memory":"268Mi"}}}],"priorityClassName":"prod-priority","schedulerName":"custom-scheduler"}}
+]
+I0303 17:37:09.844909       1 scheduler.go:75] Estado real no cluster: map[controller:test-controller kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"controller":"test-controller"},"labels":{"app":"test-app"},"name":"high-priority-pod","namespace":"default"},"spec":{"containers":[{"image":"nginx:latest","imagePullPolicy":"IfNotPresent","name":"nginx","resources":{"limits":{"cpu":"8000m","memory":"268Mi"},"requests":{"cpu":"8000m","memory":"268Mi"}}}],"priorityClassName":"prod-priority","schedulerName":"custom-scheduler"}}
+]
+I0303 17:37:09.845092       1 scheduler.go:230] [OnAddPod] Adicionando pod default/high-priority-pod com os seguintes detalhes:
+&Pod{ObjectMeta:{high-priority-pod  default  052284dd-274b-4584-a542-af1d3cd5d71d 54406 0 2025-03-03 17:37:09 +0000 UTC <nil> <nil> map[app:test-app] map[controller:test-controller kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"controller":"test-controller"},"labels":{"app":"test-app"},"name":"high-priority-pod","namespace":"default"},"spec":{"containers":[{"image":"nginx:latest","imagePullPolicy":"IfNotPresent","name":"nginx","resources":{"limits":{"cpu":"8000m","memory":"268Mi"},"requests":{"cpu":"8000m","memory":"268Mi"}}}],"priorityClassName":"prod-priority","schedulerName":"custom-scheduler"}}
+] [] [] [{kubectl-client-side-apply Update v1 2025-03-03 17:37:09 +0000 UTC FieldsV1 {"f:metadata":{"f:annotations":{".":{},"f:controller":{},"f:kubectl.kubernetes.io/last-applied-configuration":{}},"f:labels":{".":{},"f:app":{}}},"f:spec":{"f:containers":{"k:{\"name\":\"nginx\"}":{".":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:resources":{".":{},"f:limits":{".":{},"f:cpu":{},"f:memory":{}},"f:requests":{".":{},"f:cpu":{},"f:memory":{}}},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:enableServiceLinks":{},"f:priorityClassName":{},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:terminationGracePeriodSeconds":{}}} }]},Spec:PodSpec{Volumes:[]Volume{Volume{Name:kube-api-access-lbbnq,VolumeSource:VolumeSource{HostPath:nil,EmptyDir:nil,GCEPersistentDisk:nil,AWSElasticBlockStore:nil,GitRepo:nil,Secret:nil,NFS:nil,ISCSI:nil,Glusterfs:nil,PersistentVolumeClaim:nil,RBD:nil,FlexVolume:nil,Cinder:nil,CephFS:nil,Flocker:nil,DownwardAPI:nil,FC:nil,AzureFile:nil,ConfigMap:nil,VsphereVolume:nil,Quobyte:nil,AzureDisk:nil,PhotonPersistentDisk:nil,PortworxVolume:nil,ScaleIO:nil,Projected:&ProjectedVolumeSource{Sources:[]VolumeProjection{VolumeProjection{Secret:nil,DownwardAPI:nil,ConfigMap:nil,ServiceAccountToken:&ServiceAccountTokenProjection{Audience:,ExpirationSeconds:*3607,Path:token,},ClusterTrustBundle:nil,},VolumeProjection{Secret:nil,DownwardAPI:nil,ConfigMap:&ConfigMapProjection{LocalObjectReference:LocalObjectReference{Name:kube-root-ca.crt,},Items:[]KeyToPath{KeyToPath{Key:ca.crt,Path:ca.crt,Mode:nil,},},Optional:nil,},ServiceAccountToken:nil,ClusterTrustBundle:nil,},VolumeProjection{Secret:nil,DownwardAPI:&DownwardAPIProjection{Items:[]DownwardAPIVolumeFile{DownwardAPIVolumeFile{Path:namespace,FieldRef:&ObjectFieldSelector{APIVersion:v1,FieldPath:metadata.namespace,},ResourceFieldRef:nil,Mode:nil,},},},ConfigMap:nil,ServiceAccountToken:nil,ClusterTrustBundle:nil,},},DefaultMode:*420,},StorageOS:nil,CSI:nil,Ephemeral:nil,Image:nil,},},},Containers:[]Container{Container{Name:nginx,Image:nginx:latest,Command:[],Args:[],WorkingDir:,Ports:[]ContainerPort{},Env:[]EnvVar{},Resources:ResourceRequirements{Limits:ResourceList{cpu: {{8 0} {<nil>} 8 DecimalSI},memory: {{281018368 0} {<nil>} 268Mi BinarySI},},Requests:ResourceList{cpu: {{8 0} {<nil>} 8 DecimalSI},memory: {{281018368 0} {<nil>} 268Mi BinarySI},},Claims:[]ResourceClaim{},},VolumeMounts:[]VolumeMount{VolumeMount{Name:kube-api-access-lbbnq,ReadOnly:true,MountPath:/var/run/secrets/kubernetes.io/serviceaccount,SubPath:,MountPropagation:nil,SubPathExpr:,RecursiveReadOnly:nil,},},LivenessProbe:nil,ReadinessProbe:nil,Lifecycle:nil,TerminationMessagePath:/dev/termination-log,ImagePullPolicy:IfNotPresent,SecurityContext:nil,Stdin:false,StdinOnce:false,TTY:false,EnvFrom:[]EnvFromSource{},TerminationMessagePolicy:File,VolumeDevices:[]VolumeDevice{},StartupProbe:nil,ResizePolicy:[]ContainerResizePolicy{},RestartPolicy:nil,},},RestartPolicy:Always,TerminationGracePeriodSeconds:*30,ActiveDeadlineSeconds:nil,DNSPolicy:ClusterFirst,NodeSelector:map[string]string{},ServiceAccountName:default,DeprecatedServiceAccount:default,NodeName:,HostNetwork:false,HostPID:false,HostIPC:false,SecurityContext:&PodSecurityContext{SELinuxOptions:nil,RunAsUser:nil,RunAsNonRoot:nil,SupplementalGroups:[],FSGroup:nil,RunAsGroup:nil,Sysctls:[]Sysctl{},WindowsOptions:nil,FSGroupChangePolicy:nil,SeccompProfile:nil,AppArmorProfile:nil,SupplementalGroupsPolicy:nil,SELinuxChangePolicy:nil,},ImagePullSecrets:[]LocalObjectReference{},Hostname:,Subdomain:,Affinity:nil,SchedulerName:custom-scheduler,InitContainers:[]Container{},AutomountServiceAccountToken:nil,Tolerations:[]Toleration{Toleration{Key:node.kubernetes.io/not-ready,Operator:Exists,Value:,Effect:NoExecute,TolerationSeconds:*300,},Toleration{Key:node.kubernetes.io/unreachable,Operator:Exists,Value:,Effect:NoExecute,TolerationSeconds:*300,},},HostAliases:[]HostAlias{},PriorityClassName:prod-priority,Priority:*11,DNSConfig:nil,ShareProcessNamespace:nil,ReadinessGates:[]PodReadinessGate{},RuntimeClassName:nil,EnableServiceLinks:*true,PreemptionPolicy:*PreemptLowerPriority,Overhead:ResourceList{},TopologySpreadConstraints:[]TopologySpreadConstraint{},EphemeralContainers:[]EphemeralContainer{},SetHostnameAsFQDN:nil,OS:nil,HostUsers:nil,SchedulingGates:[]PodSchedulingGate{},ResourceClaims:[]PodResourceClaim{},Resources:nil,},Status:PodStatus{Phase:Pending,Conditions:[]PodCondition{},Message:,Reason:,HostIP:,PodIP:,StartTime:<nil>,ContainerStatuses:[]ContainerStatus{},QOSClass:Guaranteed,InitContainerStatuses:[]ContainerStatus{},NominatedNodeName:,PodIPs:[]PodIP{},EphemeralContainerStatuses:[]ContainerStatus{},Resize:,ResourceClaimStatuses:[]PodResourceClaimStatus{},HostIPs:[]HostIP{},},}
+I0303 17:37:09.845111       1 types.go:751] [ControllerName] Verificando as anotações do pod default/high-priority-pod
+I0303 17:37:09.845116       1 types.go:769] [ControllerName] Anotação 'controller' encontrada para o pod default/high-priority-pod: test-controller
+I0303 17:37:09.845125       1 scheduler.go:239] [OnAddPod] Atualizando métricas para o pod default/high-priority-pod
+I0303 17:37:09.845129       1 types.go:751] [ControllerName] Verificando as anotações do pod default/high-priority-pod
+I0303 17:37:09.845134       1 types.go:769] [ControllerName] Anotação 'controller' encontrada para o pod default/high-priority-pod: test-controller
+I0303 17:37:09.845144       1 scheduler.go:252] [OnAddPod] Pod default/high-priority-pod adicionado com sucesso
+I0303 17:37:09.850975       1 scheduler.go:257] [OnUpdatePod] Iniciando processamento de atualização de pod
+I0303 17:37:09.851015       1 scheduler.go:261] [OnUpdatePod] Pod atualizado detectado: default/high-priority-pod, Anotações: map[controller:test-controller kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"controller":"test-controller"},"labels":{"app":"test-app"},"name":"high-priority-pod","namespace":"default"},"spec":{"containers":[{"image":"nginx:latest","imagePullPolicy":"IfNotPresent","name":"nginx","resources":{"limits":{"cpu":"8000m","memory":"268Mi"},"requests":{"cpu":"8000m","memory":"268Mi"}}}],"priorityClassName":"prod-priority","schedulerName":"custom-scheduler"}}
+]
+I0303 17:37:09.851028       1 scheduler.go:264] [OnUpdatePod] Comparando estado no Informer e estado real no cluster para o pod default/high-priority-pod
+I0303 17:37:09.852458       1 scheduler.go:74] Estado no Informer: map[controller:test-controller kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"controller":"test-controller"},"labels":{"app":"test-app"},"name":"high-priority-pod","namespace":"default"},"spec":{"containers":[{"image":"nginx:latest","imagePullPolicy":"IfNotPresent","name":"nginx","resources":{"limits":{"cpu":"8000m","memory":"268Mi"},"requests":{"cpu":"8000m","memory":"268Mi"}}}],"priorityClassName":"prod-priority","schedulerName":"custom-scheduler"}}
+]
+I0303 17:37:09.852502       1 scheduler.go:75] Estado real no cluster: map[controller:test-controller kubectl.kubernetes.io/last-applied-configuration:{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"controller":"test-controller"},"labels":{"app":"test-app"},"name":"high-priority-pod","namespace":"default"},"spec":{"containers":[{"image":"nginx:latest","imagePullPolicy":"IfNotPresent","name":"nginx","resources":{"limits":{"cpu":"8000m","memory":"268Mi"},"requests":{"cpu":"8000m","memory":"268Mi"}}}],"priorityClassName":"prod-priority","schedulerName":"custom-scheduler"}}
+]
+I0303 17:37:09.852511       1 scheduler.go:274] [OnUpdatePod] Atualizando informações de métricas para o pod default/high-priority-pod
+I0303 17:37:09.852516       1 types.go:751] [ControllerName] Verificando as anotações do pod default/high-priority-pod
+I0303 17:37:09.852520       1 types.go:769] [ControllerName] Anotação 'controller' encontrada para o pod default/high-priority-pod: test-controller
+I0303 17:37:09.852525       1 scheduler.go:276] [OnUpdatePod] Atualizando 'LastStatus' do pod default/high-priority-pod nas métricas
+I0303 17:37:09.852529       1 scheduler.go:278] [OnUpdatePod] Métrica atualizada para o pod default/high-priority-pod
+I0303 17:37:09.852535       1 scheduler.go:282] [OnUpdatePod] Finalizando processamento de atualização de pod para default/high-priority-pod
+I0303 17:37:44.553545       1 default_preemption.go:25] "PostFilter called" pod="default/high-priority-pod"
+I0303 17:37:44.553581       1 preemption.go:242] Lista de nós obtidaallNodes[&NodeInfo{Pods:[coredns-668d6bf9bc-tbzv9 custom-scheduler-8dcdbb8b5-2tv8d etcd-minikube kube-apiserver-minikube kube-controller-manager-minikube kube-proxy-hqbh2 kube-scheduler-minikube storage-provisioner low-priority-pod], RequestedResource:&framework.Resource{MilliCPU:8750, Memory:459276288, EphemeralStorage:0, AllowedPodNumber:0, ScalarResources:map[v1.ResourceName]int64(nil)}, NonZeroRequest: &framework.Resource{MilliCPU:9050, Memory:1717567488, EphemeralStorage:0, AllowedPodNumber:0, ScalarResources:map[v1.ResourceName]int64(nil)}, UsedPort: framework.HostPortInfo{}, AllocatableResource:&framework.Resource{MilliCPU:16000, Memory:33260965888, EphemeralStorage:30083776512, AllowedPodNumber:110, ScalarResources:map[v1.ResourceName]int64{"hugepages-1Gi":0, "hugepages-2Mi":0}}}]
+I0303 17:37:44.553720       1 preemption.go:249] Número de candidatos encontradoscount0
+I0303 17:37:44.553739       1 preemption.go:250] Mapa de status dos nósnodeToStatusMap&{map[] 0xc000982b40}
+I0303 17:37:44.553749       1 preemption.go:259] "No preemption candidate is found; preemption is not helpful for scheduling" pod="default/high-priority-pod"
+I0303 17:37:44.553761       1 default_preemption.go:34] "Preemption failed or not needed" pod="default/high-priority-pod" status="0/1 nodes are available: 1 Preemption is not helpful for scheduling."
+I0303 17:38:14.554470       1 default_preemption.go:25] "PostFilter called" pod="default/high-priority-pod"
+I0303 17:38:14.554520       1 preemption.go:242] Lista de nós obtidaallNodes[&NodeInfo{Pods:[coredns-668d6bf9bc-tbzv9 custom-scheduler-8dcdbb8b5-2tv8d etcd-minikube kube-apiserver-minikube kube-controller-manager-minikube kube-proxy-hqbh2 kube-scheduler-minikube storage-provisioner low-priority-pod], RequestedResource:&framework.Resource{MilliCPU:8750, Memory:459276288, EphemeralStorage:0, AllowedPodNumber:0, ScalarResources:map[v1.ResourceName]int64(nil)}, NonZeroRequest: &framework.Resource{MilliCPU:9050, Memory:1717567488, EphemeralStorage:0, AllowedPodNumber:0, ScalarResources:map[v1.ResourceName]int64(nil)}, UsedPort: framework.HostPortInfo{}, AllocatableResource:&framework.Resource{MilliCPU:16000, Memory:33260965888, EphemeralStorage:30083776512, AllowedPodNumber:110, ScalarResources:map[v1.ResourceName]int64{"hugepages-1Gi":0, "hugepages-2Mi":0}}}]
+I0303 17:38:14.554652       1 preemption.go:249] Número de candidatos encontradoscount0
+I0303 17:38:14.554666       1 preemption.go:250] Mapa de status dos nósnodeToStatusMap&{map[] 0xc000c37940}
+I0303 17:38:14.554675       1 preemption.go:259] "No preemption candidate is found; preemption is not helpful for scheduling" pod="default/high-priority-pod"
+I0303 17:38:14.554685       1 default_preemption.go:34] "Preemption failed or not needed" pod="default/high-priority-pod" status="0/1 nodes are available: 1 Preemption is not helpful for scheduling."
+I0303 17:38:44.554632       1 default_preemption.go:25] "PostFilter called" pod="default/high-priority-pod"
+I0303 17:38:44.554657       1 preemption.go:242] Lista de nós obtidaallNodes[&NodeInfo{Pods:[coredns-668d6bf9bc-tbzv9 custom-scheduler-8dcdbb8b5-2tv8d etcd-minikube kube-apiserver-minikube kube-controller-manager-minikube kube-proxy-hqbh2 kube-scheduler-minikube storage-provisioner low-priority-pod], RequestedResource:&framework.Resource{MilliCPU:8750, Memory:459276288, EphemeralStorage:0, AllowedPodNumber:0, ScalarResources:map[v1.ResourceName]int64(nil)}, NonZeroRequest: &framework.Resource{MilliCPU:9050, Memory:1717567488, EphemeralStorage:0, AllowedPodNumber:0, ScalarResources:map[v1.ResourceName]int64(nil)}, UsedPort: framework.HostPortInfo{}, AllocatableResource:&framework.Resource{MilliCPU:16000, Memory:33260965888, EphemeralStorage:30083776512, AllowedPodNumber:110, ScalarResources:map[v1.ResourceName]int64{"hugepages-1Gi":0, "hugepages-2Mi":0}}}]
+I0303 17:38:44.554818       1 preemption.go:249] Número de candidatos encontradoscount0
+I0303 17:38:44.554834       1 preemption.go:250] Mapa de status dos nósnodeToStatusMap&{map[] 0xc000b08740}
+I0303 17:38:44.554843       1 preemption.go:259] "No preemption candidate is found; preemption is not helpful for scheduling" pod="default/high-priority-pod"
+I0303 17:38:44.554853       1 default_preemption.go:34] "Preemption failed or not needed" pod="default/high-priority-pod" status="0/1 nodes are available: 1 Preemption is not helpful for scheduling."
