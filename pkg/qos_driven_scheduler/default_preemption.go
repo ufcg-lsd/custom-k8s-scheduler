@@ -221,14 +221,15 @@ func (pl *QosDrivenScheduler) PodEligibleToPreemptOthers(_ context.Context, pod 
 		}
 
 		if nodeInfo, _ := nodeInfos.Get(nomNodeName); nodeInfo != nil {
-			podPriority := corev1helpers.PodPriority(pod)
 			for _, p := range nodeInfo.Pods {
-				if corev1helpers.PodPriority(p.Pod) < podPriority && podTerminatingByPreemption(p.Pod) {
+				if p.Pod.DeletionTimestamp != nil && pl.HigherPrecedence(pod, p.Pod) {
 					// There is a terminating pod on the nominated node.
-					return false, "not eligible due to a terminating pod on the nominated node."
+
+					return false, "not eligible due to a terminating pod with higher precedence."
 				}
 			}
 		}
+
 	}
 	return true, ""
 }

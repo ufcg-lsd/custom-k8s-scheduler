@@ -661,7 +661,7 @@ func New() func(ctx context.Context, args runtime.Object, f framework.Handle) (f
 			enableAsyncPreemption: enableAsyncPreemption,
 		}
 
-		//scheduler.addEventHandler()
+		scheduler.addEventHandler()
 
 		// Inicializa a lógica de preempção
 		scheduler.Evaluator = NewEvaluator(Name, f, &scheduler, scheduler.enableAsyncPreemption)
