@@ -758,11 +758,6 @@ func (ev *Evaluator) DryRunPreemption(ctx context.Context, state *framework.Cycl
 				logger.Info("Candidate added to violating list", "node", nodeInfoCopy.Node().Name)
 			}
 
-			nvcSize, vcSize := nonViolatingCandidates.size(), violatingCandidates.size()
-			if nvcSize > 0 && nvcSize+vcSize >= candidatesNum {
-				logger.Info("Stopping preemption evaluation, enough candidates found")
-				cancel()
-			}
 			return
 		}
 
