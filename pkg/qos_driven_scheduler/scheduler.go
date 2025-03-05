@@ -3,6 +3,7 @@ package qos_driven_scheduler
 import (
 	"context"
 	"fmt"
+	"math"
 	"net/http"
 	"os"
 	"sort"
@@ -626,6 +627,52 @@ func (scheduler *QosDrivenScheduler) GetControllerMetricInfo(pod *corev1.Pod) Co
 	klog.Infof("[GetControllerMetricInfo] Métricas do controlador definidas para o pod: %s/%s", pod.Namespace, pod.Name)
 
 	return cMetricInfo
+}
+
+// isPodContributingToImproveControllerQoS receives a pod and return false if it doesn't contribute to increase
+// the QoS of its controller, this happen only when the pod is associated with a controller that use
+// the concurrent qos measuring approach and at least one pod from the same controller is not running
+//
+// this function assumes that the received pod is running.
+func (scheduler *QosDrivenScheduler) isPodContributingToImproveControllerQoS(pod *corev1.Pod) bool {
+	// These ones are critical pods and they always be considered as very important.
+	if pod.Namespace == "kube-system" {
+		return true
+	}
+
+	cMetricInfo := scheduler.GetControllerMetricInfo(pod)
+
+	if cMetricInfo.QoSMeasuringApproach == ConcurrentQosMeasuring {
+		scheduler.lock.RLock()
+		defer scheduler.lock.RUnlock()
+		klog.V(1).Infof("[CHECKING POD CONTRIBUTES TO QOS]: concurrent controller %s | replication %d | running_pods %d | allocating_pods %d", ControllerName(pod),
+			cMetricInfo.NumberOfReplicas, cMetricInfo.NumberOfRunningPods(), cMetricInfo.NumberOfPodsBeingAllocated())
+		return cMetricInfo.NumberOfRunningPods()+cMetricInfo.NumberOfPodsBeingAllocated() == cMetricInfo.NumberOfReplicas
+	}
+	return true
+}
+
+func (scheduler *QosDrivenScheduler) filterNodesByHighestPreemptionScore(
+	candidateNodes []string,
+	podClass float64,
+	nodeToPreemptionScore map[string]map[float64]float64,
+) []string {
+
+	var newCandidateNodes []string
+	var maxPreemptionClassScore = float64(-1.0 * math.MaxInt32)
+	for _, node := range candidateNodes {
+		preemptionClassScore := nodeToPreemptionScore[node][podClass]
+
+		if preemptionClassScore > maxPreemptionClassScore {
+			maxPreemptionClassScore = preemptionClassScore
+			newCandidateNodes = nil
+		}
+		if preemptionClassScore == maxPreemptionClassScore {
+			newCandidateNodes = append(newCandidateNodes, node)
+		}
+	}
+
+	return newCandidateNodes
 }
 
 // Função de inicialização do plugin

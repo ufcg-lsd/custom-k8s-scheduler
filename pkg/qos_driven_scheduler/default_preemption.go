@@ -2,8 +2,11 @@ package qos_driven_scheduler
 
 import (
 	"context"
+	"errors"
+	"math"
 	"math/rand"
 	"sort"
+	"time"
 
 	v1 "k8s.io/api/core/v1"
 	policy "k8s.io/api/policy/v1"
@@ -198,6 +201,122 @@ func (pl *QosDrivenScheduler) SelectVictimsOnNode(
 	return victims, numViolatingVictim, framework.NewStatus(framework.Success)
 }
 
+// pickOneNodeForPreemption chooses one node among the given nodes.
+// It assumes pods in each map entry are ordered by decreasing priority.
+// If the scoreFuns is not empty, It picks a node based on score scoreFuns returns.
+// If the scoreFuns is empty,
+// It picks a node based on the following criteria:
+// 1. A node with minimum number of PDB violations.
+// 2. A node with minimum highest priority victim is picked.
+// 3. Ties are broken by sum of priorities of all victims.
+// 4. If there are still ties, node with the minimum number of victims is picked.
+// 5. If there are still ties, node with the latest start time of all highest priority victims is picked.
+// 6. If there are still ties, the first such node is picked (sort of randomly).
+// The 'minNodes1' and 'minNodes2' are being reused here to save the memory
+// allocation and garbage collection time.
+func (pl *QosDrivenScheduler) pickOneNodeForPreemption(logger klog.Logger, nodesToVictims map[string]*extenderv1.Victims, scoreFuncs []func(node string) int64) string {
+	if len(nodesToVictims) == 0 {
+		return ""
+	}
+
+	const FAR_FROM_VIOLATING_CLASS = -1
+	nodeToPreemptionScore := make(map[string]map[float64]float64)
+	victimClasses := make(map[float64]bool)
+	victimClasses[FAR_FROM_VIOLATING_CLASS] = true
+	timeRef := time.Now()
+
+	for node, victims := range nodesToVictims {
+		if len(victims.Pods) == 0 {
+			return node
+		}
+
+		victimClassToScore := make(map[float64]float64)
+		var generalScore float64
+
+		for _, p := range victims.Pods {
+			safetyMargin := pl.args.SafetyMargin.Duration.Seconds()
+			controllerMetricInfo := pl.GetControllerMetricInfo(p)
+			controllerMetric := controllerMetricInfo.Metrics(timeRef, pl.lock.RLocker())
+
+			podQoSMetric := controllerMetric.QoSMetric(p)
+			podImportance := ControllerImportance(p)
+
+			var preemptionScore float64
+
+			if pl.isPodContributingToImproveControllerQoS(p) {
+				preemptionScore = podQoSMetric - safetyMargin
+			} else {
+				preemptionScore = 0
+			}
+
+			if podQoSMetric < safetyMargin {
+				victimClasses[podImportance] = true
+				victimClassToScore[podImportance] += preemptionScore
+			}
+			generalScore += preemptionScore
+		}
+
+		victimClassToScore[FAR_FROM_VIOLATING_CLASS] = generalScore
+		nodeToPreemptionScore[node] = victimClassToScore
+
+		logger.V(1).Info("[PICKING ONE NODE FOR PREEMPTION]", "Node", node, "PreemptionScore", victimClassToScore)
+	}
+
+	// Normalização dos scores
+	var sortedVictimClasses []float64
+	for slo := range victimClasses {
+		for _, preemptionScore := range nodeToPreemptionScore {
+			if _, exists := preemptionScore[slo]; !exists {
+				preemptionScore[slo] = 0
+			}
+		}
+		sortedVictimClasses = append(sortedVictimClasses, slo)
+	}
+
+	sort.Slice(sortedVictimClasses, func(i, j int) bool { return sortedVictimClasses[i] > sortedVictimClasses[j] })
+
+	logger.V(1).Info("[PICKING ONE NODE FOR PREEMPTION]", "AfterNormalization", nodeToPreemptionScore)
+	logger.V(1).Info("[PICKING ONE NODE FOR PREEMPTION]", "AllPreemptableSLOs", sortedVictimClasses)
+
+	// Seleção de candidatos
+	var candidateNodes []string
+	for node := range nodeToPreemptionScore {
+		candidateNodes = append(candidateNodes, node)
+	}
+
+	if len(candidateNodes) == 1 {
+		return candidateNodes[0]
+	}
+
+	for _, class := range sortedVictimClasses {
+		candidateNodes = pl.filterNodesByHighestPreemptionScore(candidateNodes, class, nodeToPreemptionScore)
+		if len(candidateNodes) == 1 {
+			return candidateNodes[0]
+		}
+	}
+
+	// Escolher o nó com menos pods preemptados
+	minPreemptedPods := math.MaxInt32
+	var minPreemptedPodNodes []string
+	for _, node := range candidateNodes {
+		numPods := len(nodesToVictims[node].Pods)
+		if numPods < minPreemptedPods {
+			minPreemptedPods = numPods
+			minPreemptedPodNodes = nil
+		}
+		if numPods == minPreemptedPods {
+			minPreemptedPodNodes = append(minPreemptedPodNodes, node)
+		}
+	}
+
+	if len(minPreemptedPodNodes) > 0 {
+		return minPreemptedPodNodes[0]
+	}
+
+	logger.Error(errors.New("error in logic of node scoring for preemption"), "Unexpected condition reached!")
+	return ""
+}
+
 // PodEligibleToPreemptOthers returns one bool and one string. The bool
 // indicates whether this pod should be considered for preempting other pods or
 // not. The string includes the reason if this pod isn't eligible.
@@ -224,7 +343,6 @@ func (pl *QosDrivenScheduler) PodEligibleToPreemptOthers(_ context.Context, pod 
 			for _, p := range nodeInfo.Pods {
 				if p.Pod.DeletionTimestamp != nil && pl.HigherPrecedence(pod, p.Pod) {
 					// There is a terminating pod on the nominated node.
-
 					return false, "not eligible due to a terminating pod with higher precedence."
 				}
 			}

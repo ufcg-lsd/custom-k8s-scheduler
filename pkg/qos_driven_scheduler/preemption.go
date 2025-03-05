@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"math"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -106,6 +105,8 @@ type Interface interface {
 	// The ordered score functions will be processed one by one iff we find more than one node with the highest score.
 	// Default score functions will be processed if nil returned here for backwards-compatibility.
 	OrderedScoreFuncs(ctx context.Context, nodesToVictims map[string]*extenderv1.Victims) []func(node string) int64
+
+	pickOneNodeForPreemption(logger klog.Logger, nodesToVictims map[string]*extenderv1.Victims, scoreFuncs []func(node string) int64) string
 }
 
 type Evaluator struct {
@@ -433,7 +434,7 @@ func (ev *Evaluator) SelectCandidate(ctx context.Context, candidates []Candidate
 
 	victimsMap := ev.CandidatesToVictimsMap(candidates)
 	scoreFuncs := ev.OrderedScoreFuncs(ctx, victimsMap)
-	candidateNode := pickOneNodeForPreemption(logger, victimsMap, scoreFuncs)
+	candidateNode := ev.pickOneNodeForPreemption(logger, victimsMap, scoreFuncs)
 
 	// Same as candidatesToVictimsMap, this logic is not applicable for out-of-tree
 	// preemption plugins that exercise different candidates on the same nominated node.
@@ -576,107 +577,6 @@ func getPodDisruptionBudgets(pdbLister policylisters.PodDisruptionBudgetLister) 
 		return pdbLister.List(labels.Everything())
 	}
 	return nil, nil
-}
-
-// pickOneNodeForPreemption chooses one node among the given nodes.
-// It assumes pods in each map entry are ordered by decreasing priority.
-// If the scoreFuns is not empty, It picks a node based on score scoreFuns returns.
-// If the scoreFuns is empty,
-// It picks a node based on the following criteria:
-// 1. A node with minimum number of PDB violations.
-// 2. A node with minimum highest priority victim is picked.
-// 3. Ties are broken by sum of priorities of all victims.
-// 4. If there are still ties, node with the minimum number of victims is picked.
-// 5. If there are still ties, node with the latest start time of all highest priority victims is picked.
-// 6. If there are still ties, the first such node is picked (sort of randomly).
-// The 'minNodes1' and 'minNodes2' are being reused here to save the memory
-// allocation and garbage collection time.
-func pickOneNodeForPreemption(logger klog.Logger, nodesToVictims map[string]*extenderv1.Victims, scoreFuncs []func(node string) int64) string {
-	if len(nodesToVictims) == 0 {
-		return ""
-	}
-
-	allCandidates := make([]string, 0, len(nodesToVictims))
-	for node := range nodesToVictims {
-		allCandidates = append(allCandidates, node)
-	}
-
-	if len(scoreFuncs) == 0 {
-		minNumPDBViolatingScoreFunc := func(node string) int64 {
-			// The smaller the NumPDBViolations, the higher the score.
-			return -nodesToVictims[node].NumPDBViolations
-		}
-		minHighestPriorityScoreFunc := func(node string) int64 {
-			// highestPodPriority is the highest priority among the victims on this node.
-			highestPodPriority := corev1helpers.PodPriority(nodesToVictims[node].Pods[0])
-			// The smaller the highestPodPriority, the higher the score.
-			return -int64(highestPodPriority)
-		}
-		minSumPrioritiesScoreFunc := func(node string) int64 {
-			var sumPriorities int64
-			for _, pod := range nodesToVictims[node].Pods {
-				// We add MaxInt32+1 to all priorities to make all of them >= 0. This is
-				// needed so that a node with a few pods with negative priority is not
-				// picked over a node with a smaller number of pods with the same negative
-				// priority (and similar scenarios).
-				sumPriorities += int64(corev1helpers.PodPriority(pod)) + int64(math.MaxInt32+1)
-			}
-			// The smaller the sumPriorities, the higher the score.
-			return -sumPriorities
-		}
-		minNumPodsScoreFunc := func(node string) int64 {
-			// The smaller the length of pods, the higher the score.
-			return -int64(len(nodesToVictims[node].Pods))
-		}
-		latestStartTimeScoreFunc := func(node string) int64 {
-			// Get the earliest start time of all pods on the current node.
-			earliestStartTimeOnNode := util.GetEarliestPodStartTime(nodesToVictims[node])
-			if earliestStartTimeOnNode == nil {
-				logger.Error(errors.New("earliestStartTime is nil for node"), "Should not reach here", "node", node)
-				return int64(math.MinInt64)
-			}
-			// The bigger the earliestStartTimeOnNode, the higher the score.
-			return earliestStartTimeOnNode.UnixNano()
-		}
-
-		// Each scoreFunc scores the nodes according to specific rules and keeps the name of the node
-		// with the highest score. If and only if the scoreFunc has more than one node with the highest
-		// score, we will execute the other scoreFunc in order of precedence.
-		scoreFuncs = []func(string) int64{
-			// A node with a minimum number of PDB is preferable.
-			minNumPDBViolatingScoreFunc,
-			// A node with a minimum highest priority victim is preferable.
-			minHighestPriorityScoreFunc,
-			// A node with the smallest sum of priorities is preferable.
-			minSumPrioritiesScoreFunc,
-			// A node with the minimum number of pods is preferable.
-			minNumPodsScoreFunc,
-			// A node with the latest start time of all highest priority victims is preferable.
-			latestStartTimeScoreFunc,
-			// If there are still ties, then the first Node in the list is selected.
-		}
-	}
-
-	for _, f := range scoreFuncs {
-		selectedNodes := []string{}
-		maxScore := int64(math.MinInt64)
-		for _, node := range allCandidates {
-			score := f(node)
-			if score > maxScore {
-				maxScore = score
-				selectedNodes = []string{}
-			}
-			if score == maxScore {
-				selectedNodes = append(selectedNodes, node)
-			}
-		}
-		if len(selectedNodes) == 1 {
-			return selectedNodes[0]
-		}
-		allCandidates = selectedNodes
-	}
-
-	return allCandidates[0]
 }
 
 // getLowerPriorityNominatedPods returns pods whose priority is smaller than the
