@@ -6,6 +6,11 @@ profiles:
     preEnqueue:
       enabled:
       - name: QosAware
+    queueSort:
+      enabled:
+      - name: QosAware
+      disabled:
+      - name: "*"
     reserve:
       enabled:
       - name: QosAware

@@ -17,7 +17,6 @@ import (
 	"k8s.io/apimachinery/pkg/util/sets"
 	corelisters "k8s.io/client-go/listers/core/v1"
 	policylisters "k8s.io/client-go/listers/policy/v1"
-	corev1helpers "k8s.io/component-helpers/scheduling/corev1"
 	"k8s.io/klog/v2"
 	extenderv1 "k8s.io/kube-scheduler/extender/v1"
 	apipod "k8s.io/kubernetes/pkg/api/v1/pod"
@@ -107,6 +106,8 @@ type Interface interface {
 	OrderedScoreFuncs(ctx context.Context, nodesToVictims map[string]*extenderv1.Victims) []func(node string) int64
 
 	pickOneNodeForPreemption(logger klog.Logger, nodesToVictims map[string]*extenderv1.Victims, scoreFuncs []func(node string) int64) string
+
+	HigherPrecedence(p1, p2 *v1.Pod) bool
 }
 
 type Evaluator struct {
@@ -478,7 +479,7 @@ func (ev *Evaluator) prepareCandidate(ctx context.Context, c Candidate, pod *v1.
 	// this node. So, we should remove their nomination. Removing their
 	// nomination updates these pods and moves them to the active queue. It
 	// lets scheduler find another place for them.
-	nominatedPods := getLowerPriorityNominatedPods(logger, fh, pod, c.Name())
+	nominatedPods := ev.getLowerPriorityNominatedPods(logger, fh, pod, c.Name())
 	if err := util.ClearNominatedNodeName(ctx, cs, nominatedPods...); err != nil {
 		logger.Error(err, "Cannot clear 'NominatedNodeName' field")
 		// We do not return as this error is not critical.
@@ -532,7 +533,7 @@ func (ev *Evaluator) prepareCandidateAsync(c Candidate, pod *v1.Pod, pluginName 
 		// this node. So, we should remove their nomination. Removing their
 		// nomination updates these pods and moves them to the active queue. It
 		// lets scheduler find another place for them.
-		nominatedPods := getLowerPriorityNominatedPods(logger, ev.Handler, pod, c.Name())
+		nominatedPods := ev.getLowerPriorityNominatedPods(logger, ev.Handler, pod, c.Name())
 		if err := util.ClearNominatedNodeName(ctx, ev.Handler.ClientSet(), nominatedPods...); err != nil {
 			logger.Error(err, "Cannot clear 'NominatedNodeName' field from lower priority pods on the same target node", "node", c.Name())
 			result = metrics.GoroutineResultError
@@ -586,21 +587,21 @@ func getPodDisruptionBudgets(pdbLister policylisters.PodDisruptionBudgetLister) 
 // manipulation of NodeInfo and PreFilter state per nominated pod. It may not be
 // worth the complexity, especially because we generally expect to have a very
 // small number of nominated pods per node.
-func getLowerPriorityNominatedPods(logger klog.Logger, pn framework.PodNominator, pod *v1.Pod, nodeName string) []*v1.Pod {
-	podInfos := pn.NominatedPodsForNode(nodeName)
+func (ev *Evaluator) getLowerPriorityNominatedPods(logger klog.Logger, pn framework.PodNominator, pod *v1.Pod, nodeName string) []*v1.Pod {
+	pods := pn.NominatedPodsForNode(nodeName)
 
-	if len(podInfos) == 0 {
+	if len(pods) == 0 {
 		return nil
 	}
 
-	var lowerPriorityPods []*v1.Pod
-	podPriority := corev1helpers.PodPriority(pod)
-	for _, pi := range podInfos {
-		if corev1helpers.PodPriority(pi.Pod) < podPriority {
-			lowerPriorityPods = append(lowerPriorityPods, pi.Pod)
+	var lowerPrecedencePods []*v1.Pod
+	for _, p := range pods {
+		// TODO Do we need to check the mechanisms for limiting preemption here too? Probably not
+		if ev.HigherPrecedence(pod, p.Pod) {
+			lowerPrecedencePods = append(lowerPrecedencePods, p.Pod)
 		}
 	}
-	return lowerPriorityPods
+	return lowerPrecedencePods
 }
 
 // DryRunPreemption simulates Preemption logic on <potentialNodes> in parallel,

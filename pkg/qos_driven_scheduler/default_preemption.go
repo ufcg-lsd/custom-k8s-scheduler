@@ -141,6 +141,19 @@ func (pl *QosDrivenScheduler) SelectVictimsOnNode(
 		}
 	}
 
+	for _, p := range nodeInfo.Pods {
+		//  It is not possible to preempt a pod of kube-system namespace.
+		if p.Pod.Namespace != "kube-system" &&
+			(!pl.isPodContributingToImproveControllerQoS(p.Pod) || pl.HigherPrecedence(pod, p.Pod)) &&
+			pl.CanPreempt(pod, p.Pod) {
+
+			potentialVictims = append(potentialVictims, p)
+			if err := removePod(p); err != nil {
+				return nil, 0, framework.AsStatus(err)
+			}
+		}
+	}
+
 	// No potential victims are found, and so we don't need to evaluate the node again since its state didn't change.
 	if len(potentialVictims) == 0 {
 		return nil, 0, framework.NewStatus(framework.UnschedulableAndUnresolvable, "No preemption victims found for incoming pod")
@@ -422,4 +435,63 @@ func filterPodsWithPDBViolation(podInfos []*framework.PodInfo, pdbs []*policy.Po
 		}
 	}
 	return violatingPodInfos, nonViolatingPodInfos
+}
+
+// Checks if pendingPod can preempt allocatedPod considering their importance and preemption overhead
+// It's assumed that schedule.HigherPrecedence(pendingPod, allocatedPod) == true
+func (pl *QosDrivenScheduler) CanPreempt(pendingPod, allocatedPod *v1.Pod) bool {
+	now := time.Now()
+
+	// check if both pods are associated with the same controller and QoS measuring approach is not independent
+	if (ControllerName(pendingPod) == ControllerName(allocatedPod)) &&
+		(ControllerQoSMeasuring(pendingPod) != IndependentQoSMeasuring) {
+		klog.V(1).Infof("Pods %s and %s are associated with the same controller and QoS measuring is %s --> %s can not be preempted",
+			allocatedPod.Name, pendingPod.Name, ControllerQoSMeasuring(pendingPod), allocatedPod.Name)
+		return false
+	}
+
+	// if pod is not contributing to improve the controller QoS, it is preemptable
+	if !pl.isPodContributingToImproveControllerQoS(allocatedPod) {
+		return true
+	}
+
+	cMetricInfo := pl.GetControllerMetricInfo(allocatedPod)
+	cMetrics := cMetricInfo.Metrics(now, pl.lock.RLocker())
+	pMetrics := pl.getUpdatedVersion(allocatedPod)
+
+	// In this way, the pod that will be preempted could stay pending at least for minRunningTime before be able to preempt less important pods again
+	//minMarginToBePreempted := cMetrics.SafetyMargin + cMetrics.MinimumRunningTime
+
+	// If it's not a resource contention scenario and the pod already run the minimum time
+	isMinimalRunningTimeAchieved := pMetrics.Running(now) >= cMetrics.MinimumRunningTime
+	//if isMinimalRunningTimeAchieved && (cMetrics.QoSMetric(allocatedPod) >= minMarginToBePreempted.Seconds()) {
+	if isMinimalRunningTimeAchieved && (cMetrics.QoSMetric(allocatedPod) >= cMetrics.SafetyMargin.Seconds()) {
+		return true
+	}
+
+	// If the pending pod is more important
+	if ControllerImportance(pendingPod) > ControllerImportance(allocatedPod) {
+		return true
+	}
+
+	// A pod should not preempt other of same importance
+	// that is violating it's allowed preemption overhead
+	// or that hasn't run its minimum running time
+	podHasAnAcceptableOverhead := cMetrics.PreemptionOverhead() <= pl.AcceptablePreemptionOverhead(allocatedPod)
+	if isMinimalRunningTimeAchieved && podHasAnAcceptableOverhead {
+		return true
+	}
+
+	return false
+}
+
+// getUpdatedVersion returns the latest pod object in cache
+func (pl *QosDrivenScheduler) getUpdatedVersion(pod *v1.Pod) PodMetricInfo {
+	pl.lock.RLock()
+	defer pl.lock.RUnlock()
+
+	cMetricInfo := pl.Controllers[ControllerName(pod)]
+	pMetricInfo, _ := cMetricInfo.GetPodMetricInfo(pod)
+
+	return pMetricInfo
 }
