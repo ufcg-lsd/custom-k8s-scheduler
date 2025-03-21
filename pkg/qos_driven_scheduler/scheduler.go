@@ -28,7 +28,7 @@ const (
 	DefaultAcceptablePreemptionOverhead = 1.00
 )
 
-// QosDrivenScheduler implementa as interfaces de plugins solicitadas
+// QosDrivenScheduler implements the requested plugin interfaces
 type QosDrivenScheduler struct {
 	fh                    framework.Handle
 	args                  QosDrivenSchedulerArgs
@@ -41,52 +41,50 @@ type QosDrivenScheduler struct {
 	enableAsyncPreemption bool
 }
 
-// Garantindo que QosDrivenScheduler implementa as interfaces necessárias
-var _ framework.QueueSortPlugin = &QosDrivenScheduler{}  //Feito
-var _ framework.ReservePlugin = &QosDrivenScheduler{}    // Feito
-var _ framework.PreBindPlugin = &QosDrivenScheduler{}    // Feito
-var _ framework.PostBindPlugin = &QosDrivenScheduler{}   // Feito
-var _ framework.PostFilterPlugin = &QosDrivenScheduler{} //Feito
+// Ensuring that QosDrivenScheduler implements the required interfaces
+var _ framework.QueueSortPlugin = &QosDrivenScheduler{}
+var _ framework.ReservePlugin = &QosDrivenScheduler{}
+var _ framework.PreBindPlugin = &QosDrivenScheduler{}
+var _ framework.PostBindPlugin = &QosDrivenScheduler{}
+var _ framework.PostFilterPlugin = &QosDrivenScheduler{}
 var _ framework.PreEnqueuePlugin = &QosDrivenScheduler{}
 
-// Name retorna o nome do plugin
+// Name returns the name of the plugin
 func (scheduler *QosDrivenScheduler) Name() string {
 	return Name
 }
 
-// QueueSortPlugin: Determina a ordem de prioridade dos pods na fila
+// QueueSortPlugin: Determines the priority order of pods in the queue
 func (scheduler *QosDrivenScheduler) Less(pInfo1, pInfo2 *framework.QueuedPodInfo) bool {
-	klog.Infof("[QueueSort] Comparando prioridade de %s com %s", pInfo1.Pod.Name, pInfo2.Pod.Name)
+	klog.V(2).Infof("[QueueSort] Comparing priority of %s with %s", pInfo1.Pod.Name, pInfo2.Pod.Name)
 	if pInfo1.Pod.Name == pInfo2.Pod.Name && pInfo1.Pod.Namespace == pInfo2.Pod.Namespace {
-		klog.Warningf("[QueueSort] Tentativa de comparar o pod %s consigo mesmo. Ignorando comparação.", pInfo1.Pod.Name)
+		klog.Warningf("[QueueSort] Attempt to compare pod %s with itself. Ignoring comparison.", pInfo1.Pod.Name)
 		return false
 	}
 	precedence := scheduler.HigherPrecedence(pInfo1.Pod, pInfo2.Pod)
-	klog.Infof("[QueueSort] Precedência determinada: %s tem precedência sobre %s? %v", pInfo1.Pod.Name, pInfo2.Pod.Name, precedence)
+	klog.V(2).Infof("[QueueSort] Precedence determined: Does %s have precedence over %s? %v", pInfo1.Pod.Name, pInfo2.Pod.Name, precedence)
 	return precedence
 }
 
 func (scheduler *QosDrivenScheduler) CompareInformerAndRealState(pod *corev1.Pod) {
 	realPod, err := scheduler.fh.ClientSet().CoreV1().Pods(pod.Namespace).Get(context.TODO(), pod.Name, metav1.GetOptions{})
 	if err != nil {
-		klog.Errorf("Erro ao buscar estado real do pod %s: %v", pod.Name, err)
+		klog.Errorf("Error retrieving actual state of pod %s: %v", pod.Name, err)
 		return
 	}
-	klog.Infof("Estado no Informer: %+v", pod.Annotations)
-	klog.Infof("Estado real no cluster: %+v", realPod.Annotations)
+	klog.V(2).Infof("State in Informer: %+v", pod.Annotations)
+	klog.V(2).Infof("Actual state in cluster: %+v", realPod.Annotations)	
 }
 
 // We calculate precedence between pods checking if the time to violate p1's controller SLO is lower than p2's controller.
 // If the pods' controllers has different importances and their time to violate are below the safety margin the precedence is for the highest importance controller's pod.
 func (scheduler *QosDrivenScheduler) HigherPrecedence(p1, p2 *corev1.Pod) bool {
-	// Verificação para evitar comparar o pod consigo mesmo
 	if p1.Name == p2.Name && p1.Namespace == p2.Namespace {
-		klog.Warningf("[HigherPrecedence] Tentativa de comparar o pod %s consigo mesmo. Retornando false.", p1.Name)
 		return false
 	}
 
 	now := time.Now()
-	klog.Infof("[HigherPrecedence] Calculando precedência entre %s e %s", p1.Name, p2.Name)
+	klog.V(2).Infof("[HigherPrecedence] Calculating precedence between %s and %s", p1.Name, p2.Name)
 
 	scheduler.WaitForPodsOnCache(p1, p2)
 	cMetricInfo1 := scheduler.GetControllerMetricInfo(p1)
@@ -100,26 +98,26 @@ func (scheduler *QosDrivenScheduler) HigherPrecedence(p1, p2 *corev1.Pod) bool {
 	qosMetric1 := cMetrics1.QoSMetric(p1)
 	qosMetric2 := cMetrics2.QoSMetric(p2)
 
-	klog.Infof("[HigherPrecedence] Métricas para %s: QoS = %f, Importância = %.2f", p1.Name, qosMetric1, importance1)
-	klog.Infof("[HigherPrecedence] Métricas para %s: QoS = %f, Importância = %.2f", p2.Name, qosMetric2, importance2)
+	klog.V(2).Infof("[HigherPrecedence] Metrics for %s: QoS = %f, Importance = %.2f", p1.Name, qosMetric1, importance1)
+	klog.V(2).Infof("[HigherPrecedence] Metrics for %s: QoS = %f, Importance = %.2f", p2.Name, qosMetric2, importance2)
 
 	safetyMargin := scheduler.args.SafetyMargin.Duration.Seconds()
 
 	// Is in resource contention
 	if (qosMetric1 < safetyMargin) && (qosMetric2 < safetyMargin) && importance1 != importance2 {
-		klog.Infof("[HigherPrecedence] Ambos estão em contenção de recursos e têm diferentes importâncias.")
+		klog.V(2).Infof("[HigherPrecedence] Both are in resource contention and have different importances.")
 		return importance1 > importance2
 	}
 
 	result := qosMetric1 < qosMetric2
-	klog.Infof("[HigherPrecedence] Decisão final: %s tem precedência sobre %s? %v", p1.Name, p2.Name, result)
+	klog.V(2).Infof("[HigherPrecedence] Final decision: Does %s have precedence over %s? %v", p1.Name, p2.Name, result)
 	return result
 }
 
 // TODO maybe we should sort only by controller's SLO and importance if we can't find its metrics
 func (scheduler *QosDrivenScheduler) WaitForPodsOnCache(pods ...*corev1.Pod) {
 	for _, pod := range pods {
-		klog.Infof("[WaitForPodsOnCache] Verificando se o pod %s está no cache...", pod.Name)
+		klog.V(2).Infof("[WaitForPodsOnCache] Checking if pod %s is in the cache...", pod.Name)
 		cacheMiss := func() bool {
 			cMetricInfo := scheduler.GetControllerMetricInfo(pod)
 			scheduler.lock.RLock()
@@ -127,89 +125,88 @@ func (scheduler *QosDrivenScheduler) WaitForPodsOnCache(pods ...*corev1.Pod) {
 
 			_, notFound := cMetricInfo.GetPodMetricInfo(pod)
 			if notFound {
-				klog.Warningf("[cacheMiss] Métricas não encontradas para o pod: %s/%s", pod.Namespace, pod.Name)
+				klog.Warningf("[cacheMiss] Metrics not found for pod: %s/%s", pod.Namespace, pod.Name)
 			}
 
-			// Comparar o estado real com o estado no cache
 			scheduler.CompareInformerAndRealState(pod)
 
 			return notFound
 		}
 
 		for cacheMiss() {
-			klog.Warningf("[WaitForPodsOnCache] Pod %s não encontrado no cache. Tentando novamente...", pod.Name)
+			klog.Warningf("[WaitForPodsOnCache] Pod %s not found in cache. Retrying...", pod.Name)
 			time.Sleep(time.Millisecond * 100)
 		}
 
-		klog.Infof("[WaitForPodsOnCache] Pod %s encontrado no cache.", pod.Name)
+		klog.V(2).Infof("[WaitForPodsOnCache] Pod %s found in cache.", pod.Name)
 	}
 }
 
-// ReservePlugin: Chamado quando os recursos são reservados
+// ReservePlugin: Called when resources are reserved
 func (scheduler *QosDrivenScheduler) Reserve(_ context.Context, _ *framework.CycleState, pod *corev1.Pod, nodeName string) *framework.Status {
 	now := time.Now()
-	klog.Infof("[Reserve] resources reserved at node %s for pod %s at %s", nodeName, PodName(pod), now)
+	klog.V(2).Infof("[Reserve] resources reserved at node %s for pod %s at %s", nodeName, PodName(pod), now)
 	scheduler.UpdatePodMetricInfo(pod, func(old PodMetricInfo) PodMetricInfo {
-		klog.Infof("[Reserve] Status de alocação atual para o pod %s: %v", PodName(pod), old.AllocationStatus)
+		klog.V(2).Infof("[Reserve] Current allocation status for pod %s: %v", PodName(pod), old.AllocationStatus)
 		old.AllocationStatus = AllocatingState
-		klog.Infof("[Reserve] Status de alocação atualizado para o pod %s: %v", PodName(pod), AllocatingState)
+		klog.V(2).Infof("[Reserve] Allocation status updated for pod %s: %v", PodName(pod), AllocatingState)
 		return old
 	})
 	return nil
 }
 
-// ReservePlugin: Chamado quando a reserva é desfeita
+// ReservePlugin: Called when the reservation is undone
 func (scheduler *QosDrivenScheduler) Unreserve(_ context.Context, _ *framework.CycleState, pod *corev1.Pod, nodeName string) {
 	now := time.Now()
-	klog.Infof("[Unreserve] Recursos estão sendo liberados no node %s para o pod %s às %s", nodeName, PodName(pod), now)
+	klog.V(2).Infof("[Unreserve] Resources are being released on node %s for pod %s at %s", nodeName, PodName(pod), now)
 
-	klog.Infof("[Unreserve] Atualizando métricas do pod %s para liberar recursos", PodName(pod))
+	klog.V(2).Infof("[Unreserve] Updating metrics for pod %s to release resources", PodName(pod))
 	scheduler.UpdatePodMetricInfo(pod, func(old PodMetricInfo) PodMetricInfo {
-		klog.Infof("[Unreserve] Estado anterior do AllocationStatus para pod %s: %v", PodName(pod), old.AllocationStatus)
+		klog.V(2).Infof("[Unreserve] Previous AllocationStatus for pod %s: %v", PodName(pod), old.AllocationStatus)
 		old.AllocationStatus = ""
-		klog.Infof("[Unreserve] Novo estado do AllocationStatus para pod %s: %v", PodName(pod), old.AllocationStatus)
+		klog.V(2).Infof("[Unreserve] New AllocationStatus for pod %s: %v", PodName(pod), old.AllocationStatus)
 		return old
 	})
 
-	klog.Infof("[Unreserve] Recursos liberados com sucesso para o pod %s no node %s", PodName(pod), nodeName)
+	klog.V(2).Infof("[Unreserve] Resources successfully released for pod %s on node %s", PodName(pod), nodeName)
 }
 
-// PreBindPlugin: Chamado antes de o pod ser vinculado ao node
+// PreBindPlugin: Called before the pod is bound to the node
 func (scheduler *QosDrivenScheduler) PreBind(_ context.Context, state *framework.CycleState, p *corev1.Pod, nodeName string) *framework.Status {
-	klog.Infof("[PreBind] Validando o pod %s antes de vincular ao node %s", p.Name, nodeName)
+	klog.V(2).Infof("[PreBind] Validating pod %s before binding to node %s", p.Name, nodeName)
 	now := time.Now()
 	state.Write(BindingStart, CloneableTime{now})
 	return nil
 }
 
-// PostBindPlugin: Chamado após o pod ser vinculado ao node
+// PostBindPlugin: Called after the pod is bound to the node
 func (scheduler *QosDrivenScheduler) PostBind(ctx context.Context, state *framework.CycleState, pod *corev1.Pod, _ string) {
-	klog.Infof("[PostBind] Chamado para pod %s", pod.Name)
+	klog.V(2).Infof("[PostBind] Called for pod %s", pod.Name)
 
-	// Tenta ler o estado `BindingStart`
+	// Attempt to read the `BindingStart` state
 	start, err := state.Read(BindingStart)
 	if err != nil {
-		klog.Errorf("[PostBind] Erro ao ler BindingStart para pod %s: %v", pod.Name, err)
+		klog.Errorf("[PostBind] Error reading BindingStart for pod %s: %v", pod.Name, err)
 		return
 	}
 
-	// Verifica o tipo do valor retornado
+	// Check the type of the returned value
 	startBinding, ok := start.(CloneableTime)
 	if !ok {
-		klog.Errorf("[PostBind] Tipo inesperado para BindingStart no pod %s", pod.Name)
+		klog.Errorf("[PostBind] Unexpected type for BindingStart in pod %s", pod.Name)
 		return
 	}
 
-	// Calcula o tempo de binding
+	// Calculate the binding time
 	endBinding := time.Now()
-	klog.Infof("[PostBind] Pod %s - Início do binding: %s, Fim do binding: %s", pod.Name, startBinding.Time, endBinding)
+	klog.V(2).Infof("[PostBind] Pod %s - Binding start: %s, Binding end: %s", pod.Name, startBinding.Time, endBinding)
 
-	// Atualiza as métricas do pod
+	// Update the pod metrics
 	scheduler.UpdatePodMetricInfo(pod, func(old PodMetricInfo) PodMetricInfo {
 		old.StartBindingTime = startBinding.Time
 		old.StartRunningTime = endBinding
 		old.AllocationStatus = AllocatedState
-		klog.Infof("[PostBind] Métricas atualizadas para o pod %s", pod.Name)
+		klog.V(2).Infof("[PostBind] Metrics updated for pod %s", pod.Name)
 		return old
 	})
 }
@@ -217,27 +214,27 @@ func (scheduler *QosDrivenScheduler) PostBind(ctx context.Context, state *framew
 func (scheduler *QosDrivenScheduler) OnAddPod(obj interface{}) {
 
 	p := obj.(*corev1.Pod).DeepCopy()
-	klog.Infof("[OnAddPod] Pod adicionado: %s/%s, Anotações: %+v", p.Namespace, p.Name, p.Annotations)
+	klog.V(2).Infof("[OnAddPod] Pod added: %s/%s, Annotations: %+v", p.Namespace, p.Name, p.Annotations)
 
-	// Comparar o estado no Informer com o estado real no cluster
+	// Compare the state in the Informer with the actual state in the cluster
 	scheduler.CompareInformerAndRealState(p)
 
-	if p.Namespace == "kube-system" {
-		klog.Infof("[OnAddPod] Ignorando pod %s/%s pois pertence ao namespace kube-system", p.Namespace, p.Name)
+	if p.Namespace != "default" {
+		klog.V(2).Infof("[OnAddPod] Ignoring pod %s/%s as it belongs to the kube-system namespace", p.Namespace, p.Name)
 		return
 	}
 
 	start := p.GetCreationTimestamp().Time
-	klog.Infof("[OnAddPod] Adicionando pod %s/%s com os seguintes detalhes:\n%s", p.Namespace, p.Name, p.String())
+	klog.V(2).Infof("[OnAddPod] Adding pod %s/%s with the following details:\n%s", p.Namespace, p.Name, p.String())
 
 	// CreationTimestamp is marked as +optional in the API, so we put this fallback
 	if start.IsZero() {
 		start = time.Now()
-		klog.Infof("[OnAddPod] Timestamp de criação não definido para o pod %s/%s, usando o horário atual: %v", p.Namespace, p.Name, start)
+		klog.V(2).Infof("[OnAddPod] Creation timestamp not set for pod %s/%s, using current time: %v", p.Namespace, p.Name, start)
 	}
 
 	scheduler.UpdatePodMetricInfo(p, func(pMetricInfo PodMetricInfo) PodMetricInfo {
-		klog.Infof("[OnAddPod] Atualizando métricas para o pod %s/%s", p.Namespace, p.Name)
+		klog.V(2).Infof("[OnAddPod] Updating metrics for pod %s/%s", p.Namespace, p.Name)
 		pMetricInfo.ControllerName = ControllerName(p)
 		pMetricInfo.LastStatus = p
 		pMetricInfo.CreationTime = start
@@ -245,81 +242,81 @@ func (scheduler *QosDrivenScheduler) OnAddPod(obj interface{}) {
 		// pod starts running at this moment
 		if pMetricInfo.StartRunningTime.IsZero() && p.Status.Phase == corev1.PodRunning {
 			pMetricInfo.StartRunningTime = time.Now()
-			klog.Infof("[OnAddPod] Pod %s/%s entrou no estado Running", p.Namespace, p.Name)
+			klog.V(2).Infof("[OnAddPod] Pod %s/%s entered Running state", p.Namespace, p.Name)
 		}
 
 		return pMetricInfo
 	})
-	klog.Infof("[OnAddPod] Pod %s/%s adicionado com sucesso", p.Namespace, p.Name)
+	klog.V(2).Infof("[OnAddPod] Pod %s/%s successfully added", p.Namespace, p.Name)
 }
 
 func (scheduler *QosDrivenScheduler) OnUpdatePod(_, newObj interface{}) {
 
-	klog.Infof("[OnUpdatePod] Iniciando processamento de atualização de pod")
+	klog.V(2).Infof("[OnUpdatePod] Starting pod update processing")
 
-	// Criando uma cópia do pod atualizado
+	// Creating a copy of the updated pod
 	p := newObj.(*corev1.Pod).DeepCopy()
-	klog.Infof("[OnUpdatePod] Pod atualizado detectado: %s/%s, Anotações: %+v", p.Namespace, p.Name, p.Annotations)
+	klog.V(2).Infof("[OnUpdatePod] Updated pod detected: %s/%s, Annotations: %+v", p.Namespace, p.Name, p.Annotations)
 
-	// Comparando o estado no Informer com o estado real no cluster
-	klog.Infof("[OnUpdatePod] Comparando estado no Informer e estado real no cluster para o pod %s/%s", p.Namespace, p.Name)
+	// Comparing the state in the Informer with the actual state in the cluster
+	klog.V(2).Infof("[OnUpdatePod] Comparing state in Informer and actual state in the cluster for pod %s/%s", p.Namespace, p.Name)
 	scheduler.CompareInformerAndRealState(p)
 
-	// Ignorando pods no namespace kube-system
-	if p.Namespace == "kube-system" {
-		klog.Infof("[OnUpdatePod] Pod %s/%s pertence ao namespace 'kube-system'. Ignorando...", p.Namespace, p.Name)
+	// Ignoring pods in the kube-system namespace
+	if p.Namespace != "default" {
+		klog.V(2).Infof("[OnUpdatePod] Pod %s/%s belongs to the 'kube-system' namespace. Ignoring...", p.Namespace, p.Name)
 		return
 	}
 
-	// Atualizando informações de métricas do pod
-	klog.Infof("[OnUpdatePod] Atualizando informações de métricas para o pod %s/%s", p.Namespace, p.Name)
+	// Updating pod metric information
+	klog.V(2).Infof("[OnUpdatePod] Updating metric information for pod %s/%s", p.Namespace, p.Name)
 	scheduler.UpdatePodMetricInfo(p, func(pMetricInfo PodMetricInfo) PodMetricInfo {
-		klog.Infof("[OnUpdatePod] Atualizando 'LastStatus' do pod %s/%s nas métricas", p.Namespace, p.Name)
+		klog.V(2).Infof("[OnUpdatePod] Updating 'LastStatus' of pod %s/%s in metrics", p.Namespace, p.Name)
 		pMetricInfo.LastStatus = p
-		klog.Infof("[OnUpdatePod] Métrica atualizada para o pod %s/%s", p.Namespace, p.Name)
+		klog.V(2).Infof("[OnUpdatePod] Metric updated for pod %s/%s", p.Namespace, p.Name)
 		return pMetricInfo
 	})
 
-	klog.Infof("[OnUpdatePod] Finalizando processamento de atualização de pod para %s/%s", p.Namespace, p.Name)
+	klog.V(2).Infof("[OnUpdatePod] Finished pod update processing for %s/%s", p.Namespace, p.Name)
 }
 
 func (scheduler *QosDrivenScheduler) OnDeletePod(lastState interface{}) {
 
-	klog.Infof("[OnDeletePod] Iniciando a execução do OnDeletePod")
+	klog.V(2).Infof("[OnDeletePod] Starting execution of OnDeletePod")
 
 	p, ok := lastState.(*corev1.Pod)
 	if !ok {
-		klog.Warningf("[OnDeletePod] O estado anterior do pod deletado é desconhecido")
+		klog.Warningf("[OnDeletePod] The previous state of the deleted pod is unknown")
 		return
 	}
 
 	p = p.DeepCopy()
-	klog.Infof("[OnDeletePod] DeepCopy realizado para o pod %s/%s", p.Namespace, p.Name)
+	klog.V(2).Infof("[OnDeletePod] DeepCopy performed for pod %s/%s", p.Namespace, p.Name)
 
-	if p.Namespace == "kube-system" {
-		klog.Infof("[OnDeletePod] Pod %s/%s pertence ao namespace 'kube-system'. Ignorando...", p.Namespace, p.Name)
+	if p.Namespace != "default" {
+		klog.V(2).Infof("[OnDeletePod] Pod %s/%s belongs to the 'kube-system' namespace. Ignoring...", p.Namespace, p.Name)
 		return
 	}
 
-	klog.Infof("[OnDeletePod] Pod deletado detectado: %s/%s\nDetalhes do pod: %s", p.Namespace, p.Name, p.String())
+	klog.V(2).Infof("[OnDeletePod] Deleted pod detected: %s/%s\nPod details: %s", p.Namespace, p.Name, p.String())
 
-	klog.Infof("[OnDeletePod] Atualizando métricas do pod %s/%s", p.Namespace, p.Name)
+	klog.V(2).Infof("[OnDeletePod] Updating metrics for pod %s/%s", p.Namespace, p.Name)
 	scheduler.UpdatePodMetricInfo(p, func(pMetricInfo PodMetricInfo) PodMetricInfo {
-		klog.Infof("[OnDeletePod] Verificando o estado do pod %s/%s nas métricas", p.Namespace, p.Name)
+		klog.V(2).Infof("[OnDeletePod] Checking the state of pod %s/%s in metrics", p.Namespace, p.Name)
 
 		// if pod was succeeded terminate, its endTime has already been set
 		if pMetricInfo.IsSucceeded {
-			klog.Infof("[OnDeletePod] Pod %s/%s já foi marcado como 'Succeeded'. Nenhuma ação necessária.", p.Namespace, p.Name)
+			klog.V(2).Infof("[OnDeletePod] Pod %s/%s has already been marked as 'Succeeded'. No action needed.", p.Namespace, p.Name)
 			return pMetricInfo
 		}
 
 		// pod is being deleted at this moment
 		pMetricInfo.EndTime = time.Now()
-		klog.Infof("[OnDeletePod] EndTime atualizado para o pod %s/%s: %v", p.Namespace, p.Name, pMetricInfo.EndTime)
+		klog.V(2).Infof("[OnDeletePod] EndTime updated for pod %s/%s: %v", p.Namespace, p.Name, pMetricInfo.EndTime)
 		return pMetricInfo
 	})
 
-	klog.Infof("[OnDeletePod] Finalizando a execução do OnDeletePod para o pod %s/%s", p.Namespace, p.Name)
+	klog.V(2).Infof("[OnDeletePod] Finishing execution of OnDeletePod for pod %s/%s", p.Namespace, p.Name)
 }
 
 func (scheduler *QosDrivenScheduler) UpdatePodMetricInfo(pod *corev1.Pod, f func(PodMetricInfo) PodMetricInfo) {
@@ -327,7 +324,7 @@ func (scheduler *QosDrivenScheduler) UpdatePodMetricInfo(pod *corev1.Pod, f func
 	defer scheduler.lock.Unlock()
 
 	if pod.Namespace == "kube-system" {
-		klog.Infof("Pod %s is from kube-system namespace. There is no need to update podMetricInfo.", pod.Name)
+		klog.V(2).Infof("Pod %s is from kube-system namespace. There is no need to update podMetricInfo.", pod.Name)
 		return
 	}
 
@@ -338,9 +335,9 @@ func (scheduler *QosDrivenScheduler) UpdatePodMetricInfo(pod *corev1.Pod, f func
 		scheduler.Controllers = map[string]ControllerMetricInfo{}
 	}
 
-	//	klog.Infof("[UpdatePodMetricInfo] controllerName = %s, podName = %s", controllerName, podName)
+	//	klog.V(2).Infof("[UpdatePodMetricInfo] controllerName = %s, podName = %s", controllerName, podName)
 	cMetricInfo, found := scheduler.Controllers[controllerName]
-	//	klog.Infof("[UpdatePodMetricInfo] Controller encontrado? %t", found)
+	//	klog.V(2).Infof("[UpdatePodMetricInfo] Controller encontrado? %t", found)
 
 	if !found {
 		cMetricInfo.SafetyMargin = scheduler.args.SafetyMargin.Duration
@@ -616,15 +613,15 @@ func (scheduler *QosDrivenScheduler) debugApi() {
 }
 
 func (scheduler *QosDrivenScheduler) GetControllerMetricInfo(pod *corev1.Pod) ControllerMetricInfo {
-	klog.Infof("[GetControllerMetricInfo] Iniciando para o pod: %s/%s", pod.Namespace, pod.Name)
+	klog.V(2).Infof("[GetControllerMetricInfo] Starting for pod: %s/%s", pod.Namespace, pod.Name)
 
 	scheduler.lock.RLock()
 	defer scheduler.lock.RUnlock()
 
-	klog.Infof("[GetControllerMetricInfo] Obtendo o nome do controlador para o pod: %s/%s", pod.Namespace, pod.Name)
+	klog.V(2).Infof("[GetControllerMetricInfo] Getting controller name for pod: %s/%s", pod.Namespace, pod.Name)
 	cMetricInfo := scheduler.Controllers[ControllerName(pod)]
 	cMetricInfo.ReferencePod = pod
-	klog.Infof("[GetControllerMetricInfo] Métricas do controlador definidas para o pod: %s/%s", pod.Namespace, pod.Name)
+	klog.V(2).Infof("[GetControllerMetricInfo] Controller metrics set for pod: %s/%s", pod.Namespace, pod.Name)
 
 	return cMetricInfo
 }
@@ -675,16 +672,15 @@ func (scheduler *QosDrivenScheduler) filterNodesByHighestPreemptionScore(
 	return newCandidateNodes
 }
 
-// Função de inicialização do plugin
+
 func New() func(ctx context.Context, args runtime.Object, f framework.Handle) (framework.Plugin, error) {
 	return func(ctx context.Context, args runtime.Object, f framework.Handle) (framework.Plugin, error) {
-		// Converte args para um mapa desestruturado
+		
 		unstructuredArgs, err := runtime.DefaultUnstructuredConverter.ToUnstructured(args)
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert args to unstructured format: %v", err)
 		}
 
-		// Converte o mapa para QosDrivenSchedulerArgs
 		var schedulerArgs QosDrivenSchedulerArgs
 		if err := runtime.DefaultUnstructuredConverter.FromUnstructured(unstructuredArgs, &schedulerArgs); err != nil {
 			return nil, fmt.Errorf("failed to convert unstructured args to QosDrivenSchedulerArgs: %v", err)
@@ -694,10 +690,10 @@ func New() func(ctx context.Context, args runtime.Object, f framework.Handle) (f
 		podLister := f.SharedInformerFactory().Core().V1().Pods().Lister()
 		pdbLister := getPDBLister(f.SharedInformerFactory())
 
-		// Define se a preempção assíncrona está ativada
+		// Determine if asynchronous preemption is enabled
 		enableAsyncPreemption := false
 
-		// Inicializa o scheduler com os argumentos convertidos
+		// Initialize the scheduler with the converted arguments
 		scheduler := QosDrivenScheduler{
 			PodInformer:           podInformer.Informer(),
 			fh:                    f,
@@ -710,13 +706,13 @@ func New() func(ctx context.Context, args runtime.Object, f framework.Handle) (f
 
 		scheduler.addEventHandler()
 
-		// Inicializa a lógica de preempção
+		// Initialize preemption logic
 		scheduler.Evaluator = NewEvaluator(Name, f, &scheduler, scheduler.enableAsyncPreemption)
 
-		// Inicia a API de depuração, se necessário
+		// Start the debug API if necessary
 		go scheduler.debugApi()
 
-		// Retorna o plugin inicializado
+		// Returns the initialized plugin
 		return &scheduler, nil
 	}
 }

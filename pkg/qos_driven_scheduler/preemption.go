@@ -238,21 +238,21 @@ func (ev *Evaluator) Preempt(ctx context.Context, state *framework.CycleState, p
 	// 2) Find all preemption candidates.
 	allNodes, err := ev.Handler.SnapshotSharedLister().NodeInfos().List()
 	if err != nil {
-		klog.Info("Erro ao listar os nós", "error", err)
+		logger.Error(err, "Error listing nodes")
 		return nil, framework.AsStatus(err)
 	}
-	klog.Info("Lista de nós obtida", "allNodes", allNodes)
+	klog.Info("List of nodes obtained", "allNodes", allNodes)
 
 	candidates, nodeToStatusMap, err := ev.findCandidates(ctx, state, allNodes, pod, m)
 
 	if err != nil {
-		klog.Info("Erro ao encontrar candidatos", "error", err)
+		klog.Info("Error finding candidates", "error", err)
 	}
-	klog.Info("Número de candidatos encontrados", "count", len(candidates))
-	klog.Info("Mapa de status dos nós", "nodeToStatusMap", nodeToStatusMap)
+	klog.Info("Number of candidates found", "count", len(candidates))
+	klog.Info("Node status map", "nodeToStatusMap", nodeToStatusMap)
 
 	if err != nil && len(candidates) == 0 {
-		klog.Info("Nenhum candidato encontrado e erro retornado", "error", err)
+		klog.Info("No candidates found and error returned", "error", err)
 		return nil, framework.AsStatus(err)
 	}
 
@@ -307,14 +307,14 @@ func (ev *Evaluator) findCandidates(ctx context.Context, state *framework.CycleS
 	logger := klog.FromContext(ctx)
 	logger.Info("Starting candidate search for preemption", "pod", klog.KObj(pod), "totalNodes", len(allNodes))
 
-	// Obtém os nós marcados como "Unschedulable", onde a preempção pode ser útil.
+	// Get nodes marked as "Unschedulable", where preemption might be useful.
 	potentialNodes, err := m.NodesForStatusCode(ev.Handler.SnapshotSharedLister().NodeInfos(), framework.Unschedulable)
 	if err != nil {
 		logger.Error(err, "Error retrieving potential nodes for preemption")
 		return nil, nil, err
 	}
 
-	// Log dos nós considerados para preempção
+	// Log the nodes considered for preemption
 	if len(potentialNodes) == 0 {
 		logger.Info("No potential nodes found for preemption", "pod", klog.KObj(pod))
 		if err := util.ClearNominatedNodeName(ctx, ev.Handler.ClientSet(), pod); err != nil {
@@ -327,17 +327,17 @@ func (ev *Evaluator) findCandidates(ctx context.Context, state *framework.CycleS
 		logger.Info("Potential node for preemption identified", "node", node.GetName())
 	}
 
-	// Obtém PodDisruptionBudgets para verificar restrições na remoção de pods
+	// Get PodDisruptionBudgets to check for constraints on pod removal
 	pdbs, err := getPodDisruptionBudgets(ev.PdbLister)
 	if err != nil {
 		logger.Error(err, "Error retrieving PodDisruptionBudgets")
 		return nil, nil, err
 	}
 
-	// Determina quantos candidatos devem ser avaliados para preempção
+	// Determine how many candidates should be evaluated for preemption
 	offset, candidatesNum := ev.GetOffsetAndNumCandidates(int32(len(potentialNodes)))
 
-	// Garante que sempre há pelo menos um candidato sendo avaliado
+	// Ensure there is always at least one candidate being evaluated
 	if candidatesNum == 0 {
 		logger.Info("candidatesNum was 0, setting it to 1 to ensure preemption is attempted")
 		candidatesNum = 1
@@ -346,7 +346,7 @@ func (ev *Evaluator) findCandidates(ctx context.Context, state *framework.CycleS
 	logger.Info("Calling DryRunPreemption", "pod", klog.KObj(pod), "numPotentialNodes", len(potentialNodes))
 	logger.Info("Calculated offset and candidatesNum", "offset", offset, "candidatesNum", candidatesNum)
 
-	// Simulação de preempção para determinar possíveis candidatos
+	// Simulate preemption to determine possible candidates
 	candidates, nodeToStatus, err := ev.DryRunPreemption(ctx, state, pod, potentialNodes, pdbs, offset, candidatesNum)
 
 	if err != nil {
