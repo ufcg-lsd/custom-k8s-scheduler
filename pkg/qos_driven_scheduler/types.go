@@ -744,29 +744,29 @@ func ControllerImportance(p *core.Pod) float64 {
 
 func ControllerName(p *core.Pod) string {
 	if p == nil {
-		klog.Warningf("[ControllerName] Pod é nil.")
+		klog.Warningf("[ControllerName] Pod is nil.")
 		return ""
 	}
 
-	klog.Infof("[ControllerName] Verificando as anotações do pod %s/%s", p.Namespace, p.Name)
+	klog.V(3).Infof("[ControllerName] Checking annotations for pod %s/%s", p.Namespace, p.Name)
 
 	if p.Annotations == nil {
-		klog.Warningf("[ControllerName] Pod %s/%s não possui anotações.", p.Namespace, p.Name)
+		klog.Warningf("[ControllerName] Pod %s/%s has no annotations.", p.Namespace, p.Name)
 		return ""
 	}
 
 	controllerName, exists := p.Annotations[ControllerAnnotation]
 	if !exists {
-		klog.Warningf("[ControllerName] Anotação '%s' não encontrada no pod %s/%s.", ControllerAnnotation, p.Namespace, p.Name)
+		klog.Warningf("[ControllerName] Annotation '%s' not found on pod %s/%s.", ControllerAnnotation, p.Namespace, p.Name)
 		return ""
 	}
 
 	if controllerName == "" {
-		klog.Warningf("[ControllerName] Anotação '%s' está presente, mas está vazia no pod %s/%s.", ControllerAnnotation, p.Namespace, p.Name)
+		klog.Warningf("[ControllerName] Annotation '%s' is present but empty on pod %s/%s.", ControllerAnnotation, p.Namespace, p.Name)
 		return ""
 	}
 
-	klog.Infof("[ControllerName] Anotação '%s' encontrada para o pod %s/%s: %s", ControllerAnnotation, p.Namespace, p.Name, controllerName)
+	klog.V(3).Infof("[ControllerName] Annotation '%s' found for pod %s/%s: %s", ControllerAnnotation, p.Namespace, p.Name, controllerName)
 	return controllerName
 }
 
