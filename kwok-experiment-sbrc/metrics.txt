@@ -1,0 +1,5 @@
+kube_pod_status_phase
+kube_pod_status_scheduled_time
+kube_pod_start_time
+kube_pod_created	
+apiserver_request_duration_seconds
