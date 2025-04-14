@@ -56,24 +56,14 @@ func (scheduler *QosDrivenScheduler) Name() string {
 
 // QueueSortPlugin: Determines the priority order of pods in the queue
 func (scheduler *QosDrivenScheduler) Less(pInfo1, pInfo2 *framework.QueuedPodInfo) bool {
-	klog.V(2).Infof("[QueueSort] Comparing priority of %s with %s", pInfo1.Pod.Name, pInfo2.Pod.Name)
+//	klog.V(2).Infof("[QueueSort] Comparing priority of %s with %s", pInfo1.Pod.Name, pInfo2.Pod.Name)
 	if pInfo1.Pod.Name == pInfo2.Pod.Name && pInfo1.Pod.Namespace == pInfo2.Pod.Namespace {
-		klog.Warningf("[QueueSort] Attempt to compare pod %s with itself. Ignoring comparison.", pInfo1.Pod.Name)
+//		klog.Warningf("[QueueSort] Attempt to compare pod %s with itself. Ignoring comparison.", pInfo1.Pod.Name)
 		return false
 	}
 	precedence := scheduler.HigherPrecedence(pInfo1.Pod, pInfo2.Pod)
-	klog.V(2).Infof("[QueueSort] Precedence determined: Does %s have precedence over %s? %v", pInfo1.Pod.Name, pInfo2.Pod.Name, precedence)
+//	klog.V(2).Infof("[QueueSort] Precedence determined: Does %s have precedence over %s? %v", pInfo1.Pod.Name, pInfo2.Pod.Name, precedence)
 	return precedence
-}
-
-func (scheduler *QosDrivenScheduler) CompareInformerAndRealState(pod *corev1.Pod) {
-	realPod, err := scheduler.fh.ClientSet().CoreV1().Pods(pod.Namespace).Get(context.TODO(), pod.Name, metav1.GetOptions{})
-	if err != nil {
-		klog.Errorf("Error retrieving actual state of pod %s: %v", pod.Name, err)
-		return
-	}
-	klog.V(2).Infof("State in Informer: %+v", pod.Annotations)
-	klog.V(2).Infof("Actual state in cluster: %+v", realPod.Annotations)	
 }
 
 // We calculate precedence between pods checking if the time to violate p1's controller SLO is lower than p2's controller.
@@ -84,7 +74,7 @@ func (scheduler *QosDrivenScheduler) HigherPrecedence(p1, p2 *corev1.Pod) bool {
 	}
 
 	now := time.Now()
-	klog.V(2).Infof("[HigherPrecedence] Calculating precedence between %s and %s", p1.Name, p2.Name)
+//	klog.V(2).Infof("[HigherPrecedence] Calculating precedence between %s and %s", p1.Name, p2.Name)
 
 	scheduler.WaitForPodsOnCache(p1, p2)
 	cMetricInfo1 := scheduler.GetControllerMetricInfo(p1)
@@ -98,26 +88,26 @@ func (scheduler *QosDrivenScheduler) HigherPrecedence(p1, p2 *corev1.Pod) bool {
 	qosMetric1 := cMetrics1.QoSMetric(p1)
 	qosMetric2 := cMetrics2.QoSMetric(p2)
 
-	klog.V(2).Infof("[HigherPrecedence] Metrics for %s: QoS = %f, Importance = %.2f", p1.Name, qosMetric1, importance1)
-	klog.V(2).Infof("[HigherPrecedence] Metrics for %s: QoS = %f, Importance = %.2f", p2.Name, qosMetric2, importance2)
+//	klog.V(2).Infof("[HigherPrecedence] Metrics for %s: QoS = %f, Importance = %.2f", p1.Name, qosMetric1, importance1)
+//	klog.V(2).Infof("[HigherPrecedence] Metrics for %s: QoS = %f, Importance = %.2f", p2.Name, qosMetric2, importance2)
 
 	safetyMargin := scheduler.args.SafetyMargin.Duration.Seconds()
 
 	// Is in resource contention
 	if (qosMetric1 < safetyMargin) && (qosMetric2 < safetyMargin) && importance1 != importance2 {
-		klog.V(2).Infof("[HigherPrecedence] Both are in resource contention and have different importances.")
+//		klog.V(2).Infof("[HigherPrecedence] Both are in resource contention and have different importances.")
 		return importance1 > importance2
 	}
 
 	result := qosMetric1 < qosMetric2
-	klog.V(2).Infof("[HigherPrecedence] Final decision: Does %s have precedence over %s? %v", p1.Name, p2.Name, result)
+//	klog.V(2).Infof("[HigherPrecedence] Final decision: Does %s have precedence over %s? %v", p1.Name, p2.Name, result)
 	return result
 }
 
 // TODO maybe we should sort only by controller's SLO and importance if we can't find its metrics
 func (scheduler *QosDrivenScheduler) WaitForPodsOnCache(pods ...*corev1.Pod) {
 	for _, pod := range pods {
-		klog.V(2).Infof("[WaitForPodsOnCache] Checking if pod %s is in the cache...", pod.Name)
+//		klog.V(2).Infof("[WaitForPodsOnCache] Checking if pod %s is in the cache...", pod.Name)
 		cacheMiss := func() bool {
 			cMetricInfo := scheduler.GetControllerMetricInfo(pod)
 			scheduler.lock.RLock()
@@ -128,8 +118,6 @@ func (scheduler *QosDrivenScheduler) WaitForPodsOnCache(pods ...*corev1.Pod) {
 				klog.Warningf("[cacheMiss] Metrics not found for pod: %s/%s", pod.Namespace, pod.Name)
 			}
 
-			scheduler.CompareInformerAndRealState(pod)
-
 			return notFound
 		}
 
@@ -138,18 +126,18 @@ func (scheduler *QosDrivenScheduler) WaitForPodsOnCache(pods ...*corev1.Pod) {
 			time.Sleep(time.Millisecond * 100)
 		}
 
-		klog.V(2).Infof("[WaitForPodsOnCache] Pod %s found in cache.", pod.Name)
+//		klog.V(2).Infof("[WaitForPodsOnCache] Pod %s found in cache.", pod.Name)
 	}
 }
 
 // ReservePlugin: Called when resources are reserved
 func (scheduler *QosDrivenScheduler) Reserve(_ context.Context, _ *framework.CycleState, pod *corev1.Pod, nodeName string) *framework.Status {
-	now := time.Now()
-	klog.V(2).Infof("[Reserve] resources reserved at node %s for pod %s at %s", nodeName, PodName(pod), now)
+//	now := time.Now()
+//	klog.V(2).Infof("[Reserve] resources reserved at node %s for pod %s at %s", nodeName, PodName(pod), now)
 	scheduler.UpdatePodMetricInfo(pod, func(old PodMetricInfo) PodMetricInfo {
-		klog.V(2).Infof("[Reserve] Current allocation status for pod %s: %v", PodName(pod), old.AllocationStatus)
+//		klog.V(2).Infof("[Reserve] Current allocation status for pod %s: %v", PodName(pod), old.AllocationStatus)
 		old.AllocationStatus = AllocatingState
-		klog.V(2).Infof("[Reserve] Allocation status updated for pod %s: %v", PodName(pod), AllocatingState)
+//		klog.V(2).Infof("[Reserve] Allocation status updated for pod %s: %v", PodName(pod), AllocatingState)
 		return old
 	})
 	return nil
@@ -157,23 +145,23 @@ func (scheduler *QosDrivenScheduler) Reserve(_ context.Context, _ *framework.Cyc
 
 // ReservePlugin: Called when the reservation is undone
 func (scheduler *QosDrivenScheduler) Unreserve(_ context.Context, _ *framework.CycleState, pod *corev1.Pod, nodeName string) {
-	now := time.Now()
-	klog.V(2).Infof("[Unreserve] Resources are being released on node %s for pod %s at %s", nodeName, PodName(pod), now)
+//	now := time.Now()
+//	klog.V(2).Infof("[Unreserve] Resources are being released on node %s for pod %s at %s", nodeName, PodName(pod), now)
 
-	klog.V(2).Infof("[Unreserve] Updating metrics for pod %s to release resources", PodName(pod))
+//	klog.V(2).Infof("[Unreserve] Updating metrics for pod %s to release resources", PodName(pod))
 	scheduler.UpdatePodMetricInfo(pod, func(old PodMetricInfo) PodMetricInfo {
-		klog.V(2).Infof("[Unreserve] Previous AllocationStatus for pod %s: %v", PodName(pod), old.AllocationStatus)
+//		klog.V(2).Infof("[Unreserve] Previous AllocationStatus for pod %s: %v", PodName(pod), old.AllocationStatus)
 		old.AllocationStatus = ""
-		klog.V(2).Infof("[Unreserve] New AllocationStatus for pod %s: %v", PodName(pod), old.AllocationStatus)
+//		klog.V(2).Infof("[Unreserve] New AllocationStatus for pod %s: %v", PodName(pod), old.AllocationStatus)
 		return old
 	})
 
-	klog.V(2).Infof("[Unreserve] Resources successfully released for pod %s on node %s", PodName(pod), nodeName)
+//	klog.V(2).Infof("[Unreserve] Resources successfully released for pod %s on node %s", PodName(pod), nodeName)
 }
 
 // PreBindPlugin: Called before the pod is bound to the node
 func (scheduler *QosDrivenScheduler) PreBind(_ context.Context, state *framework.CycleState, p *corev1.Pod, nodeName string) *framework.Status {
-	klog.V(2).Infof("[PreBind] Validating pod %s before binding to node %s", p.Name, nodeName)
+//	klog.V(2).Infof("[PreBind] Validating pod %s before binding to node %s", p.Name, nodeName)
 	now := time.Now()
 	state.Write(BindingStart, CloneableTime{now})
 	return nil
@@ -181,7 +169,7 @@ func (scheduler *QosDrivenScheduler) PreBind(_ context.Context, state *framework
 
 // PostBindPlugin: Called after the pod is bound to the node
 func (scheduler *QosDrivenScheduler) PostBind(ctx context.Context, state *framework.CycleState, pod *corev1.Pod, _ string) {
-	klog.V(2).Infof("[PostBind] Called for pod %s", pod.Name)
+//	klog.V(2).Infof("[PostBind] Called for pod %s", pod.Name)
 
 	// Attempt to read the `BindingStart` state
 	start, err := state.Read(BindingStart)
@@ -199,14 +187,14 @@ func (scheduler *QosDrivenScheduler) PostBind(ctx context.Context, state *framew
 
 	// Calculate the binding time
 	endBinding := time.Now()
-	klog.V(2).Infof("[PostBind] Pod %s - Binding start: %s, Binding end: %s", pod.Name, startBinding.Time, endBinding)
+//	klog.V(2).Infof("[PostBind] Pod %s - Binding start: %s, Binding end: %s", pod.Name, startBinding.Time, endBinding)
 
 	// Update the pod metrics
 	scheduler.UpdatePodMetricInfo(pod, func(old PodMetricInfo) PodMetricInfo {
 		old.StartBindingTime = startBinding.Time
 		old.StartRunningTime = endBinding
 		old.AllocationStatus = AllocatedState
-		klog.V(2).Infof("[PostBind] Metrics updated for pod %s", pod.Name)
+//		klog.V(2).Infof("[PostBind] Metrics updated for pod %s", pod.Name)
 		return old
 	})
 }
@@ -214,27 +202,24 @@ func (scheduler *QosDrivenScheduler) PostBind(ctx context.Context, state *framew
 func (scheduler *QosDrivenScheduler) OnAddPod(obj interface{}) {
 
 	p := obj.(*corev1.Pod).DeepCopy()
-	klog.V(2).Infof("[OnAddPod] Pod added: %s/%s, Annotations: %+v", p.Namespace, p.Name, p.Annotations)
-
-	// Compare the state in the Informer with the actual state in the cluster
-	scheduler.CompareInformerAndRealState(p)
+//	klog.V(2).Infof("[OnAddPod] Pod added: %s/%s, Annotations: %+v", p.Namespace, p.Name, p.Annotations)
 
 	if p.Namespace != "default" {
-		klog.V(2).Infof("[OnAddPod] Ignoring pod %s/%s as it belongs to the kube-system namespace", p.Namespace, p.Name)
+//		klog.V(2).Infof("[OnAddPod] Ignoring pod %s/%s as it belongs to the kube-system namespace", p.Namespace, p.Name)
 		return
 	}
 
 	start := p.GetCreationTimestamp().Time
-	klog.V(2).Infof("[OnAddPod] Adding pod %s/%s with the following details:\n%s", p.Namespace, p.Name, p.String())
+//	klog.V(2).Infof("[OnAddPod] Adding pod %s/%s with the following details:\n%s", p.Namespace, p.Name, p.String())
 
 	// CreationTimestamp is marked as +optional in the API, so we put this fallback
 	if start.IsZero() {
 		start = time.Now()
-		klog.V(2).Infof("[OnAddPod] Creation timestamp not set for pod %s/%s, using current time: %v", p.Namespace, p.Name, start)
+//		klog.V(2).Infof("[OnAddPod] Creation timestamp not set for pod %s/%s, using current time: %v", p.Namespace, p.Name, start)
 	}
 
 	scheduler.UpdatePodMetricInfo(p, func(pMetricInfo PodMetricInfo) PodMetricInfo {
-		klog.V(2).Infof("[OnAddPod] Updating metrics for pod %s/%s", p.Namespace, p.Name)
+//		klog.V(2).Infof("[OnAddPod] Updating metrics for pod %s/%s", p.Namespace, p.Name)
 		pMetricInfo.ControllerName = ControllerName(p)
 		pMetricInfo.LastStatus = p
 		pMetricInfo.CreationTime = start
@@ -242,47 +227,43 @@ func (scheduler *QosDrivenScheduler) OnAddPod(obj interface{}) {
 		// pod starts running at this moment
 		if pMetricInfo.StartRunningTime.IsZero() && p.Status.Phase == corev1.PodRunning {
 			pMetricInfo.StartRunningTime = time.Now()
-			klog.V(2).Infof("[OnAddPod] Pod %s/%s entered Running state", p.Namespace, p.Name)
+//			klog.V(2).Infof("[OnAddPod] Pod %s/%s entered Running state", p.Namespace, p.Name)
 		}
 
 		return pMetricInfo
 	})
-	klog.V(2).Infof("[OnAddPod] Pod %s/%s successfully added", p.Namespace, p.Name)
+//	klog.V(2).Infof("[OnAddPod] Pod %s/%s successfully added", p.Namespace, p.Name)
 }
 
 func (scheduler *QosDrivenScheduler) OnUpdatePod(_, newObj interface{}) {
 
-	klog.V(2).Infof("[OnUpdatePod] Starting pod update processing")
+//	klog.V(2).Infof("[OnUpdatePod] Starting pod update processing")
 
 	// Creating a copy of the updated pod
 	p := newObj.(*corev1.Pod).DeepCopy()
-	klog.V(2).Infof("[OnUpdatePod] Updated pod detected: %s/%s, Annotations: %+v", p.Namespace, p.Name, p.Annotations)
-
-	// Comparing the state in the Informer with the actual state in the cluster
-	klog.V(2).Infof("[OnUpdatePod] Comparing state in Informer and actual state in the cluster for pod %s/%s", p.Namespace, p.Name)
-	scheduler.CompareInformerAndRealState(p)
+//	klog.V(2).Infof("[OnUpdatePod] Updated pod detected: %s/%s, Annotations: %+v", p.Namespace, p.Name, p.Annotations)
 
 	// Ignoring pods in the kube-system namespace
 	if p.Namespace != "default" {
-		klog.V(2).Infof("[OnUpdatePod] Pod %s/%s belongs to the 'kube-system' namespace. Ignoring...", p.Namespace, p.Name)
+//		klog.V(2).Infof("[OnUpdatePod] Pod %s/%s belongs to the 'kube-system' namespace. Ignoring...", p.Namespace, p.Name)
 		return
 	}
 
 	// Updating pod metric information
-	klog.V(2).Infof("[OnUpdatePod] Updating metric information for pod %s/%s", p.Namespace, p.Name)
+//	klog.V(2).Infof("[OnUpdatePod] Updating metric information for pod %s/%s", p.Namespace, p.Name)
 	scheduler.UpdatePodMetricInfo(p, func(pMetricInfo PodMetricInfo) PodMetricInfo {
-		klog.V(2).Infof("[OnUpdatePod] Updating 'LastStatus' of pod %s/%s in metrics", p.Namespace, p.Name)
+//		klog.V(2).Infof("[OnUpdatePod] Updating 'LastStatus' of pod %s/%s in metrics", p.Namespace, p.Name)
 		pMetricInfo.LastStatus = p
-		klog.V(2).Infof("[OnUpdatePod] Metric updated for pod %s/%s", p.Namespace, p.Name)
+//		klog.V(2).Infof("[OnUpdatePod] Metric updated for pod %s/%s", p.Namespace, p.Name)
 		return pMetricInfo
 	})
 
-	klog.V(2).Infof("[OnUpdatePod] Finished pod update processing for %s/%s", p.Namespace, p.Name)
+//	klog.V(2).Infof("[OnUpdatePod] Finished pod update processing for %s/%s", p.Namespace, p.Name)
 }
 
 func (scheduler *QosDrivenScheduler) OnDeletePod(lastState interface{}) {
 
-	klog.V(2).Infof("[OnDeletePod] Starting execution of OnDeletePod")
+//	klog.V(2).Infof("[OnDeletePod] Starting execution of OnDeletePod")
 
 	p, ok := lastState.(*corev1.Pod)
 	if !ok {
@@ -291,32 +272,32 @@ func (scheduler *QosDrivenScheduler) OnDeletePod(lastState interface{}) {
 	}
 
 	p = p.DeepCopy()
-	klog.V(2).Infof("[OnDeletePod] DeepCopy performed for pod %s/%s", p.Namespace, p.Name)
+//	klog.V(2).Infof("[OnDeletePod] DeepCopy performed for pod %s/%s", p.Namespace, p.Name)
 
 	if p.Namespace != "default" {
-		klog.V(2).Infof("[OnDeletePod] Pod %s/%s belongs to the 'kube-system' namespace. Ignoring...", p.Namespace, p.Name)
+//		klog.V(2).Infof("[OnDeletePod] Pod %s/%s belongs to the 'kube-system' namespace. Ignoring...", p.Namespace, p.Name)
 		return
 	}
 
-	klog.V(2).Infof("[OnDeletePod] Deleted pod detected: %s/%s\nPod details: %s", p.Namespace, p.Name, p.String())
+//	klog.V(2).Infof("[OnDeletePod] Deleted pod detected: %s/%s\nPod details: %s", p.Namespace, p.Name, p.String())
 
-	klog.V(2).Infof("[OnDeletePod] Updating metrics for pod %s/%s", p.Namespace, p.Name)
+//	klog.V(2).Infof("[OnDeletePod] Updating metrics for pod %s/%s", p.Namespace, p.Name)
 	scheduler.UpdatePodMetricInfo(p, func(pMetricInfo PodMetricInfo) PodMetricInfo {
-		klog.V(2).Infof("[OnDeletePod] Checking the state of pod %s/%s in metrics", p.Namespace, p.Name)
+//		klog.V(2).Infof("[OnDeletePod] Checking the state of pod %s/%s in metrics", p.Namespace, p.Name)
 
 		// if pod was succeeded terminate, its endTime has already been set
 		if pMetricInfo.IsSucceeded {
-			klog.V(2).Infof("[OnDeletePod] Pod %s/%s has already been marked as 'Succeeded'. No action needed.", p.Namespace, p.Name)
+//			klog.V(2).Infof("[OnDeletePod] Pod %s/%s has already been marked as 'Succeeded'. No action needed.", p.Namespace, p.Name)
 			return pMetricInfo
 		}
 
 		// pod is being deleted at this moment
 		pMetricInfo.EndTime = time.Now()
-		klog.V(2).Infof("[OnDeletePod] EndTime updated for pod %s/%s: %v", p.Namespace, p.Name, pMetricInfo.EndTime)
+//		klog.V(2).Infof("[OnDeletePod] EndTime updated for pod %s/%s: %v", p.Namespace, p.Name, pMetricInfo.EndTime)
 		return pMetricInfo
 	})
 
-	klog.V(2).Infof("[OnDeletePod] Finishing execution of OnDeletePod for pod %s/%s", p.Namespace, p.Name)
+//	klog.V(2).Infof("[OnDeletePod] Finishing execution of OnDeletePod for pod %s/%s", p.Namespace, p.Name)
 }
 
 func (scheduler *QosDrivenScheduler) UpdatePodMetricInfo(pod *corev1.Pod, f func(PodMetricInfo) PodMetricInfo) {
@@ -324,7 +305,7 @@ func (scheduler *QosDrivenScheduler) UpdatePodMetricInfo(pod *corev1.Pod, f func
 	defer scheduler.lock.Unlock()
 
 	if pod.Namespace == "kube-system" {
-		klog.V(2).Infof("Pod %s is from kube-system namespace. There is no need to update podMetricInfo.", pod.Name)
+//		klog.V(2).Infof("Pod %s is from kube-system namespace. There is no need to update podMetricInfo.", pod.Name)
 		return
 	}
 
@@ -353,34 +334,34 @@ func (scheduler *QosDrivenScheduler) UpdatePodMetricInfo(pod *corev1.Pod, f func
 		var expectedPodCompletions int32
 
 		if controllerRef := metav1.GetControllerOf(pod); controllerRef == nil {
-			klog.V(1).Infof("pod %s has no controllerRef", pod.Name)
+//			klog.V(1).Infof("pod %s has no controllerRef", pod.Name)
 			numberOfReplicas = 1
 			expectedPodCompletions = 0
 		} else {
 
 			if controllerRef.Kind == "Job" {
-				klog.V(1).Infof("Controller is a JOB! ControllerRefName of pod %s is %s ", pod.Name, controllerRef.Name)
+//				klog.V(1).Infof("Controller is a JOB! ControllerRefName of pod %s is %s ", pod.Name, controllerRef.Name)
 				controller, err := kubeclient.BatchV1().Jobs(namespace).Get(context.TODO(), controllerRef.Name, metav1.GetOptions{})
 
 				if err != nil {
-					klog.V(1).Infof("ERROR while getting info about Job %v", err)
+//					klog.V(1).Infof("ERROR while getting info about Job %v", err)
 				} else {
 					numberOfReplicas = *controller.Spec.Parallelism
 					expectedPodCompletions = *controller.Spec.Completions
 
-					klog.V(1).Infof("The pod %s is associated with Job %s and its parallelism is %v", pod.Name, controllerRef.Name, numberOfReplicas)
+//					klog.V(1).Infof("The pod %s is associated with Job %s and its parallelism is %v", pod.Name, controllerRef.Name, numberOfReplicas)
 				}
 
 			} else {
-				klog.V(1).Infof("Controller is NOT a JOB! ControllerRefName of pod %s is %s ", pod.Name, controllerRef.Name)
+//				klog.V(1).Infof("Controller is NOT a JOB! ControllerRefName of pod %s is %s ", pod.Name, controllerRef.Name)
 				controller, err := kubeclient.AppsV1().ReplicaSets(namespace).Get(context.TODO(), controllerRef.Name, metav1.GetOptions{})
 
 				if err != nil {
-					klog.V(1).Infof("ERROR while getting info about ReplicaSet %v", err)
+//					klog.V(1).Infof("ERROR while getting info about ReplicaSet %v", err)
 				} else {
 					numberOfReplicas = *controller.Spec.Replicas
 					expectedPodCompletions = 0
-					klog.V(1).Infof("The pod %s is associated with ReplicaSet %s and its number of replicas is %v", pod.Name, controllerRef.Name, numberOfReplicas)
+//					klog.V(1).Infof("The pod %s is associated with ReplicaSet %s and its number of replicas is %v", pod.Name, controllerRef.Name, numberOfReplicas)
 				}
 			}
 		}
@@ -418,7 +399,7 @@ func (scheduler *QosDrivenScheduler) UpdatePodMetricInfo(pod *corev1.Pod, f func
 	// Check if this pod is a new succeeded pod. Is yes, it needs to release the replicaId and increment the SucceededPods variable
 	if (oldPodMetricInfo.LastStatus == nil || oldPodMetricInfo.LastStatus.Status.Phase != corev1.PodSucceeded) &&
 		((newPodMetricInfo.LastStatus != nil) && (newPodMetricInfo.LastStatus.Status.Phase == corev1.PodSucceeded)) {
-		klog.V(1).Infof("The pod %s is being successfully completed", PodName(pod))
+//		klog.V(1).Infof("The pod %s is being successfully completed", PodName(pod))
 		cMetricInfo.SucceededPods++
 		newPodMetricInfo.IsSucceeded = true
 		newPodMetricInfo.EndTime = time.Now()
@@ -438,20 +419,20 @@ func (scheduler *QosDrivenScheduler) UpdatePodMetricInfo(pod *corev1.Pod, f func
 	if isNewPod {
 		replicaId := cMetricInfo.AllocateReplicaId(pod)
 		newPodMetricInfo.ReplicaId = replicaId
-		klog.V(1).Infof("the pod %s was new, allocated replicaId = %d", PodName(pod), replicaId)
+//		klog.V(1).Infof("the pod %s was new, allocated replicaId = %d", PodName(pod), replicaId)
 	}
 
-	previouslyRunningPods := cMetricInfo.NumberOfRunningPods()
+//	previouslyRunningPods := cMetricInfo.NumberOfRunningPods()
 	replicaId, err := cMetricInfo.GetPodReplicaId(pod)
 	if err != nil {
-		klog.V(1).Infof("if the pod was new, it should have been allocated (see variable isNewPod)")
+//		klog.V(1).Infof("if the pod was new, it should have been allocated (see variable isNewPod)")
 		panic(err)
 	}
 
 	cMetricInfo.replicas[replicaId].Incarnations[podName] = newPodMetricInfo
 	scheduler.Controllers[controllerName] = cMetricInfo
-	klog.V(1).Infof("The number of pods running of %s was %d and now is %d", controllerName, previouslyRunningPods, cMetricInfo.NumberOfRunningPods())
-	klog.V(1).Infof("The number of succeeded pods of %s is %d", controllerName, cMetricInfo.SucceededPods)
+//	klog.V(1).Infof("The number of pods running of %s was %d and now is %d", controllerName, previouslyRunningPods, cMetricInfo.NumberOfRunningPods())
+//	klog.V(1).Infof("The number of succeeded pods of %s is %d", controllerName, cMetricInfo.SucceededPods)
 }
 
 func (scheduler *QosDrivenScheduler) addEventHandler() *QosDrivenScheduler {
@@ -469,7 +450,7 @@ func (scheduler *QosDrivenScheduler) addEventHandler() *QosDrivenScheduler {
 func dumpMetrics(cMetricInfo ControllerMetricInfo, pMetricInfo PodMetricInfo, accessReaderLocker sync.Locker) {
 	podName := PodName(pMetricInfo.LastStatus)
 	controllerName := ControllerName(pMetricInfo.LastStatus)
-	klog.V(1).Infof("Dumping metrics of pod %s (status %s | controller %s)", podName, pMetricInfo.LastStatus.Status.Phase, controllerName)
+//	klog.V(1).Infof("Dumping metrics of pod %s (status %s | controller %s)", podName, pMetricInfo.LastStatus.Status.Phase, controllerName)
 
 	success := false
 	timeRef := time.Now()
@@ -507,7 +488,7 @@ func dumpMetrics(cMetricInfo ControllerMetricInfo, pMetricInfo PodMetricInfo, ac
 		}
 
 		if !success {
-			klog.V(1).Infof("Failed to log pod metrics: %s, retrying...\n", err)
+//			klog.V(1).Infof("Failed to log pod metrics: %s, retrying...\n", err)
 			time.Sleep(time.Second)
 		}
 	}
@@ -613,15 +594,15 @@ func (scheduler *QosDrivenScheduler) debugApi() {
 }
 
 func (scheduler *QosDrivenScheduler) GetControllerMetricInfo(pod *corev1.Pod) ControllerMetricInfo {
-	klog.V(2).Infof("[GetControllerMetricInfo] Starting for pod: %s/%s", pod.Namespace, pod.Name)
+//	klog.V(2).Infof("[GetControllerMetricInfo] Starting for pod: %s/%s", pod.Namespace, pod.Name)
 
 	scheduler.lock.RLock()
 	defer scheduler.lock.RUnlock()
 
-	klog.V(2).Infof("[GetControllerMetricInfo] Getting controller name for pod: %s/%s", pod.Namespace, pod.Name)
+//	klog.V(2).Infof("[GetControllerMetricInfo] Getting controller name for pod: %s/%s", pod.Namespace, pod.Name)
 	cMetricInfo := scheduler.Controllers[ControllerName(pod)]
 	cMetricInfo.ReferencePod = pod
-	klog.V(2).Infof("[GetControllerMetricInfo] Controller metrics set for pod: %s/%s", pod.Namespace, pod.Name)
+//	klog.V(2).Infof("[GetControllerMetricInfo] Controller metrics set for pod: %s/%s", pod.Namespace, pod.Name)
 
 	return cMetricInfo
 }
@@ -642,8 +623,8 @@ func (scheduler *QosDrivenScheduler) isPodContributingToImproveControllerQoS(pod
 	if cMetricInfo.QoSMeasuringApproach == ConcurrentQosMeasuring {
 		scheduler.lock.RLock()
 		defer scheduler.lock.RUnlock()
-		klog.V(1).Infof("[CHECKING POD CONTRIBUTES TO QOS]: concurrent controller %s | replication %d | running_pods %d | allocating_pods %d", ControllerName(pod),
-			cMetricInfo.NumberOfReplicas, cMetricInfo.NumberOfRunningPods(), cMetricInfo.NumberOfPodsBeingAllocated())
+//		klog.V(1).Infof("[CHECKING POD CONTRIBUTES TO QOS]: concurrent controller %s | replication %d | running_pods %d | allocating_pods %d", ControllerName(pod),
+//			cMetricInfo.NumberOfReplicas, cMetricInfo.NumberOfRunningPods(), cMetricInfo.NumberOfPodsBeingAllocated())
 		return cMetricInfo.NumberOfRunningPods()+cMetricInfo.NumberOfPodsBeingAllocated() == cMetricInfo.NumberOfReplicas
 	}
 	return true

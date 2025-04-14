@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Deleta Pods
-kubectl delete pod high-priority-pod low-priority-pod
-
 # Deleta o pod do scheduler
 kubectl delete deployment custom-scheduler -n kube-system
 

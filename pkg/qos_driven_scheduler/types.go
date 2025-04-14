@@ -529,13 +529,13 @@ func (cMetrics *ControllerMetrics) QoS() float64 {
 	denominator := effectiveRunning + discardedRunning + waiting + binding
 
 	// Log dos valores utilizados no cálculo
-	klog.Infof("[QoS DEBUG] effectiveRunning: %f | discardedRunning: %f | waiting: %f | binding: %f | denominator: %f",
-		effectiveRunning, discardedRunning, waiting, binding, denominator)
+//	klog.V(2).Infof("[QoS DEBUG] effectiveRunning: %f | discardedRunning: %f | waiting: %f | binding: %f | denominator: %f",
+//		effectiveRunning, discardedRunning, waiting, binding, denominator)
 
 	result := effectiveRunning / denominator
 
 	// Log do resultado inicial
-	klog.Infof("[QoS DEBUG] QoS calculado: %f", result)
+//	klog.V(2).Infof("[QoS DEBUG] QoS calculado: %f", result)
 
 	return result
 }
@@ -543,7 +543,7 @@ func (cMetrics *ControllerMetrics) QoS() float64 {
 func (cMetrics *ControllerMetrics) QoSMetric(pod *core.Pod) float64 {
 	qosMeasuringApproach := cMetrics.QoSMeasuringApproach
 
-	klog.Infof("[QoSMetric] qosMeasuringApproach: %s", qosMeasuringApproach)
+//	klog.V(2).Infof("[QoSMetric] qosMeasuringApproach: %s", qosMeasuringApproach)
 
 	switch qosMeasuringApproach {
 	case AverageQoSMeasuring:
@@ -608,8 +608,8 @@ func CalculateQoSMetricBasedOnAverageApproach(cMetrics *ControllerMetrics, pod *
 			qosMetric = (effectiveRuntime-slo*(effectiveRuntime+pendingTime+bindingTime))/((float64(nRunning+nWaiting)*slo)-float64(residualContribution)) - estimatedOverhead
 		}
 	}
-	klog.Infof("[COMPUTE QoS METRIC - AVERAGE] The pod %s: availability %f | runtime %f | pendingTime %f | nRunning: %d | nWaiting: %d | residualContr %d | estimatedOverhead %f | QoSMetric %f",
-		pod.Name, availability, effectiveRuntime, pendingTime, nRunning, nWaiting, residualContribution, estimatedOverhead, qosMetric)
+//	klog.V(2).Infof("[COMPUTE QoS METRIC - AVERAGE] The pod %s: availability %f | runtime %f | pendingTime %f | nRunning: %d | nWaiting: %d | residualContr %d | estimatedOverhead %f | QoSMetric %f",
+//		pod.Name, availability, effectiveRuntime, pendingTime, nRunning, nWaiting, residualContribution, estimatedOverhead, qosMetric)
 	return qosMetric
 }
 
@@ -704,8 +704,8 @@ func CalculateQoSMetricBasedOnAggregateApproach(cMetrics *ControllerMetrics, pod
 		}
 	}
 
-	klog.V(1).Infof("[COMPUTING QoS METRIC - AGGREGATE] The pod %s (%s): availability %f | effectiveRuntime %f | discardedRuntime %f | pendingTime %f | nRunning: %d | nWaiting: %d | residualContr %d | estimatedOverhead %f | QoSMetric %f",
-		pod.Name, pod.Status.Phase, availability, effectiveRuntime, discardedRuntime, pendingTime, nRunning, nWaiting, residualContribution, estimatedOverhead, qosMetric)
+//	klog.V(1).Infof("[COMPUTING QoS METRIC - AGGREGATE] The pod %s (%s): availability %f | effectiveRuntime %f | discardedRuntime %f | pendingTime %f | nRunning: %d | nWaiting: %d | residualContr %d | estimatedOverhead %f | QoSMetric %f",
+//		pod.Name, pod.Status.Phase, availability, effectiveRuntime, discardedRuntime, pendingTime, nRunning, nWaiting, residualContribution, estimatedOverhead, qosMetric)
 	return qosMetric
 }
 
@@ -780,14 +780,14 @@ func ControllerQoSMeasuring(pod *core.Pod) string {
 	// If QoS measuring approach was not set in pod template, use the default one according to
 	// class of controller
 	if controllerRef := metav1.GetControllerOf(pod); controllerRef == nil {
-		klog.V(1).Infof("The is no controller associated with pod %s", pod.Name)
+//		klog.V(1).Infof("The is no controller associated with pod %s", pod.Name)
 		return IndependentQoSMeasuring
 	} else {
 		if controllerRef.Kind == "Job" {
-			klog.V(1).Infof("The aggregate is default QoS measuring approach for job %s", controllerRef.Name)
+//			klog.V(1).Infof("The aggregate is default QoS measuring approach for job %s", controllerRef.Name)
 			return AggregateQoSMeasuring
 		} else {
-			klog.V(1).Infof("The average is default QoS measuring approach for replication controller %s", controllerRef.Name)
+//			klog.V(1).Infof("The average is default QoS measuring approach for replication controller %s", controllerRef.Name)
 			return AverageQoSMeasuring
 		}
 	}

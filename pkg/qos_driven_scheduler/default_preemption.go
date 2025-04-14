@@ -2,7 +2,7 @@ package qos_driven_scheduler
 
 import (
 	"context"
-	"errors"
+//	"errors"
 	"math"
 	"math/rand"
 	"sort"
@@ -25,7 +25,7 @@ var _ framework.PreEnqueuePlugin = &QosDrivenScheduler{}
 
 // PostFilter invoked at the postFilter extension point.
 func (pl *QosDrivenScheduler) PostFilter(ctx context.Context, state *framework.CycleState, pod *v1.Pod, m framework.NodeToStatusReader) (*framework.PostFilterResult, *framework.Status) {
-	klog.InfoS("PostFilter called", "pod", klog.KObj(pod))
+//	klog.V(2).Infof("PostFilter called for pod: %v", pod.Name)
 
 	defer func() {
 		metrics.PreemptionAttempts.Inc()
@@ -34,9 +34,9 @@ func (pl *QosDrivenScheduler) PostFilter(ctx context.Context, state *framework.C
 	result, status := pl.Evaluator.Preempt(ctx, state, pod, m)
 
 	if !status.IsSuccess() {
-		klog.InfoS("Preemption failed or not needed", "pod", klog.KObj(pod), "status", status.Message())
+//		klog.V(2).InfoS("Preemption failed or not needed", "pod", klog.KObj(pod), "status", status.Message())
 	} else {
-		klog.InfoS("Preemption successful", "pod", klog.KObj(pod), "nominatedNode", result.NominatedNodeName)
+//		klog.V(2).InfoS("Preemption successful", "pod", klog.KObj(pod), "nominatedNode", result.NominatedNodeName)
 	}
 
 	msg := status.Message()
@@ -44,18 +44,33 @@ func (pl *QosDrivenScheduler) PostFilter(ctx context.Context, state *framework.C
 		return result, framework.NewStatus(status.Code(), "preemption: "+msg)
 	}
 
-	klog.InfoS("PostFilter completed successfully", "pod", klog.KObj(pod))
+//	klog.V(2).InfoS("PostFilter completed successfully", "pod", klog.KObj(pod))
 	return result, status
 }
-
 func (pl *QosDrivenScheduler) PreEnqueue(ctx context.Context, p *v1.Pod) *framework.Status {
-	if !pl.enableAsyncPreemption {
-		return nil
-	}
-	if pl.Evaluator.IsPodRunningPreemption(p.GetUID()) {
-		return framework.NewStatus(framework.UnschedulableAndUnresolvable, "waiting for the preemption for this pod to be finished")
-	}
-	return nil
+//    klog.V(2).Infof("[PreEnqueue] PreEnqueue called for pod: %v", p.Name)
+//    klog.V(2).Infof("[PreEnqueue] SchedulerName for pod %v: %v", p.Name, p.Spec.SchedulerName)
+
+//    controllerMetricInfo := pl.GetControllerMetricInfo(p)
+//    metrics := controllerMetricInfo.Metrics(time.Now(), pl.lock.RLocker())
+
+//    qosMetric := metrics.QoSMetric(p)
+//    importance := ControllerImportance(p)
+
+//    klog.V(2).Infof("[PreEnqueue] Metrics for pod %v: QoS = %f, Importance = %.2f", p.Name, qosMetric, importance)
+
+    if !pl.enableAsyncPreemption {
+//       klog.V(2).Infof("[PreEnqueue] Async preemption is disabled for pod: %v", p.Name)
+        return nil
+    }
+
+    if pl.Evaluator.IsPodRunningPreemption(p.GetUID()) {
+//        klog.V(2).Infof("[PreEnqueue] Pod %v is already running preemption", p.Name)
+        return framework.NewStatus(framework.UnschedulableAndUnresolvable, "waiting for the preemption for this pod to be finished")
+    }
+
+//    klog.V(2).Infof("[PreEnqueue] PreEnqueue completed successfully for pod: %v", p.Name)
+    return nil
 }
 
 // EventsToRegister returns the possible events that may make a Pod
@@ -189,7 +204,7 @@ func (pl *QosDrivenScheduler) SelectVictimsOnNode(
 			}
 			rpi := pi.Pod
 			victims = append(victims, rpi)
-			logger.V(5).Info("Pod is a potential preemption victim on node", "pod", klog.KObj(rpi), "node", klog.KObj(nodeInfo.Node()))
+//			logger.V(5).Info("Pod is a potential preemption victim on node", "pod", klog.KObj(rpi), "node", klog.KObj(nodeInfo.Node()))
 		}
 		return fits, nil
 	}
@@ -272,7 +287,7 @@ func (pl *QosDrivenScheduler) pickOneNodeForPreemption(logger klog.Logger, nodes
 		victimClassToScore[FAR_FROM_VIOLATING_CLASS] = generalScore
 		nodeToPreemptionScore[node] = victimClassToScore
 
-		logger.V(1).Info("[PICKING ONE NODE FOR PREEMPTION]", "Node", node, "PreemptionScore", victimClassToScore)
+//		logger.V(1).Info("[PICKING ONE NODE FOR PREEMPTION]", "Node", node, "PreemptionScore", victimClassToScore)
 	}
 
 	// Normalização dos scores
@@ -288,8 +303,8 @@ func (pl *QosDrivenScheduler) pickOneNodeForPreemption(logger klog.Logger, nodes
 
 	sort.Slice(sortedVictimClasses, func(i, j int) bool { return sortedVictimClasses[i] > sortedVictimClasses[j] })
 
-	logger.V(1).Info("[PICKING ONE NODE FOR PREEMPTION]", "AfterNormalization", nodeToPreemptionScore)
-	logger.V(1).Info("[PICKING ONE NODE FOR PREEMPTION]", "AllPreemptableSLOs", sortedVictimClasses)
+//	logger.V(1).Info("[PICKING ONE NODE FOR PREEMPTION]", "AfterNormalization", nodeToPreemptionScore)
+//	logger.V(1).Info("[PICKING ONE NODE FOR PREEMPTION]", "AllPreemptableSLOs", sortedVictimClasses)
 
 	// Seleção de candidatos
 	var candidateNodes []string
@@ -326,7 +341,7 @@ func (pl *QosDrivenScheduler) pickOneNodeForPreemption(logger klog.Logger, nodes
 		return minPreemptedPodNodes[0]
 	}
 
-	logger.Error(errors.New("error in logic of node scoring for preemption"), "Unexpected condition reached!")
+//	logger.Error(errors.New("error in logic of node scoring for preemption"), "Unexpected condition reached!")
 	return ""
 }
 
@@ -339,29 +354,36 @@ func (pl *QosDrivenScheduler) pickOneNodeForPreemption(logger klog.Logger, nodes
 //     Currently we check the node that is nominated for this pod, and as long as there are
 //     terminating pods on this node, we don't attempt to preempt more pods.
 func (pl *QosDrivenScheduler) PodEligibleToPreemptOthers(_ context.Context, pod *v1.Pod, nominatedNodeStatus *framework.Status) (bool, string) {
+//	klog.V(2).Infof("[PodEligibleToPreemptOthers] Checking eligibility for pod: %v", pod.Name)
+
 	if pod.Spec.PreemptionPolicy != nil && *pod.Spec.PreemptionPolicy == v1.PreemptNever {
+//		klog.V(2).Infof("[PodEligibleToPreemptOthers] Pod %v is not eligible due to preemptionPolicy=Never.", pod.Name)
 		return false, "not eligible due to preemptionPolicy=Never."
 	}
 
 	nodeInfos := pl.fh.SnapshotSharedLister().NodeInfos()
 	nomNodeName := pod.Status.NominatedNodeName
+//	klog.V(2).Infof("[PodEligibleToPreemptOthers] Nominated node for pod %v: %v", pod.Name, nomNodeName)
+
 	if len(nomNodeName) > 0 {
 		// If the pod's nominated node is considered as UnschedulableAndUnresolvable by the filters,
 		// then the pod should be considered for preempting again.
 		if nominatedNodeStatus.Code() == framework.UnschedulableAndUnresolvable {
+//			klog.V(2).Infof("[PodEligibleToPreemptOthers] Pod %v is eligible because its nominated node is unschedulable and unresolvable.", pod.Name)
 			return true, ""
 		}
 
 		if nodeInfo, _ := nodeInfos.Get(nomNodeName); nodeInfo != nil {
 			for _, p := range nodeInfo.Pods {
 				if p.Pod.DeletionTimestamp != nil && pl.HigherPrecedence(pod, p.Pod) {
-					// There is a terminating pod on the nominated node.
+//					klog.V(2).Infof("[PodEligibleToPreemptOthers] Pod %v is not eligible due to a terminating pod with higher precedence on node %v.", pod.Name, nomNodeName)
 					return false, "not eligible due to a terminating pod with higher precedence."
 				}
 			}
 		}
-
 	}
+
+//	klog.V(2).Infof("[PodEligibleToPreemptOthers] Pod %v is eligible for preemption.", pod.Name)
 	return true, ""
 }
 
@@ -445,8 +467,8 @@ func (pl *QosDrivenScheduler) CanPreempt(pendingPod, allocatedPod *v1.Pod) bool 
 	// check if both pods are associated with the same controller and QoS measuring approach is not independent
 	if (ControllerName(pendingPod) == ControllerName(allocatedPod)) &&
 		(ControllerQoSMeasuring(pendingPod) != IndependentQoSMeasuring) {
-		klog.V(1).Infof("Pods %s and %s are associated with the same controller and QoS measuring is %s --> %s can not be preempted",
-			allocatedPod.Name, pendingPod.Name, ControllerQoSMeasuring(pendingPod), allocatedPod.Name)
+//		klog.V(1).Infof("Pods %s and %s are associated with the same controller and QoS measuring is %s --> %s can not be preempted",
+//			allocatedPod.Name, pendingPod.Name, ControllerQoSMeasuring(pendingPod), allocatedPod.Name)
 		return false
 	}
 

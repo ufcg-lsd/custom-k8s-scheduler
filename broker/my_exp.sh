@@ -14,9 +14,9 @@ set -e
 
 #bash my_experiment.sh workloads/128pods.csv 3600 1 1 qos-driven
 
-#bash my_experiment.sh workloads/64pods.csv 3600 1 1 qos-driven
+bash my_experiment.sh workloads/64pods.csv 3600 1 1 qos-driven
 
-bash my_experiment.sh workloads/32pods.csv 3600 1 1 qos-driven
+#bash my_experiment.sh workloads/32pods.csv 3600 1 1 qos-driven
 
 sleep 5
 
