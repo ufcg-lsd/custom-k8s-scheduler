@@ -1,126 +1,96 @@
-# QoS-Driven Update 1.31
+# 🚀 QoS-Driven Scheduler para Kubernetes 1.32
 
-## Descrição do Projeto
+Scheduler customizado para Kubernetes com foco em alocação de recursos baseada em **Qualidade de Serviço (QoS)**.
 
-Este repositório contém o código atualizado para o sistema QoS-Driven Scheduler, desenvolvido para a versão 1.31 do Kubernetes. Ele busca otimizar a alocação de recursos e garantir a qualidade de serviço (QoS) através de estratégias de agendamento e preempção.
+---
 
-## Funcionalidades Atuais
+## 📂 Estrutura do Projeto
 
-### Status Atual
+- **`broker/`**: Testes locais utilizando nós e pods reais.
+- **`cluster/`**: Yamls para classes de prioridade e read-jobs.
+- **`kwok-experiment/`**: Ambiente de emulação com [KWOK](https://github.com/kubernetes-sigs/kwok).
+- **`pkg/`**: Implementação dos plugins principais do scheduler QoS-Driven.
+- **`R/`**: Scripts para análise de dados.
+- **`yamls/`**: Arquivos de configuração do escalonador.
+- **`build_and_load`**: Script para build e carga da imagem Docker.
+- **`main.go`**: Arquivo principal de execução do escalonador.
 
-Atualmente todos os plugins foram implementados.
+---
 
-### Próximos Passos
+## ⚙️ Pré-requisitos
 
-Será realizado testes em maior escala para verificar o funcionamento do scheduler.
+- Kubernetes `v1.32`
+- [Minikube](https://minikube.sigs.k8s.io/)
+- [Docker](https://www.docker.com/)
 
-## Comandos Úteis
+---
 
-### Acessar a VM
+## 🚀 Instalação Rápida
 
-Para entrar na VM utilizar:
-
-```bash
-ssh -i chave ubuntu@150.165.85.20
-```
-
-### Criação de Imagem Docker
-
-Para criar a imagem Docker:
-
-```bash
-docker build -t brunogb123/scheduler-custom:<especificar a Tag que será utilizada> .
-```
-
-**Observação**: Atualmente a tag é `v2`. Quando for implementado outro plugin, utilizar `v3`.
-
-### Push para o Docker Hub
-
-Não é necessário executar `push` para o Docker, tendo em vista que a imagem está no ambiente local. Caso seja necessário, utilize:
+**Aplicar o ConfigMap do scheduler:**
 
 ```bash
-docker push brunogb123/scheduler-custom:<tag utilizada para o build da imagem>
+kubectl apply -f yamls/scheduler-config.yaml -n kube-system
 ```
 
-### Enviar Imagem para o Minikube
-
-Após criar a imagem, carregue-a para o Minikube:
+**Atualizar configuração (se necessário):**
 
 ```bash
-minikube image load brunogb123/scheduler-custom:<tag utilizada para o build da imagem>
+kubectl delete configmap custom-scheduler-config -n kube-system
 ```
 
-**Observação**: Caso queira apagar a imagem criada anteriormente, primeiro verifique o IMAGE ID utilizando:
+```bash
+kubectl create configmap custom-scheduler-config --from-file=yamls/scheduler-config.yaml -n kube-system
+```
+
+**Build, carga e aplicação da imagem Docker:**
+
+```bash
+bash build_and_load
+```
+
+---
+
+## 🧪 Experimento com KWOK (kwok-experiment-sbrc)
+
+Para executar um experimento com KWOK, navegue até o diretório `kwok-experiment-sbrc` e execute:
+
+```bash
+bash run.sh <tempo de execução em segundos> 30 true
+```
+
+Os resultados estaram presentes dentro do diretório diretório `kwok-experiment-sbrc/R`
+
+---
+
+## 🛠️ Comandos Úteis
+
+**Listar imagens Docker:**
 
 ```bash
 docker images
 ```
 
-Para apagar da VM:
+**Remover imagem local Docker:**
 
 ```bash
-docker rmi <imageid>
+docker rmi <image-id>
 ```
 
-Para apagar de dentro do Minikube:
+**Remover imagem Docker do Minikube:**
 
 ```bash
-minikube ssh docker rmi <imageid>
+minikube ssh docker rmi <image-id>
 ```
 
-### Configurar o ConfigMap
-
-Atualmente o ConfigMap já está aplicado para definir os plugins utilizados. Caso seja necessário aplicar um novo, execute:
+**Acompanhar logs do scheduler:**
 
 ```bash
-kubectl delete configmap custom-scheduler-config -n kube-system
-kubectl create configmap custom-scheduler-config --from-file=yamls/scheduler-config.yaml -n kube-system
+kubectl logs <scheduler-pod> -n kube-system --follow
 ```
 
-### Criar o Deployment do Scheduler
-
-No diretório principal, execute:
+**Reiniciar o scheduler:**
 
 ```bash
-kubectl apply -f yamls/custom-scheduler-deployment.yaml
+kubectl rollout restart deployment/custom-scheduler -n kube-system
 ```
-
-### Aplicar YAML dos Pods
-
-Para aplicar os YAMLs dos pods, utilize:
-
-```bash
-kubectl apply -f pods/test-pod.yaml
-kubectl apply -f pods/test-pod2.yaml
-```
-
-### Apagar Deployments
-
-Para apagar os deployments, execute:
-
-```bash
-kubectl delete deployment custom-scheduler -n kube-system
-```
-
-### Apagar Pods
-
-Para apagar um pod, execute:
-
-```bash
-kubectl delete pod <nome-do-pod>
-```
-
-### Verificar Logs do Scheduler
-
-Para verificar os logs do scheduler, utilize:
-
-```bash
-kubectl logs <nome-do-scheduler> -n kube-system --follow
-```
-
-**Observação**: Para checar o nome do scheduler caso não saiba, execute:
-
-```bash
-kubectl get pods -A
-```
-
