@@ -59,7 +59,7 @@ Para executar um experimento com KWOK, navegue até o diretório `kwok-experimen
 bash run.sh <tempo de execução em segundos> 30 true
 ```
 
-Os resultados estaram presentes dentro do diretório diretório `kwok-experiment-sbrc/R`
+Os resultados estaram presentes dentro do diretório diretório `kwok-experiment-sbrc/data`
 
 ---
 
