@@ -15,7 +15,11 @@ spec:
     spec:
       containers:
       - name: custom-scheduler
-        image: brunogb123/scheduler-custom:bugs
+        # Substitua <usuário-no-DockerHub>, <nome-da-imagem> e <tag> pelos valores corretos
+        # Exemplo: usuarioTeste/custom-scheduler:latest
+        # A imagem deve ser construída e enviada para o Docker Hub ou pode ser utilizada uma imagem que foi construida localmente,
+        # mas nesse caso deve ser feito o envio da mesma para dentro do minikube, esse ultimo passo é realizado pelo bash build_and_load para facilidade.
+        image: <usuário-no-DockerHub>/<nome-da-imagem>:<tag>
         command:
         - /custom-scheduler                
         args:

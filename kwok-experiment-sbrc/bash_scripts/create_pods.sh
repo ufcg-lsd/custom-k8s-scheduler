@@ -9,25 +9,6 @@ fi
 # Assign arguments to variables
 duration=$1
 
-# Hardcoded order of workload classes, repeated 20 times
-base_order=(bronze gold bronze gold bronze silver gold gold gold bronze bronze gold bronze gold gold bronze gold bronze bronze bronze silver silver gold bronze
-gold bronze silver silver silver gold silver bronze silver gold silver bronze bronze bronze bronze silver silver silver bronze silver gold bronze gold gold
-gold bronze bronze gold silver silver bronze gold gold silver bronze gold silver silver gold gold bronze bronze gold bronze silver bronze bronze silver gold
-bronze silver gold gold silver silver gold gold gold gold silver gold silver bronze gold silver gold silver silver gold bronze bronze silver gold silver
-silver gold bronze silver gold bronze silver bronze silver bronze silver bronze silver gold gold bronze silver silver gold bronze silver silver silver bronze
-bronze bronze bronze gold silver silver silver bronze gold silver bronze silver bronze silver bronze gold silver bronze gold silver silver silver bronze gold
-silver gold bronze silver bronze bronze bronze bronze bronze gold bronze gold gold gold gold gold bronze bronze bronze silver gold bronze bronze silver silver
-bronze silver gold bronze bronze silver gold silver bronze bronze silver bronze gold gold bronze silver gold gold gold bronze bronze gold silver gold bronze
-silver gold silver bronze gold silver bronze silver silver gold silver bronze gold silver bronze gold bronze bronze silver bronze gold bronze bronze gold bronze
-bronze bronze gold bronze gold gold silver bronze silver gold bronze gold gold gold silver silver gold silver silver bronze bronze bronze silver bronze bronze
-bronze gold bronze bronze silver gold bronze silver bronze silver)
-
-# Repeat the base order 20 times
-order=()
-for ((i=0; i<1; i++)); do
-  order+=("${base_order[@]}")
-done
-
 order=(
 bronze bronze gold gold gold gold bronze gold bronze gold
 bronze bronze bronze gold gold gold gold gold gold
