@@ -45,7 +45,7 @@ kubectl create configmap custom-scheduler-config --from-file=yamls/scheduler-con
 
 **Build, carga e aplicação da imagem Docker:**
 
-***Obs: Antes de executar o comando abaixo é necessário fazer algumas alterações no arquivo yamls/custom-scheduler-deployment.yaml e no build_and_load.sh, colocando o usuário do Docker Hub, nome da imagem e a tags da mesma.***
+*Obs: Antes de executar o comando abaixo é necessário fazer algumas alterações nos arquivos yamls/custom-scheduler-deployment.yaml e build_and_load.sh, colocando o usuário do Docker Hub, nome da imagem e a tags da mesma.*
 
 ```bash
 bash build_and_load
