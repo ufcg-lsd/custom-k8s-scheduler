@@ -3,6 +3,14 @@ kind: KubeSchedulerConfiguration
 profiles:
 - schedulerName: custom-scheduler
   plugins:
+    preenqueue:
+      enabled:
+      - name: QosAware
+    queueSort:
+      enabled:
+      - name: QosAware
+      disable:
+      - name: "*"
     reserve:
       enabled:
       - name: QosAware
@@ -12,6 +20,11 @@ profiles:
     postBind:
       enabled:
       - name: QosAware
+    postFilter:
+      enabled:
+      - name: QosAware
+      disable:
+      - name: "*"
   pluginConfig:
     - name: QosAware
       args:
