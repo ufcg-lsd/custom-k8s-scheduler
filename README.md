@@ -8,7 +8,7 @@ Scheduler customizado para Kubernetes com foco em alocação de recursos baseada
 
 - **`broker/`**: Testes locais utilizando nós e pods reais.
 - **`cluster/`**: Yamls para classes de prioridade e read-jobs.
-- **`kwok-experiment/`**: Ambiente de emulação com [KWOK](https://github.com/kubernetes-sigs/kwok).
+- **`kwok-experiment/`**: Ambiente de emulação com [KWOK](https://kwok.sigs.k8s.io/).
 - **`pkg/`**: Implementação dos plugins principais do scheduler QoS-Driven.
 - **`R/`**: Scripts para análise de dados.
 - **`yamls/`**: Arquivos de configuração do escalonador.
@@ -20,7 +20,7 @@ Scheduler customizado para Kubernetes com foco em alocação de recursos baseada
 ## ⚙️ Pré-requisitos
 
 - Kubernetes `v1.32`
-- [Minikube](https://minikube.sigs.k8s.io/)
+- [Minikube](https://minikube.sigs.k8s.io/docs/start/?arch=%2Flinux%2Fx86-64%2Fstable%2Fbinary+download)
 - [Docker](https://www.docker.com/)
 
 ---
